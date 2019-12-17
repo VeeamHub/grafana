@@ -81,17 +81,16 @@ for id in $(echo "$veeamRepoUrl" | jq -r '.[].id'); do
   veeamObjectUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
 
     objectName=$(echo "$veeamObjectUrl" | jq --raw-output ".name" | awk '{gsub(/ /,"\\ ");print}')
-    usedSpaceGB=$(echo "$veeamObjectUrl" | jq --raw-output ".usedSpaceGB")
+    usedSpaceGB=$(echo "$veeamObjectUrl" | jq --raw-output ".usedSpaceBytes")
     type=$(echo "$veeamObjectUrl" | jq --raw-output ".type")
     # Bucket information
     bucketname=$(echo "$veeamObjectUrl" | jq --raw-output ".bucket.name" | awk '{gsub(/ /,"\\ ");print}')
     servicePoint=$(echo "$veeamObjectUrl" | jq --raw-output ".bucket.servicePoint" | awk '{gsub(/ /,"\\ ");print}')
     customRegionId=$(echo "$veeamObjectUrl" | jq --raw-output ".bucket.customRegionId" | awk '{gsub(/ /,"\\ ");print}')
-    location=$(echo "$veeamObjectUrl" | jq --raw-output ".bucket.location" | awk '{gsub(/ /,"\\ ");print}')
-    region=$(echo "$veeamObjectUrl" | jq --raw-output ".bucket.region" | awk '{gsub(/ /,"\\ ");print}')
+   
   
-    #echo "veeam_office365_objectstorage,name=$objectName,type=$type,bucketname=$bucketname,servicePoint=$servicePoint,customRegionId=$customRegionId,location=$location,region=$region usedSpaceGB=$usedSpaceGB"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_office365_objectstorage,objectname=$objectName,type=$type,bucketname=$bucketname,servicePoint=$servicePoint,customRegionId=$customRegionId,location=$location,region=$region,objectStorageEncryptionEnabled=$objectStorageEncryptionEnabled usedSpaceGB=$usedSpaceGB"
+    #echo "veeam_office365_objectstorage,name=$objectName,type=$type,bucketname=$bucketname,servicePoint=$servicePoint,customRegionId=$customRegionId usedSpaceGB=$usedSpaceGB"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_office365_objectstorage,objectname=$objectName,type=$type,bucketname=$bucketname,servicePoint=$servicePoint,customRegionId=$customRegionId,objectStorageEncryptionEnabled=$objectStorageEncryptionEnabled usedSpaceGB=$usedSpaceGB"
 
   arrayrepo=$arrayrepo+1
 done
