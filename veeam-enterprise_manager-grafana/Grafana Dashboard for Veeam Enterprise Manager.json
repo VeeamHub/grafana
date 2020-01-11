@@ -77,7 +77,7 @@
   "gnetId": 11286,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1578354951507,
+  "iteration": 1578704942845,
   "links": [],
   "panels": [
     {
@@ -2023,7 +2023,7 @@
           "measurement": "win_disk",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT 100 - (mean(\"Percent_Free_Space\")) FROM \"win_disk\" WHERE (\"host\" =~ /^$veeamserver$/ ) AND $timeFilter GROUP BY time($__interval), \"instance\" fill(linear)",
+          "query": "SELECT 100 - (mean(\"Percent_Free_Space\")) FROM \"win_disk\" WHERE (\"host\" =~ /^$veeamserver$/ ) AND (\"instance\" !='HarddiskVolume1') AND $timeFilter GROUP BY time($__interval), \"instance\" fill(linear)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -3504,7 +3504,7 @@
     ]
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {
@@ -3535,5 +3535,5 @@
   "timezone": "browser",
   "title": "Grafana Dashboard for Veeam Enterprise Manager",
   "uid": "WmrXrCYZk",
-  "version": 23
+  "version": 24
 }
