@@ -21,14 +21,14 @@
 # Configurations
 ##
 # Endpoint URL for InfluxDB
-veeamInfluxDBURL="YOURINFLUXSERVERIP" #Your InfluxDB Server, http://FQDN or https://FQDN if using SSL
+veeamInfluxDBURL="http://YOURINFLUXSERVERIP" #Your InfluxDB Server, http://FQDN or https://FQDN if using SSL
 veeamInfluxDBPort="8086" #Default Port
 veeamInfluxDB="telegraf" #Default Database
 veeamInfluxDBUser="USER" #User for Database
 veeamInfluxDBPassword="PASSWORD" #Password for Database
 
 # Endpoint URL for login action
-veeamUsername="YOUREMUSER"
+veeamUsername="YOUREMUSER" #Your username, if using domain based account, please add it like user@domain.com (if you use domain\account it is not going to work!)
 veeamPassword="YOUREMPASSWORD"
 veeamAuth=$(echo -ne "$veeamUsername:$veeamPassword" | base64);
 veeamRestServer="YOUREMSERVERIP"
@@ -90,8 +90,10 @@ veeamEMOJobUrl=$(curl -X GET "$veeamEMUrl" -H "Accept:application/json" -H "X-Re
     veeamMaxJobDuration=$(echo "$veeamEMOJobUrl" | jq --raw-output ".MaxJobDuration")    
     veeamMaxBackupJobDuration=$(echo "$veeamEMOJobUrl" | jq --raw-output ".MaxBackupJobDuration")    
     veeamMaxReplicaJobDuration=$(echo "$veeamEMOJobUrl" | jq --raw-output ".MaxReplicaJobDuration")
-    veeamMaxDurationBackupJobName=$(echo "$veeamEMOJobUrl" | jq --raw-output ".MaxDurationBackupJobName" | awk '{gsub(/ /,"\\ ");print}')    
+    veeamMaxDurationBackupJobName=$(echo "$veeamEMOJobUrl" | jq --raw-output ".MaxDurationBackupJobName" | awk '{gsub(/ /,"\\ ");print}')
+    [[ ! -z "$veeamMaxDurationBackupJobName" ]] || veeamMaxDurationBackupJobName="None"
     veeamMaxDurationReplicaJobName=$(echo "$veeamEMOJobUrl" | jq --raw-output ".MaxDurationReplicaJobName" | awk '{gsub(/ /,"\\ ");print}')
+    [[ ! -z "$veeamMaxDurationReplicaJobName" ]] || veeamMaxDurationReplicaJobName="None"
     
     #echo "veeam_em_overview_jobs,host=$veeamRestServer,veeamMaxDurationBackupJobName=$veeamMaxDurationBackupJobName,veeamMaxDurationReplicaJobName=$veeamMaxDurationReplicaJobName veeamRunningJobs=$veeamRunningJobs,veeamScheduledJobs=$veeamScheduledJobs,veeamScheduledBackupJobs=$veeamScheduledBackupJobs,veeamScheduledReplicaJobs=$veeamScheduledReplicaJobs,veeamTotalJobRuns=$veeamTotalJobRuns,veeamSuccessfulJobRuns=$veeamSuccessfulJobRuns,veeamWarningsJobRuns=$veeamWarningsJobRuns,veeamFailedJobRuns=$veeamFailedJobRuns,veeamMaxJobDuration=$veeamMaxJobDuration,veeamMaxBackupJobDuration=$veeamMaxBackupJobDuration,veeamMaxReplicaJobDuration=$veeamMaxReplicaJobDuration"
     curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_overview_jobs,host=$veeamRestServer,veeamMaxDurationBackupJobName=$veeamMaxDurationBackupJobName,veeamMaxDurationReplicaJobName=$veeamMaxDurationReplicaJobName veeamRunningJobs=$veeamRunningJobs,veeamScheduledJobs=$veeamScheduledJobs,veeamScheduledBackupJobs=$veeamScheduledBackupJobs,veeamScheduledReplicaJobs=$veeamScheduledReplicaJobs,veeamTotalJobRuns=$veeamTotalJobRuns,veeamSuccessfulJobRuns=$veeamSuccessfulJobRuns,veeamWarningsJobRuns=$veeamWarningsJobRuns,veeamFailedJobRuns=$veeamFailedJobRuns,veeamMaxJobDuration=$veeamMaxJobDuration,veeamMaxBackupJobDuration=$veeamMaxBackupJobDuration,veeamMaxReplicaJobDuration=$veeamMaxReplicaJobDuration"
