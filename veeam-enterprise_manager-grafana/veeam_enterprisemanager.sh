@@ -9,8 +9,8 @@
 ##      .Notes
 ##      NAME:  veeam_enterprisemanager.sh
 ##      ORIGINAL NAME: veeam_enterprisemanager.sh
-##      LASTEDIT: 03/01/2020
-##      VERSION: 1.0
+##      LASTEDIT: 28/02/2020
+##      VERSION: 1.1
 ##      KEYWORDS: Veeam, InfluxDB, Grafana
    
 ##      .Link
@@ -349,4 +349,101 @@ for JobSessionUid in $(echo "$veeamEMJobReplicaSessionsVMUrl" | jq -r '.ReplicaT
     #echo "veeam_em_job_sessionsvm,veeamReplicaSessionsVmDisplayName=$veeamReplicaSessionsVmDisplayName,veeamVBR=$veeamVBR,veeamReplicaSessionsJobVMState=$veeamReplicaSessionsJobVMState veeamReplicaSessionsTotalSize=$veeamReplicaSessionsTotalSize,veeamReplicaSessionsJobVMResult=$jobStatus $creationTimeUnix"
     curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_job_sessionsvm,veeamReplicaSessionsVmDisplayName=$veeamReplicaSessionsVmDisplayName,veeamVBR=$veeamVBR,veeamReplicaSessionsJobVMState=$veeamReplicaSessionsJobVMState veeamReplicaSessionsTotalSize=$veeamReplicaSessionsTotalSize,veeamReplicaSessionsJobVMResult=$jobStatus,veeamReplicaSessionsVMDuration=$veeamReplicaSessionsVMDuration $creationTimeUnix"
   arrayjobrepsessionsvm=$arrayjobrepsessionsvm+1
+done
+
+##
+# Veeam Enterprise Manager Backup Agent Status. Overview of the Veeam Agents. Really useful to display if an Agent it is uo to date and also the status
+##
+veeamEMUrl="https://$veeamRestServer:$veeamRestPort/api/agents/discoveredComputers?format=Entity"
+veeamEMAgentUrl=$(curl -X GET "$veeamEMUrl" -H "Accept:application/json" -H "X-RestSvcSessionId: $veeamXRestSvcSessionId" -H "Cookie: X-RestSvcSessionId=$veeamXRestSvcSessionId" -H "Content-Length: 0" 2>&1 -k --silent | awk 'NR==1{sub(/^\xef\xbb\xbf/,"")}1')
+
+declare -i arrayagent=0
+for JobSessionUid in $(echo "$veeamEMAgentUrl" | jq -r '.DiscoveredComputers[].UID'); do
+    veeamAgentName=$(echo "$veeamEMAgentUrl" | jq --raw-output ".DiscoveredComputers[$arrayagent].Name" | awk '{gsub(/ /,"\\ ");print}')
+    veeamVBR=$(echo "$veeamEMAgentUrl" | jq --raw-output ".DiscoveredComputers[$arrayagent].Links[0].Name" | awk '{gsub(/ /,"\\ ");print}') 
+    veeamAgentHostStatusCheck=$(echo "$veeamEMAgentUrl" | jq --raw-output ".DiscoveredComputers[$arrayagent].HostStatus")
+    case $veeamAgentHostStatusCheck in
+        "Online")
+            veeamAgentHostStatus="1"
+        ;;
+        "Offline")
+            veeamAgentHostStatus="2"
+        ;;
+        esac
+    veeamAgentStatusCheck=$(echo "$veeamEMAgentUrl" | jq --raw-output ".DiscoveredComputers[$arrayagent].AgentStatus")
+    case $veeamAgentStatusCheck in
+        "Installed")
+            veeamAgentStatus="1"
+        ;;
+        "Warning")
+            veeamAgentStatus="2"
+        ;;
+        "Inaccessible")
+            veeamAgentStatus="3"
+        ;;
+        "Not Installed")
+            veeamAgentStatus="4"
+        ;;
+        esac
+    veeamAgentVersion=$(echo "$veeamEMAgentUrl" | jq --raw-output ".DiscoveredComputers[$arrayagent].AgentVersion" | awk '{gsub(/ /,"\\ ");print}') 
+    veeamAgentOsVersion=$(echo "$veeamEMAgentUrl" | jq --raw-output ".DiscoveredComputers[$arrayagent].OsVersion" | awk -F',' '{$3=i; print}' | awk '{gsub(/ /,"\\ ");print}')
+   
+    #echo "veeam_em_agents,veeamAgentName=$veeamAgentName,veeamVBR=$veeamVBR,veeamAgentVersion=$veeamAgentVersion,veeamAgentOsVersion=$veeamAgentOsVersion veeamAgentStatus=$veeamAgentStatus,veeamAgentHostStatus=$veeamAgentHostStatus"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_agents,veeamAgentName=$veeamAgentName,veeamAgentOsVersion=$veeamAgentOsVersion,veeamVBR=$veeamVBR,veeamAgentVersion=$veeamAgentVersion veeamAgentStatus=$veeamAgentStatus,veeamAgentHostStatus=$veeamAgentHostStatus"
+  arrayagent=$arrayagent+1
+done
+
+
+##
+# Veeam Enterprise Manager NAS Jobs. Overview of the NAS Jobs. Really useful to display the NAS Jobs
+##
+veeamEMUrl="https://$veeamRestServer:$veeamRestPort/api/nas/jobs?format=Entity"
+veeamEMNASJobsUrl=$(curl -X GET "$veeamEMUrl" -H "Accept:application/json" -H "X-RestSvcSessionId: $veeamXRestSvcSessionId" -H "Cookie: X-RestSvcSessionId=$veeamXRestSvcSessionId" -H "Content-Length: 0" 2>&1 -k --silent | awk 'NR==1{sub(/^\xef\xbb\xbf/,"")}1')
+
+declare -i arrayNASJobs=0
+for JobSessionUid in $(echo "$veeamEMNASJobsUrl" | jq -r '.NASJobs[].UID'); do
+    veeamNASJobName=$(echo "$veeamEMNASJobsUrl" | jq --raw-output ".NASJobs[$arrayNASJobs].Name" | awk '{gsub(/ /,"\\ ");print}')
+    veeamNASJobPath=$(echo "$veeamEMNASJobsUrl" | jq --raw-output ".NASJobs[$arrayNASJobs].Includes.NASObjects[].FileOrFolder" | awk '{gsub(/ /,"\\ ");print}')
+    veeamNASJobExclusions=$(echo "$veeamEMNASJobsUrl" | jq --raw-output ".NASJobs[$arrayNASJobs].Includes.NASObjects[].InclusionMask.Extensions[]" | awk '{gsub(/ /,"\\ ");print}')
+    veeamVBR=$(echo "$veeamEMNASJobsUrl" | jq --raw-output ".NASJobs[$arrayNASJobs].Links[0].Name" | awk '{gsub(/ /,"\\ ");print}')
+    veeamNASJobShortTerm=$(echo "$veeamEMNASJobsUrl" | jq --raw-output ".NASJobs[$arrayNASJobs].StorageOptions.ShorttermRetentionPeriod")
+    veeamNASJobShortTermType=$(echo "$veeamEMNASJobsUrl" | jq --raw-output ".NASJobs[$arrayNASJobs].StorageOptions.ShorttermRetentionType")
+   
+    #echo "veeam_em_nas_jobs,veeamNASJobName=$veeamNASJobName,veeamVBR=$veeamVBR,veeamNASJobPath=$veeamNASJobPath,veeamNASJobExclusions=$veeamNASJobExclusions"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_nas_jobs,veeamNASJobName=$veeamNASJobName,veeamVBR=$veeamVBR,veeamNASJobPath=$veeamNASJobPath,veeamNASJobExclusions=$veeamNASJobExclusions,veeamNASJobShortTermType=$veeamNASJobShortTermType veeamNASJobShortTerm=$veeamNASJobShortTerm"
+  arrayNASJobs=$arrayNASJobs+1
+done
+
+
+##
+# Veeam Enterprise Manager NAS Jobs Sessions. Overview of the NAS Jobs Sessions. Really useful to display the NAS Jobs Sessions
+##
+veeamEMUrl="https://$veeamRestServer:$veeamRestPort/api/nas/backupSessions?format=Entity"
+veeamEMNASJobsSessionsUrl=$(curl -X GET "$veeamEMUrl" -H "Accept:application/json" -H "X-RestSvcSessionId: $veeamXRestSvcSessionId" -H "Cookie: X-RestSvcSessionId=$veeamXRestSvcSessionId" -H "Content-Length: 0" 2>&1 -k --silent | awk 'NR==1{sub(/^\xef\xbb\xbf/,"")}1')
+
+declare -i arrayNASJobsSessions=0
+for JobSessionUid in $(echo "$veeamEMNASJobsSessionsUrl" | jq -r '.BackupJobSessions[].JobUid'); do
+    veeamNASJobName=$(echo "$veeamEMNASJobsSessionsUrl" | jq --raw-output ".BackupJobSessions[$arrayNASJobsSessions].JobName" | awk '{gsub(/ /,"\\ ");print}')
+    veeamVBR=$(echo "$veeamEMNASJobsSessionsUrl" | jq --raw-output ".BackupJobSessions[$arrayNASJobsSessions].Links[0].Name" | awk '{gsub(/ /,"\\ ");print}')
+    veeamNASJobResult=$(echo "$veeamEMNASJobsSessionsUrl" | jq --raw-output ".BackupJobSessions[$arrayNASJobsSessions].Result") 
+    case $veeamNASJobResult in
+        Success)
+            jobStatus="1"
+        ;;
+        Warning)
+            jobStatus="2"
+        ;;
+        Failed)
+            jobStatus="3"
+        ;;
+        esac
+    veeamNASJobTime=$(echo "$veeamEMNASJobsSessionsUrl" | jq --raw-output ".BackupJobSessions[$arrayNASJobsSessions].CreationTimeUTC")
+    creationTimeUnix=$(date -d "$veeamNASJobTime" +"%s")
+    veeamNASJobimeEnd=$(echo "$veeamEMNASJobsSessionsUrl" | jq --raw-output ".BackupJobSessions[$arrayNASJobsSessions].EndTimeUTC")
+    endTimeUnix=$(date -d "$veeamNASJobimeEnd" +"%s")
+    veeamNASJobDuration=$(($endTimeUnix-$creationTimeUnix))   
+   
+    #echo "veeam_em_nas_sessions,veeamNASJobName=$veeamNASJobName,veeamVBR=$veeamVBR veeamNASJobResult=$jobStatus $creationTimeUnix"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_nas_sessions,veeamNASJobName=$veeamNASJobName,veeamVBR=$veeamVBR veeamNASJobResult=$jobStatus,veeamNASJobDuration=$veeamNASJobDuration $creationTimeUnix"
+  arrayNASJobsSessions=$arrayNASJobsSessions+1
 done
