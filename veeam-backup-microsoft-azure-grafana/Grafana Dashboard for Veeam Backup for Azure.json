@@ -83,7 +83,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1588250293142,
+  "iteration": 1589027753703,
   "links": [],
   "panels": [
     {
@@ -594,7 +594,9 @@
       "datasource": "${DS_INFLUXDB}",
       "decimals": 0,
       "description": "On this Map, you can quickly know which VMs are not Protected by Veeam Backup for Azure. \nWith a simple, yet powerful view, you can understand and try to mitigate the red spots.",
-      "esMetric": "Count",
+      "esGeoPoint": "geohash/VMRegion",
+      "esLocationName": "",
+      "esMetric": "metric",
       "gridPos": {
         "h": 12,
         "w": 24,
@@ -616,6 +618,7 @@
       "stickyLabels": false,
       "tableQueryOptions": {
         "geohashField": "geohash",
+        "labelField": "VMRegion",
         "latitudeField": "latitude",
         "longitudeField": "longitude",
         "metricField": "metric",
@@ -645,7 +648,13 @@
             },
             {
               "params": [
-                "0"
+                "VMRegion"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
               ],
               "type": "fill"
             }
@@ -687,7 +696,7 @@
       "unitPlural": "Unprotected VMs",
       "unitSingle": "",
       "unitSingular": "Unprotected VM",
-      "valueName": "current"
+      "valueName": "total"
     },
     {
       "aliasColors": {
@@ -737,7 +746,7 @@
             },
             {
               "params": [
-                "null"
+                "none"
               ],
               "type": "fill"
             }
@@ -757,7 +766,7 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "last"
               }
             ]
           ],
@@ -774,7 +783,7 @@
             },
             {
               "params": [
-                "null"
+                "none"
               ],
               "type": "fill"
             }
@@ -794,7 +803,7 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "last"
               }
             ]
           ],
@@ -805,7 +814,7 @@
       "timeShift": null,
       "title": "Protected VMs Overview",
       "type": "grafana-piechart-panel",
-      "valueName": "current"
+      "valueName": "max"
     },
     {
       "cacheTimeout": null,
@@ -1424,6 +1433,7 @@
       "type": "text"
     }
   ],
+  "refresh": false,
   "schemaVersion": 22,
   "style": "dark",
   "tags": [],
@@ -1540,5 +1550,5 @@
   "timezone": "",
   "title": "Grafana Dashboard for Veeam Backup for Azure",
   "uid": "NHs2j76Zz",
-  "version": 37
+  "version": 41
 }
