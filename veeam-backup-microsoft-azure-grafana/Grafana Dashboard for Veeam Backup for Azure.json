@@ -78,12 +78,12 @@
       }
     ]
   },
-  "description": "Grafana Dashboard for Wordpress.com Jetpack Analytics",
+  "description": "Grafana Dashboard for Veeam Backup for Azure",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1589027753703,
+  "iteration": 1589027753706,
   "links": [],
   "panels": [
     {
@@ -1550,5 +1550,5 @@
   "timezone": "",
   "title": "Grafana Dashboard for Veeam Backup for Azure",
   "uid": "NHs2j76Zz",
-  "version": 41
+  "version": 42
 }
