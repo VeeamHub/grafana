@@ -9,8 +9,8 @@
 ##      .Notes
 ##      NAME:  veeam_enterprisemanager.sh
 ##      ORIGINAL NAME: veeam_enterprisemanager.sh
-##      LASTEDIT: 28/02/2020
-##      VERSION: 1.1
+##      LASTEDIT: 26/05/2020
+##      VERSION: 1.2
 ##      KEYWORDS: Veeam, InfluxDB, Grafana
    
 ##      .Link
@@ -25,11 +25,11 @@ veeamInfluxDBURL="http://YOURINFLUXSERVERIP" #Your InfluxDB Server, http://FQDN 
 veeamInfluxDBPort="8086" #Default Port
 veeamInfluxDB="telegraf" #Default Database
 veeamInfluxDBUser="USER" #User for Database
-veeamInfluxDBPassword="PASSWORD" #Password for Database
+veeamInfluxDBPassword='PASSWORD' #Password for Database
 
 # Endpoint URL for login action
 veeamUsername="YOUREMUSER" #Your username, if using domain based account, please add it like user@domain.com (if you use domain\account it is not going to work!)
-veeamPassword="YOUREMPASSWORD"
+veeamPassword='YOUREMPASSWORD'
 veeamAuth=$(echo -ne "$veeamUsername:$veeamPassword" | base64);
 veeamRestServer="YOUREMSERVERIP"
 veeamRestPort="9398" #Default Port
