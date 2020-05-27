@@ -6,7 +6,7 @@ Thanks for the interest on this project. You will find two different ways to ret
 
 We use Veeam Enterprise Manager and the RESTfulAPI to reduce the workload and increase the speed of script execution, here is a comparison between same Script using VeeamPSSnapIn vs. RESTfulAPI:
 
-![alt tag](https://www.jorgedelacruz.es/wp-content/uploads/2017/07/veeam-grafana-restapi-003.png)
+![alt tag](https://www.dropbox.com/s/7eqts8kuukhrmqd/2020-05-26_16-40-49.png?dl=1)
 ----------
 ### Getting started
 For the new Bash Shell Script, please follow the steps on the next Blog Post - 
