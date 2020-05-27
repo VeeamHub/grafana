@@ -1,12 +1,11 @@
 How to monitor a Veeam Environment using Veeam Enterprise Manager, Telegraf, InfluxDB and Grafana
 ===================
-![Veeam Grafana Dashboard for Enterprise Manager](https://www.jorgedelacruz.es/wp-content/uploads/2020/01/veeam-grafana-em-001.png)
+![Veeam Grafana Dashboard for Enterprise Manager](https://www.jorgedelacruz.es/wp-content/uploads/2020/05/2020-05-26_16-40-49.png)
 
 Thanks for the interest on this project. You will find two different ways to retrieve the information, a very old v0.1 using PowerShell, which it has limitations, and a brand new way to take the information from the Veeam Enterprise Manager RESTful API using a Bash Shell Script directly from your InfluxDB Server, which it is the recommended one.
 
-We use Veeam Enterprise Manager and the RESTfulAPI to reduce the workload and increase the speed of script execution, here is a comparison between same Script using VeeamPSSnapIn vs. RESTfulAPI:
+We use Veeam Enterprise Manager and the RESTfulAPI to reduce the workload and increase the speed of script execution.
 
-![alt tag](https://www.dropbox.com/s/7eqts8kuukhrmqd/2020-05-26_16-40-49.png?dl=1)
 ----------
 ### Getting started
 For the new Bash Shell Script, please follow the steps on the next Blog Post - 
