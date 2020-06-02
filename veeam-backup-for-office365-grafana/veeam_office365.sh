@@ -9,7 +9,7 @@
 ##      .Notes
 ##      NAME:  veeam_office365.sh
 ##      ORIGINAL NAME: veeam_office365.sh
-##      LASTEDIT: 26/11/2019
+##      LASTEDIT: 02/06/2020
 ##      VERSION: 4.0
 ##      KEYWORDS: Veeam, InfluxDB, Grafana
    
@@ -53,6 +53,80 @@ for id in $(echo "$veeamOrgUrl" | jq -r '.[].id'); do
     
     #echo "veeam_office365_organization,veeamOrgName=$veeamOrgName licensedUsers=$licensedUsers,newUsers=$newUsers"
     curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_office365_organization,veeamOrgName=$veeamOrgName licensedUsers=$licensedUsers,newUsers=$newUsers"
+    
+    ##
+    # Veeam Backup for Microsoft Office 365 Users. This part will check the total Users and if they are protected or not
+    ##
+    veeamVBOUrl="$veeamRestServer:$veeamRestPort/v4/Organizations/$veeamOrgId/Users"
+    veeamUsersUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
+    declare -i arrayOD=0
+    for id in $(echo "$veeamUsersUrl" | jq -r '.results[].id'); do
+    veeamUserId=$(echo "$veeamUsersUrl" | jq --raw-output ".results[$arrayOD].id")
+    veeamUserName=$(echo "$veeamUsersUrl" | jq --raw-output ".results[$arrayOD].name" | awk '{gsub(/ /,"\\ ");print}')
+    veeamUserBackup=$(echo "$veeamUsersUrl" | jq --raw-output ".results[$arrayOD].isBackedUp")   
+      case $veeamUserBackup in
+        "true")
+            protectedUser="1"
+        ;;
+        "false")
+            protectedUser="2"
+        ;;
+        esac
+     veeamUserType=$(echo "$veeamUsersUrl" | jq --raw-output ".results[$arrayOD].type")   
+      case $veeamUserType in
+        "User")
+            typeUser="1"
+        ;;
+        "Shared")
+            typeUser="2"
+        ;;
+        esac
+     ##
+     # Veeam Backup for Microsoft Office 365 Users. This part will check the total Users and if they are protected or not
+     ##
+     veeamVBOUrl="$veeamRestServer:$veeamRestPort/v4/Organizations/$veeamOrgId/Users/$veeamUserId/onedrives"
+     veeamODUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
+     veeamUserODName=$(echo "$veeamODUrl" | jq --raw-output ".results[0].name // "0"" | awk '{gsub(/ /,"\\ ");print}')
+    
+    #echo "veeam_office365_overview_OD,veeamOrgName=$veeamOrgName,veeamUserName=$veeamUserName,veeamUserODName=$veeamUserODName protectedUser=$protectedUser,typeUser=$typeUser"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_office365_overview_OD,veeamOrgName=$veeamOrgName,veeamUserName=$veeamUserName,veeamUserODName=$veeamUserODName protectedUser=$protectedUser,typeUser=$typeUser"
+    arrayOD=$arrayOD+1
+    done
+    
+    ##
+    # Veeam Backup for Microsoft Office 365 SharePoint Sites. This part will check the total SharePoint Sites and if they are protected or not
+    ##
+    veeamVBOUrl="$veeamRestServer:$veeamRestPort/v4/Organizations/$veeamOrgId/sites"
+    veeamSPUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)    
+    declare -i arraySP=0
+    for id in $(echo "$veeamSPUrl" | jq -r '.results[].id'); do
+    veeamSPId=$(echo "$veeamSPUrl" | jq --raw-output ".results[$arraySP].id")
+    veeamSPName=$(echo "$veeamSPUrl" | jq --raw-output ".results[$arraySP].name" | awk '{gsub(/ /,"\\ ");print}' )
+    veeamSPFQDN=$(echo "$veeamSPUrl" | jq --raw-output ".results[$arraySP].url" | awk -F'[/:]' '{gsub(/www./,""); print $4"_"$5"_"$6}')
+    veeamSPPBackup=$(echo "$veeamSPUrl" | jq --raw-output ".results[$arraySP].isBackedup")   
+      case $veeamSPPBackup in
+        "true")
+            protectedSite="1"
+        ;;
+        "false")
+            protectedSite="2"
+        ;;
+        esac
+     veeamSPType=$(echo "$veeamSPUrl" | jq --raw-output ".results[$arraySP].isPersonal")   
+      case $veeamSPType in
+        "true")
+            typeSP="1"
+        ;;
+        "false")
+            typeSP="2"
+        ;;
+        esac
+
+    #echo "veeam_office365_overview_OD,veeamOrgName=$veeamOrgName,veeamUserName=$veeamUserName,veeamUserODName=$veeamUserODName protectedUser=$protectedUser,typeUser=$typeUser"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_office365_overview_SP,veeamOrgName=$veeamOrgName,veeamSPName=$veeamSPName,veeamSPFQDN=$veeamSPFQDN protectedSite=$protectedSite,typeSP=$typeSP"
+    arraySP=$arraySP+1
+    done
+
     arrayorg=$arrayorg+1
 done
  
@@ -172,8 +246,8 @@ veeamRestoreSessionsUrl=$(curl -X GET --header "Accept:application/json" --heade
 
 declare -i arrayRestoreSessions=0
 for id in $(echo "$veeamRestoreSessionsUrl" | jq -r '.results[].id'); do
-    name=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].name" | awk '{gsub(/ /,"\\ ");print}')
-    nameJob=$(echo $name | awk -v FS="[()]" '{print $1}')
+    name=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].name")
+    nameJob=$(echo $name | awk -F": " '{print $2}' | awk -F" - " '{print $1}')
     organization=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].organization" | awk '{gsub(/ /,"\\ ");print}') 
     type=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].type")
     endTime=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].endTime")
@@ -182,10 +256,11 @@ for id in $(echo "$veeamRestoreSessionsUrl" | jq -r '.results[].id'); do
     initiatedBy=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].initiatedBy")
     details=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].details")
     itemsProcessed=$(echo $details | awk '//{ print $1 }')
+
     [[ ! -z "$itemsProcessed" ]] || itemsProcessed="0"
     itemsSuccess=$(echo $details | awk '//{ print $4 }' | awk '{gsub(/\(|\)/,"");print $1}')
     [[ ! -z "$itemsSuccess" ]] || itemsSuccess="0"
-    
+
     #echo "veeam_office365_restoresession,organization=$organization,veeamjobname=$nameJob,type=$type,result=$result,initiatedBy=$initiatedBy itemsProcessed=$itemsProcessed,itemsSuccess=$itemsSuccess $endTimeUnix"
     curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_office365_restoresession,organization=$organization,veeamjobname=$nameJob,type=$type,result=$result,initiatedBy=$initiatedBy itemsProcessed=$itemsProcessed,itemsSuccess=$itemsSuccess $endTimeUnix"
     arrayRestoreSessions=$arrayRestoreSessions+1
