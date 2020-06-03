@@ -247,7 +247,7 @@ veeamRestoreSessionsUrl=$(curl -X GET --header "Accept:application/json" --heade
 declare -i arrayRestoreSessions=0
 for id in $(echo "$veeamRestoreSessionsUrl" | jq -r '.results[].id'); do
     name=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].name")
-    nameJob=$(echo $name | awk -F": " '{print $2}' | awk -F" - " '{print $1}')
+    nameJob=$(echo $name | awk -F": " '{print $2}' | awk -F" - " '{print $1}' | awk '{gsub(/ /,"\\ ");print}')
     organization=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].organization" | awk '{gsub(/ /,"\\ ");print}') 
     type=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].type")
     endTime=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].endTime")
