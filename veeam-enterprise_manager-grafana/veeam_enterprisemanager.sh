@@ -9,8 +9,8 @@
 ##      .Notes
 ##      NAME:  veeam_enterprisemanager.sh
 ##      ORIGINAL NAME: veeam_enterprisemanager.sh
-##      LASTEDIT: 26/05/2020
-##      VERSION: 1.2
+##      LASTEDIT: 15/07/2020
+##      VERSION: 1.3
 ##      KEYWORDS: Veeam, InfluxDB, Grafana
    
 ##      .Link
@@ -30,6 +30,7 @@ veeamInfluxDBPassword='PASSWORD' #Password for Database
 # Endpoint URL for login action
 veeamUsername="YOUREMUSER" #Your username, if using domain based account, please add it like user@domain.com (if you use domain\account it is not going to work!)
 veeamPassword='YOUREMPASSWORD'
+veeamJobSessions="100"
 veeamAuth=$(echo -ne "$veeamUsername:$veeamPassword" | base64);
 veeamRestServer="YOUREMSERVERIP"
 veeamRestPort="9398" #Default Port
@@ -243,7 +244,14 @@ for JobUid in $(echo "$veeamEMJobSessionsUrl" | jq -r '.BackupJobSessions[].JobU
    
     #echo "veeam_em_job_sessions,veeamBackupSessionsName=$veeamBackupSessionsName,veeamVBR=$veeamVBR,veeamBackupSessionsJobType=$veeamBackupSessionsJobType,veeamBackupSessionsJobState=$veeamBackupSessionsJobState veeamBackupSessionsJobResult=$jobStatus $creationTimeUnix"
     curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_job_sessions,veeamBackupSessionsName=$veeamBackupSessionsName,veeamVBR=$veeamVBR,veeamBackupSessionsJobType=$veeamBackupSessionsJobType,veeamBackupSessionsJobState=$veeamBackupSessionsJobState veeamBackupSessionsJobResult=$jobStatus,veeamBackupSessionsTimeDuration=$veeamBackupSessionsTimeDuration $creationTimeUnix"
-  arrayjobsessions=$arrayjobsessions+1
+    if [[ $arrayjobsessions = $veeamJobSessions ]]; then
+        break
+        else
+            arrayjobsessions=$arrayjobsessions+1
+    fi
+    done
+done
+  
 done
 
 ##
