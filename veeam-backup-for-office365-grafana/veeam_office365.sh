@@ -9,7 +9,7 @@
 ##      .Notes
 ##      NAME:  veeam_office365.sh
 ##      ORIGINAL NAME: veeam_office365.sh
-##      LASTEDIT: 02/06/2020
+##      LASTEDIT: 10/08/2020
 ##      VERSION: 4.0
 ##      KEYWORDS: Veeam, InfluxDB, Grafana
    
@@ -25,7 +25,7 @@ veeamInfluxDBURL="YOURINFLUXSERVERIP" #Your InfluxDB Server, http://FQDN or http
 veeamInfluxDBPort="8086" #Default Port
 veeamInfluxDB="telegraf" #Default Database
 veeamInfluxDBUser="USER" #User for Database
-veeamInfluxDBPassword="PASSWORD" #Password for Database
+veeamInfluxDBPassword='PASSWORD' #Password for Database
 
 # Endpoint URL for login action
 veeamUsername="YOURVBOUSER"
@@ -43,7 +43,7 @@ veeamOrgUrl=$(curl -X GET --header "Accept:application/json" --header "Authoriza
 declare -i arrayorg=0
 for id in $(echo "$veeamOrgUrl" | jq -r '.[].id'); do
     veeamOrgId=$(echo "$veeamOrgUrl" | jq --raw-output ".[$arrayorg].id")
-    veeamOrgName=$(echo "$veeamOrgUrl" | jq --raw-output ".[$arrayorg].name")
+    veeamOrgName=$(echo "$veeamOrgUrl" | jq --raw-output ".[$arrayorg].name" | awk '{gsub(/ /,"\\ ");print}')
 
     ## Licensing
     veeamVBOUrl="$veeamRestServer:$veeamRestPort/v4/Organizations/$veeamOrgId/LicensingInformation"
@@ -199,7 +199,7 @@ for id in $(echo "$veeamJobsUrl" | jq -r '.[].id'); do
     idJob=$(echo "$veeamJobsUrl" | jq --raw-output ".[$arrayJobs].id")
     
     # Backup Job Sessions
-    veeamVBOUrl="$veeamRestServer:$veeamRestPort/v4/Jobs/$idJob/jobsessions"
+    veeamVBOUrl="$veeamRestServer:$veeamRestPort/v4/Jobs/$idJob/JobSessions"
     veeamJobSessionsUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
     declare -i arrayJobsSessions=0
     for id in $(echo "$veeamJobSessionsUrl" | jq -r '.[].id'); do
