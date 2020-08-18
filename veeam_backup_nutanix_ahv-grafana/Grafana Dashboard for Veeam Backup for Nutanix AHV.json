@@ -1,0 +1,2452 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDB",
+      "label": "InfluxDB",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "bargauge",
+      "name": "Bar gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "7.1.3"
+    },
+    {
+      "type": "panel",
+      "id": "grafana-piechart-panel",
+      "name": "Pie Chart",
+      "version": "1.5.0"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table-old",
+      "name": "Table (old)",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Grafana Dashboard for Veeam Backup for Nutanix AHV RESTful API. Grafana 7.x",
+  "editable": true,
+  "gnetId": 11516,
+  "graphTooltip": 0,
+  "id": null,
+  "iteration": 1597735153283,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "datasource": "${DS_INFLUXDB}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 61,
+      "panels": [],
+      "repeat": "vanproxy",
+      "title": "$vanversion01 v$vanversion02 Build $vanversion06 $vanversion04 ($vanversion03) - IP $vanversion05",
+      "type": "row"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 0,
+          "mappings": [
+            {
+              "id": 0,
+              "op": "=",
+              "text": "N/A",
+              "type": 1,
+              "value": "null"
+            }
+          ],
+          "min": 0,
+          "nullValueMode": "connected",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Protected VMs"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-green",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Not Protected VMs"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-red",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Protected VMs with Snapshot"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-purple",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Repo Low in Space"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-yellow",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Repo Out of Space"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-orange",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 8,
+        "x": 0,
+        "y": 1
+      },
+      "id": 97,
+      "interval": null,
+      "links": [],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "background",
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.1.3",
+      "targets": [
+        {
+          "alias": "Total VMs",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_nutanix_dashboard",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"uptime_latest\") FROM \"vsphere_host_sys\" WHERE (\"esxhostname\" =~ /^$esxi$/ AND \"vcenter\" =~ /^$vcenter$/ AND \"clustername\" =~ /^$clustername$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "refId": "E",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "totalVMsCount"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Protected VMs",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_nutanix_dashboard",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"uptime_latest\") FROM \"vsphere_host_sys\" WHERE (\"esxhostname\" =~ /^$esxi$/ AND \"vcenter\" =~ /^$vcenter$/ AND \"clustername\" =~ /^$clustername$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "protectedVmsCount"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Not Protected VMs",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_nutanix_dashboard",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"uptime_latest\") FROM \"vsphere_host_sys\" WHERE (\"esxhostname\" =~ /^$esxi$/ AND \"vcenter\" =~ /^$vcenter$/ AND \"clustername\" =~ /^$clustername$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "notProtectedVmsCount"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Protected VMs with Snapshot",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_nutanix_dashboard",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"uptime_latest\") FROM \"vsphere_host_sys\" WHERE (\"esxhostname\" =~ /^$esxi$/ AND \"vcenter\" =~ /^$vcenter$/ AND \"clustername\" =~ /^$clustername$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "protectedVmsWithSnapshotsCount"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Total Jobs",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_nutanix_dashboard",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"uptime_latest\") FROM \"vsphere_host_sys\" WHERE (\"esxhostname\" =~ /^$esxi$/ AND \"vcenter\" =~ /^$vcenter$/ AND \"clustername\" =~ /^$clustername$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "refId": "H",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "totalJobsCount"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Total Repositories",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_nutanix_dashboard",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"uptime_latest\") FROM \"vsphere_host_sys\" WHERE (\"esxhostname\" =~ /^$esxi$/ AND \"vcenter\" =~ /^$vcenter$/ AND \"clustername\" =~ /^$clustername$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "totalRepositoriesCount"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Repo Low in Space",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_nutanix_dashboard",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"uptime_latest\") FROM \"vsphere_host_sys\" WHERE (\"esxhostname\" =~ /^$esxi$/ AND \"vcenter\" =~ /^$vcenter$/ AND \"clustername\" =~ /^$clustername$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "refId": "F",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "repositoriesLowOnSpaceCount"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Repo Out of Space",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_nutanix_dashboard",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"uptime_latest\") FROM \"vsphere_host_sys\" WHERE (\"esxhostname\" =~ /^$esxi$/ AND \"vcenter\" =~ /^$vcenter$/ AND \"clustername\" =~ /^$clustername$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "refId": "G",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "repositoriesOutOfSpaceCount"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 0,
+          "mappings": [
+            {
+              "id": 0,
+              "op": "=",
+              "text": "Available",
+              "type": 1,
+              "value": "1"
+            }
+          ],
+          "min": 0,
+          "nullValueMode": "connected",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Backup Server"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-green",
+                      "value": null
+                    },
+                    {
+                      "color": "dark-red",
+                      "value": 2
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Nutanix Cluster"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-green",
+                      "value": null
+                    },
+                    {
+                      "color": "dark-red",
+                      "value": 2
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 3,
+        "x": 8,
+        "y": 1
+      },
+      "id": 885,
+      "interval": null,
+      "links": [],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "background",
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "7.1.3",
+      "targets": [
+        {
+          "alias": "Backup Server",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_nutanix_dashboard",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"uptime_latest\") FROM \"vsphere_host_sys\" WHERE (\"esxhostname\" =~ /^$esxi$/ AND \"vcenter\" =~ /^$vcenter$/ AND \"clustername\" =~ /^$clustername$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "refId": "E",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "backupServerAvaliability"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Nutanix Cluster",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_nutanix_dashboard",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"uptime_latest\") FROM \"vsphere_host_sys\" WHERE (\"esxhostname\" =~ /^$esxi$/ AND \"vcenter\" =~ /^$vcenter$/ AND \"clustername\" =~ /^$clustername$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "clusterAvaliability"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "aliasColors": {
+        "Protected VMs": "#8acc5a",
+        "Unprotected VMs": "#e77c6b"
+      },
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "${DS_INFLUXDB}",
+      "decimals": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 11,
+        "y": 1
+      },
+      "id": 30,
+      "interval": null,
+      "legend": {
+        "header": "",
+        "percentage": false,
+        "show": true,
+        "values": true
+      },
+      "legendType": "On graph",
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "donut",
+      "strokeWidth": "0",
+      "targets": [
+        {
+          "alias": "Protected VMs",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_nutanix_dashboard",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "protectedVmsCount"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Unprotected VMs",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_nutanix_dashboard",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "notProtectedVmsCount"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Protected VMs Snapshot",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_nutanix_dashboard",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "protectedVmsWithSnapshotsCount"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "VMs Protection Overview",
+      "type": "grafana-piechart-panel",
+      "valueName": "max"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {},
+          "decimals": 2,
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-green",
+                "value": null
+              },
+              {
+                "color": "dark-yellow",
+                "value": 70
+              },
+              {
+                "color": "dark-orange",
+                "value": 80
+              },
+              {
+                "color": "dark-red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 9,
+        "x": 15,
+        "y": 1
+      },
+      "id": 289,
+      "options": {
+        "displayMode": "lcd",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "7.1.3",
+      "targets": [
+        {
+          "alias": "$tag_repoName",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT (last(\"repoTotalSpace\") - last(\"repoFreeSpace\")) * (100 / last(\"repoTotalSpace\"))  FROM  \"veeam_nutanix_repository\" WHERE (\"repoName\" =~ /^$repository$/) AND $timeFilter GROUP BY time($__interval), \"repoName\"  fill(none)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": "3h",
+      "timeShift": null,
+      "title": "Backup Repository - Usage Capacity",
+      "type": "bargauge"
+    },
+    {
+      "columns": [],
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 7,
+        "w": 13,
+        "x": 11,
+        "y": 8
+      },
+      "hideTimeOverride": false,
+      "id": 886,
+      "links": [],
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": true
+      },
+      "styles": [
+        {
+          "$$hashKey": "object:417",
+          "alias": "Time",
+          "align": "auto",
+          "dateFormat": "MMMM D, YYYY LT",
+          "link": false,
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "$$hashKey": "object:418",
+          "alias": "",
+          "align": "left",
+          "colorMode": null,
+          "colors": [
+            "#37872D",
+            "#FA6400",
+            "#C4162A"
+          ],
+          "decimals": 0,
+          "link": false,
+          "mappingType": 1,
+          "pattern": "Value",
+          "preserveFormat": false,
+          "sanitize": true,
+          "thresholds": [
+            "2",
+            "3"
+          ],
+          "type": "string",
+          "unit": "short",
+          "valueMaps": [
+            {
+              "$$hashKey": "object:453",
+              "text": "✅",
+              "value": "1"
+            },
+            {
+              "$$hashKey": "object:454",
+              "text": "⚠️",
+              "value": "2"
+            },
+            {
+              "$$hashKey": "object:455",
+              "text": "❌",
+              "value": "3"
+            },
+            {
+              "$$hashKey": "object:456",
+              "text": "",
+              "value": "null"
+            }
+          ]
+        },
+        {
+          "$$hashKey": "object:2778",
+          "alias": "Policy Job Name",
+          "align": "left",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "link": false,
+          "mappingType": 1,
+          "pattern": "Metric",
+          "sanitize": true,
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "alias": "$tag_policyname",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "policyname"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_nutanix_sessions",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "veeamBackupSessionsJobResult"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "policyname",
+              "operator": "=~",
+              "value": "/^$policy$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Job Historical Information",
+      "transform": "timeseries_to_rows",
+      "type": "table-old"
+    },
+    {
+      "collapsed": false,
+      "datasource": "${DS_INFLUXDB}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 30
+      },
+      "id": 569,
+      "panels": [],
+      "repeat": null,
+      "title": "$vanversion01 v$vanversion02 Build $vanversion06 $vanversion04 ($vanversion03) - IP $vanversion05 - Policy Jobs",
+      "type": "row"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 0,
+          "mappings": [
+            {
+              "id": 0,
+              "op": "=",
+              "text": "Success",
+              "type": 1,
+              "value": "1"
+            },
+            {
+              "id": 1,
+              "op": "=",
+              "text": "Warning",
+              "type": 1,
+              "value": "2"
+            },
+            {
+              "id": 2,
+              "op": "=",
+              "text": "Failed",
+              "type": 1,
+              "value": "3"
+            }
+          ],
+          "nullValueMode": "connected",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(133, 133, 133)",
+                "value": null
+              },
+              {
+                "color": "dark-green",
+                "value": 0
+              },
+              {
+                "color": "dark-orange",
+                "value": 1.1
+              },
+              {
+                "color": "dark-red",
+                "value": 2.1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 8,
+        "x": 0,
+        "y": 31
+      },
+      "id": 109,
+      "interval": null,
+      "links": [],
+      "maxDataPoints": 100,
+      "maxPerRow": 6,
+      "options": {
+        "colorMode": "background",
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "7.1.3",
+      "repeat": "policy",
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "alias": "$tag_policyname",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "policyname"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_nutanix_sessions",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"uptime_latest\") FROM \"vsphere_host_sys\" WHERE (\"esxhostname\" =~ /^$esxi$/ AND \"vcenter\" =~ /^$vcenter$/ AND \"clustername\" =~ /^$clustername$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "veeamBackupSessionsJobResult"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "policyname",
+              "operator": "=~",
+              "value": "/^$policy$/"
+            }
+          ]
+        }
+      ],
+      "title": "$policy - Last Result",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "lastNotNull"
+            ]
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "datasource": "${DS_INFLUXDB}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 37
+      },
+      "id": 622,
+      "panels": [],
+      "repeat": null,
+      "title": "$vanversion01 v$vanversion02 Build $vanversion06 $vanversion04 ($vanversion03) - IP $vanversion05 - Restore Points per VM (Backup)",
+      "type": "row"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "nullValueMode": "connected",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "grey",
+                "value": null
+              },
+              {
+                "color": "dark-red",
+                "value": 0
+              },
+              {
+                "color": "dark-green",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 38
+      },
+      "id": 369,
+      "interval": null,
+      "links": [],
+      "maxDataPoints": 100,
+      "maxPerRow": 12,
+      "options": {
+        "colorMode": "background",
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.1.3",
+      "repeat": "ahvvm",
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "alias": "$tag_vmname",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "vmname"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_nutanix_vms",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "vmbackups"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "vmname",
+              "operator": "=~",
+              "value": "/^$ahvvm$/"
+            },
+            {
+              "condition": "AND",
+              "key": "vmcluster",
+              "operator": "=~",
+              "value": "/^$ntxcluster$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "$ahvvm",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "lastNotNull"
+            ]
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 46
+      },
+      "id": 890,
+      "panels": [],
+      "title": "$vanversion01 v$vanversion02 Build $vanversion06 $vanversion04 ($vanversion03) - IP $vanversion05 - Restore Points per VM (Snapshot)",
+      "type": "row"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "nullValueMode": "connected",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "grey",
+                "value": null
+              },
+              {
+                "color": "dark-red",
+                "value": 0
+              },
+              {
+                "color": "dark-green",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 47
+      },
+      "id": 893,
+      "interval": null,
+      "links": [],
+      "maxDataPoints": 100,
+      "maxPerRow": 12,
+      "options": {
+        "colorMode": "background",
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.1.3",
+      "repeat": "ahvvm",
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "alias": "$tag_vmname",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "vmname"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_nutanix_vms",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "vmsnapshots"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "vmname",
+              "operator": "=~",
+              "value": "/^$ahvvm$/"
+            },
+            {
+              "condition": "AND",
+              "key": "vmcluster",
+              "operator": "=~",
+              "value": "/^$ntxcluster$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "$ahvvm",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "lastNotNull"
+            ]
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "datasource": "${DS_INFLUXDB}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 55
+      },
+      "id": 627,
+      "panels": [],
+      "repeat": "veeamserver",
+      "title": "$vanversion01 v$vanversion02 Build $vanversion06 $vanversion04 ($vanversion03) - IP $vanversion05 - Job Historical Performance and Duration",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 9,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 56
+      },
+      "hiddenSeries": false,
+      "id": 898,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null as zero",
+      "percentage": false,
+      "pluginVersion": "7.1.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:5026",
+          "alias": "/Bytes read/",
+          "color": "#37872D"
+        },
+        {
+          "$$hashKey": "object:5034",
+          "alias": "/Bytes transferred/",
+          "color": "#C4162A"
+        },
+        {
+          "$$hashKey": "object:5042",
+          "alias": "/Bytes processed/",
+          "color": "#56A64B",
+          "fill": 2,
+          "fillGradient": 3
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$tag_policyname - Bytes processed",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "policyname"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": true,
+          "measurement": "veeam_nutanix_sessions",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "bytesprocessed"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "policyname",
+              "operator": "=~",
+              "value": "/^$policy$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_policyname - Bytes read",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "policyname"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_nutanix_sessions",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "bytesread"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "policyname",
+              "operator": "=~",
+              "value": "/^$policy$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_policyname - Bytes transferred",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "policyname"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_nutanix_sessions",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "bytestransferred"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "policyname",
+              "operator": "=~",
+              "value": "/^$policy$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Policy Performance",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:4762",
+          "format": "decbytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:4763",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 56
+      },
+      "hiddenSeries": false,
+      "hideTimeOverride": false,
+      "id": 463,
+      "interval": "",
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "hideEmpty": true,
+        "hideZero": true,
+        "max": true,
+        "min": true,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pluginVersion": "7.1.3",
+      "pointradius": 3,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$tag_policyname",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "policyname"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_nutanix_sessions",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "duration"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "policyname",
+              "operator": "=~",
+              "value": "/^$policy$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Job Duration (All type)",
+      "tooltip": {
+        "shared": false,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:358",
+          "decimals": 0,
+          "format": "s",
+          "label": "Job Duration",
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:359",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 26,
+  "style": "dark",
+  "tags": [
+    "veeam",
+    "nutanix"
+  ],
+  "templating": {
+    "list": [
+      {
+        "auto": true,
+        "auto_count": 100,
+        "auto_min": "30s",
+        "current": {
+          "selected": false,
+          "text": "auto",
+          "value": "$__auto_interval_inter"
+        },
+        "hide": 0,
+        "label": "Sampling",
+        "name": "inter",
+        "options": [
+          {
+            "selected": true,
+            "text": "auto",
+            "value": "$__auto_interval_inter"
+          },
+          {
+            "selected": false,
+            "text": "1m",
+            "value": "1m"
+          },
+          {
+            "selected": false,
+            "text": "10m",
+            "value": "10m"
+          },
+          {
+            "selected": false,
+            "text": "30m",
+            "value": "30m"
+          },
+          {
+            "selected": false,
+            "text": "1h",
+            "value": "1h"
+          },
+          {
+            "selected": false,
+            "text": "6h",
+            "value": "6h"
+          },
+          {
+            "selected": false,
+            "text": "12h",
+            "value": "12h"
+          },
+          {
+            "selected": false,
+            "text": "1d",
+            "value": "1d"
+          },
+          {
+            "selected": false,
+            "text": "7d",
+            "value": "7d"
+          },
+          {
+            "selected": false,
+            "text": "14d",
+            "value": "14d"
+          },
+          {
+            "selected": false,
+            "text": "30d",
+            "value": "30d"
+          }
+        ],
+        "query": "1m,10m,30m,1h,6h,12h,1d,7d,14d,30d",
+        "queryValue": "",
+        "refresh": 2,
+        "skipUrlSync": false,
+        "type": "interval"
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "SHOW TAG VALUES FROM veeam_nutanix_version WITH KEY=vanhostname",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Veeam Backup AHV Proxy",
+        "multi": true,
+        "name": "vanproxy",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM veeam_nutanix_version WITH KEY=vanhostname",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "SHOW TAG VALUES FROM veeam_nutanix_server WITH KEY=ServerDescription",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Veeam Backup Server",
+        "multi": true,
+        "name": "veeamserver",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM veeam_nutanix_server WITH KEY=ServerDescription",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "SHOW TAG VALUES FROM veeam_nutanix_repository WITH KEY=repoName",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Backup Repository",
+        "multi": true,
+        "name": "repository",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM veeam_nutanix_repository WITH KEY=repoName",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "SHOW TAG VALUES FROM veeam_nutanix_sessions WITH KEY=policyname",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Policy",
+        "multi": true,
+        "name": "policy",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM veeam_nutanix_sessions WITH KEY=policyname",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "SHOW TAG VALUES FROM veeam_nutanix_vms WITH KEY=vmcluster",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Nutanix Cluster",
+        "multi": true,
+        "name": "ntxcluster",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM veeam_nutanix_vms WITH KEY=vmcluster",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "SHOW TAG VALUES FROM veeam_nutanix_vms WITH KEY=vmname",
+        "hide": 0,
+        "includeAll": true,
+        "label": "AHV VM",
+        "multi": true,
+        "name": "ahvvm",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM veeam_nutanix_vms WITH KEY=vmname",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "SHOW TAG VALUES FROM veeam_nutanix_version WITH KEY=vanname",
+        "hide": 2,
+        "includeAll": false,
+        "label": "",
+        "multi": true,
+        "name": "vanversion01",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM veeam_nutanix_version WITH KEY=vanname",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "SHOW TAG VALUES FROM veeam_nutanix_version WITH KEY=vanversion",
+        "hide": 2,
+        "includeAll": false,
+        "label": "",
+        "multi": true,
+        "name": "vanversion02",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM veeam_nutanix_version WITH KEY=vanversion",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "SHOW TAG VALUES FROM veeam_nutanix_version WITH KEY=vanoperation",
+        "hide": 2,
+        "includeAll": false,
+        "label": "",
+        "multi": true,
+        "name": "vanversion03",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM veeam_nutanix_version WITH KEY=vanoperation",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "SHOW TAG VALUES FROM veeam_nutanix_version WITH KEY=vandescription",
+        "hide": 2,
+        "includeAll": false,
+        "label": "",
+        "multi": true,
+        "name": "vanversion04",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM veeam_nutanix_version WITH KEY=vandescription",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "SHOW TAG VALUES FROM veeam_nutanix_version WITH KEY=vanip",
+        "hide": 2,
+        "includeAll": false,
+        "label": "",
+        "multi": true,
+        "name": "vanversion05",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM veeam_nutanix_version WITH KEY=vanip",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "SELECT \"vanbuild\" FROM \"veeam_nutanix_version\" WHERE $timeFilter",
+        "hide": 2,
+        "includeAll": false,
+        "label": "",
+        "multi": true,
+        "name": "vanversion06",
+        "options": [],
+        "query": "SELECT \"vanbuild\" FROM \"veeam_nutanix_version\" WHERE $timeFilter",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "Grafana Dashboard for Veeam Backup for Nutanix AHV",
+  "uid": "rlawskRgk",
+  "version": 12
+}
