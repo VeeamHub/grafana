@@ -10,7 +10,7 @@ We use Veeam Backup for Nutanix AHV v2.0 RESTfulAPI (not officially supported) t
 ----------
 
 ### Getting started
-You can follow the steps on the next Blog Post - 
+You can follow the steps on the next Blog Post - [https://jorgedelacruz.uk/2020/08/18/looking-for-the-perfect-dashboard-influxdb-telegraf-and-grafana-part-xxvi-monitoring-veeam-backup-for-nutanix/](https://jorgedelacruz.uk/2020/08/18/looking-for-the-perfect-dashboard-influxdb-telegraf-and-grafana-part-xxvi-monitoring-veeam-backup-for-nutanix/)
 
 Or try with this simple steps:
 * Download the veeam_nutanixahv.sh file and change the parameters under Configuration, like username/password, etc. with your real data
