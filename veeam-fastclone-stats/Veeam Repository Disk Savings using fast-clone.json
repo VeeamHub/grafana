@@ -1,0 +1,1911 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDB",
+      "label": "InfluxDB",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "7.1.3"
+    },
+    {
+      "type": "panel",
+      "id": "grafana-piechart-panel",
+      "name": "Pie Chart",
+      "version": "1.5.0"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "iteration": 1598172051082,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 7,
+      "panels": [],
+      "repeat": "repositoryrefs",
+      "title": "Windows Logical Volume - $repositoryrefs:/ - ReFS Global Stats",
+      "type": "row"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "${DS_INFLUXDB}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 2,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "decbytes"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "fragments"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "locale"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-blue",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Total Fragments"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "totaldisk"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-green",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Total File On Disk"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "savings"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-purple",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Total Disk Savings"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 0,
+        "y": 1
+      },
+      "id": 4,
+      "interval": null,
+      "links": [],
+      "maxDataPoints": 1,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "7.1.3",
+      "repeat": null,
+      "targets": [
+        {
+          "alias": "Total Repo Size",
+          "groupBy": [
+            {
+              "params": [
+                "backup"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "veeam_fastclone_stats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT sum(\"totaldisk\") FROM \"veeam_refs\" WHERE (\"repo\" = 'T') AND $timeFilter GROUP BY time(5m), \"repo\" fill(null)",
+          "rawQuery": false,
+          "refId": "D",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "totaldisk"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "totaldisk"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "reporefs",
+              "operator": "=~",
+              "value": "/^$repositoryrefs$/"
+            }
+          ]
+        },
+        {
+          "alias": "Total Repo Savings",
+          "groupBy": [
+            {
+              "params": [
+                "backup"
+              ],
+              "type": "tag"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_fastclone_stats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT sum(\"savings\") FROM \"veeam_refs\" WHERE (\"repo\" = 'T') AND $timeFilter GROUP BY time(5m), \"repo\" fill(null)",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "savings"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "savings"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "reporefs",
+              "operator": "=~",
+              "value": "/^$repositoryrefs$/"
+            }
+          ]
+        },
+        {
+          "alias": "Total Repo Fragments",
+          "groupBy": [
+            {
+              "params": [
+                "backup"
+              ],
+              "type": "tag"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_fastclone_stats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT sum(\"savings\") FROM \"veeam_refs\" WHERE (\"repo\" = 'T') AND $timeFilter GROUP BY time(5m), \"repo\" fill(null)",
+          "rawQuery": false,
+          "refId": "C",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "fragments"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "fragments"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "reporefs",
+              "operator": "=~",
+              "value": "/^$repositoryrefs$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Windows Logical Volume - $repositoryrefs:/ - ReFS",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "aliasColors": {
+        "Total Disk Savings": "#8F3BB8",
+        "Total File On Disk": "#37872D",
+        "Total Repo Savings": "#8F3BB8",
+        "Total Repo Size": "#37872D"
+      },
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "",
+        "threshold": ""
+      },
+      "datasource": "${DS_INFLUXDB}",
+      "decimals": 2,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "fontSize": "110%",
+      "format": "decbytes",
+      "gridPos": {
+        "h": 9,
+        "w": 7,
+        "x": 5,
+        "y": 1
+      },
+      "id": 2,
+      "interval": null,
+      "legend": {
+        "header": "",
+        "percentage": false,
+        "show": true,
+        "values": true
+      },
+      "legendType": "On graph",
+      "links": [],
+      "maxDataPoints": 1,
+      "nullPointMode": "connected",
+      "pieType": "donut",
+      "pluginVersion": "7.1.3",
+      "strokeWidth": "2",
+      "targets": [
+        {
+          "alias": "Total File On Disk",
+          "groupBy": [
+            {
+              "params": [
+                "5m"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "repo"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_fastclone_stats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT sum(\"totaldisk\") FROM \"veeam_refs\" WHERE (\"repo\" = 'T') AND $timeFilter GROUP BY time(5m), \"repo\" fill(null)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "totaldisk"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "sum"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "reporefs",
+              "operator": "=~",
+              "value": "/^$repositoryrefs$/"
+            }
+          ]
+        },
+        {
+          "alias": "Total Disk Savings",
+          "groupBy": [
+            {
+              "params": [
+                "5m"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "repo"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_fastclone_stats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT sum(\"savings\") FROM \"veeam_refs\" WHERE (\"repo\" = 'T') AND $timeFilter GROUP BY time(5m), \"repo\" fill(null)",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "savings"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "sum"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "reporefs",
+              "operator": "=~",
+              "value": "/^$repositoryrefs$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Windows Logical Volume - $repositoryrefs:/ - ReFS",
+      "transformations": [],
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {
+        "Total Consumed Size": "dark-green",
+        "Total File On Disk": "dark-green",
+        "Total Repo Savings": "dark-purple",
+        "Total Repo Size": "dark-green",
+        "Total Savings Size": "dark-purple"
+      },
+      "bars": true,
+      "cacheTimeout": null,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
+      "hiddenSeries": false,
+      "hideTimeOverride": false,
+      "id": 3,
+      "interval": "24h",
+      "legend": {
+        "avg": false,
+        "current": false,
+        "hideEmpty": true,
+        "hideZero": true,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 10,
+      "links": [],
+      "maxDataPoints": 1,
+      "nullPointMode": "connected",
+      "percentage": false,
+      "pluginVersion": "7.1.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "Total File On Disk",
+          "groupBy": [
+            {
+              "params": [
+                "15m"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "repo"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_fastclone_stats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT sum(\"totaldisk\") FROM \"veeam_refs\" WHERE (\"repo\" = 'T') AND $timeFilter GROUP BY time(1d), \"repo\" fill(null)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "totaldisk"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "sum"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "reporefs",
+              "operator": "=~",
+              "value": "/^$repositoryrefs$/"
+            }
+          ]
+        },
+        {
+          "alias": "Total Savings Size",
+          "groupBy": [
+            {
+              "params": [
+                "15m"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "repo"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_fastclone_stats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT sum(\"savings\") FROM \"veeam_refs\" WHERE (\"repo\" = 'T') AND $timeFilter GROUP BY time(1d), \"repo\" fill(null)",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "savings"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "sum"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "reporefs",
+              "operator": "=~",
+              "value": "/^$repositoryrefs$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": "7d",
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Windows Logical Volume - $repositoryrefs:/ - ReFS",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "transformations": [],
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1180",
+          "decimals": 0,
+          "format": "decbytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1181",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      },
+      "id": 9,
+      "panels": [],
+      "repeat": "repositoryrefs",
+      "title": "Windows Logical Volume - $repositoryrefs:/ - ReFS Stats per Job",
+      "type": "row"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "${DS_INFLUXDB}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 2,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "decbytes"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "fragments"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "locale"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-blue",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Total Fragments"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "totaldisk"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-green",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Total File On Disk"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "savings"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-purple",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Total Disk Savings"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 0,
+        "y": 11
+      },
+      "id": 5,
+      "interval": null,
+      "links": [],
+      "maxDataPoints": 1,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "7.1.3",
+      "repeat": "job",
+      "targets": [
+        {
+          "alias": "Total Repo Size",
+          "groupBy": [
+            {
+              "params": [
+                "5m"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "repo"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_fastclone_stats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT sum(\"totaldisk\") FROM \"veeam_refs\" WHERE (\"repo\" = 'T') AND $timeFilter GROUP BY time(5m), \"repo\" fill(null)",
+          "rawQuery": false,
+          "refId": "D",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "totaldisk"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "sum"
+              },
+              {
+                "params": [
+                  "totaldisk"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "reporefs",
+              "operator": "=~",
+              "value": "/^$repositoryrefs$/"
+            },
+            {
+              "condition": "AND",
+              "key": "backup",
+              "operator": "=~",
+              "value": "/^$job$/"
+            },
+            {
+              "condition": "AND",
+              "key": "type",
+              "operator": "=",
+              "value": "ReFS"
+            }
+          ]
+        },
+        {
+          "alias": "Total Repo Savings",
+          "groupBy": [
+            {
+              "params": [
+                "5m"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "repo"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_fastclone_stats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT sum(\"savings\") FROM \"veeam_refs\" WHERE (\"repo\" = 'T') AND $timeFilter GROUP BY time(5m), \"repo\" fill(null)",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "savings"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "sum"
+              },
+              {
+                "params": [
+                  "savings"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "reporefs",
+              "operator": "=~",
+              "value": "/^$repositoryrefs$/"
+            },
+            {
+              "condition": "AND",
+              "key": "backup",
+              "operator": "=~",
+              "value": "/^$job$/"
+            },
+            {
+              "condition": "AND",
+              "key": "type",
+              "operator": "=",
+              "value": "ReFS"
+            }
+          ]
+        },
+        {
+          "alias": "Total Repo Fragments",
+          "groupBy": [
+            {
+              "params": [
+                "5m"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "repo"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_fastclone_stats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT sum(\"savings\") FROM \"veeam_refs\" WHERE (\"repo\" = 'T') AND $timeFilter GROUP BY time(5m), \"repo\" fill(null)",
+          "rawQuery": false,
+          "refId": "C",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "fragments"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "sum"
+              },
+              {
+                "params": [
+                  "fragments"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "reporefs",
+              "operator": "=~",
+              "value": "/^$repositoryrefs$/"
+            },
+            {
+              "condition": "AND",
+              "key": "backup",
+              "operator": "=~",
+              "value": "/^$job$/"
+            },
+            {
+              "condition": "AND",
+              "key": "type",
+              "operator": "=",
+              "value": "ReFS"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "$job - ReFS",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "id": 15,
+      "panels": [],
+      "repeat": "repositoryxfs",
+      "title": "Linux Repository - $repositoryxfs:/ - XFS Global Stats",
+      "type": "row"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "${DS_INFLUXDB}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 2,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "deckbytes"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "totaldisk"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-orange",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Logical Consumed Disk (.vbk+.vib)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "reflink"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Real Disk Consumed (reflink)"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "light-blue",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 0,
+        "y": 19
+      },
+      "id": 13,
+      "interval": null,
+      "links": [],
+      "maxDataPoints": 1,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "7.1.3",
+      "targets": [
+        {
+          "alias": "Total Repo Size",
+          "groupBy": [
+            {
+              "params": [
+                "backup"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "veeam_fastclone_stats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT sum(\"totaldisk\") FROM \"veeam_refs\" WHERE (\"repo\" = 'T') AND $timeFilter GROUP BY time(5m), \"repo\" fill(null)",
+          "rawQuery": false,
+          "refId": "D",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "totaldisk"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "totaldisk"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "repoxfs",
+              "operator": "=~",
+              "value": "/^$repositoryxfs$/"
+            },
+            {
+              "condition": "AND",
+              "key": "type",
+              "operator": "=",
+              "value": "XFS"
+            },
+            {
+              "condition": "AND",
+              "key": "backupxfs",
+              "operator": "=~",
+              "value": "/^$jobxfs$/"
+            }
+          ]
+        },
+        {
+          "alias": "Total Repo Savings",
+          "groupBy": [
+            {
+              "params": [
+                "repoxfs"
+              ],
+              "type": "tag"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_fastclone_stats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT sum(\"savings\") FROM \"veeam_refs\" WHERE (\"repo\" = 'T') AND $timeFilter GROUP BY time(5m), \"repo\" fill(null)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "realconsumed"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "reflink"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "repoxfs",
+              "operator": "=~",
+              "value": "/^$repositoryxfs$/"
+            },
+            {
+              "condition": "AND",
+              "key": "type",
+              "operator": "=",
+              "value": "XFS"
+            },
+            {
+              "condition": "AND",
+              "key": "backupxfs",
+              "operator": "=~",
+              "value": "/^$jobxfs$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Linux Repository - $repositoryxfs - XFS",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "aliasColors": {
+        "Real Disk Consumed (reflink)": "#8AB8FF",
+        "Total Disk Savings": "#1F60C4",
+        "Total File On Disk": "#FA6400",
+        "Total Repo Savings": "#8F3BB8",
+        "Total Repo Size": "#37872D"
+      },
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "",
+        "threshold": ""
+      },
+      "datasource": "${DS_INFLUXDB}",
+      "decimals": 2,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "fontSize": "110%",
+      "format": "deckbytes",
+      "gridPos": {
+        "h": 9,
+        "w": 7,
+        "x": 5,
+        "y": 19
+      },
+      "id": 16,
+      "interval": null,
+      "legend": {
+        "header": "",
+        "percentage": false,
+        "show": true,
+        "values": true
+      },
+      "legendType": "On graph",
+      "links": [],
+      "maxDataPoints": 1,
+      "nullPointMode": "connected",
+      "pieType": "donut",
+      "pluginVersion": "7.1.3",
+      "strokeWidth": "2",
+      "targets": [
+        {
+          "alias": "$tag_backupxfs",
+          "groupBy": [
+            {
+              "params": [
+                "backupxfs"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "veeam_fastclone_stats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT sum(\"totaldisk\") FROM \"veeam_refs\" WHERE (\"repo\" = 'T') AND $timeFilter GROUP BY time(5m), \"repo\" fill(null)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "totaldisk"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "repoxfs",
+              "operator": "=~",
+              "value": "/^$repositoryxfs$/"
+            },
+            {
+              "condition": "AND",
+              "key": "type",
+              "operator": "=",
+              "value": "XFS"
+            },
+            {
+              "condition": "AND",
+              "key": "backupxfs",
+              "operator": "=~",
+              "value": "/^$jobxfs$/"
+            }
+          ]
+        },
+        {
+          "alias": "Real Disk Consumed (reflink)",
+          "groupBy": [
+            {
+              "params": [
+                "repoxfs"
+              ],
+              "type": "tag"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_fastclone_stats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT sum(\"savings\") FROM \"veeam_refs\" WHERE (\"repo\" = 'T') AND $timeFilter GROUP BY time(5m), \"repo\" fill(null)",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "realconsumed"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "repoxfs",
+              "operator": "=~",
+              "value": "/^$repositoryxfs$/"
+            },
+            {
+              "condition": "AND",
+              "key": "type",
+              "operator": "=",
+              "value": "XFS"
+            },
+            {
+              "condition": "AND",
+              "key": "backupxfs",
+              "operator": "=~",
+              "value": "/^$jobxfs$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Linux Repository - $repositoryxfs - XFS",
+      "transformations": [],
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {
+        "Total Consumed Size": "dark-green",
+        "Total File On Disk": "dark-orange",
+        "Total Repo Savings": "dark-purple",
+        "Total Repo Size": "dark-green",
+        "Total Savings Size": "dark-blue"
+      },
+      "bars": true,
+      "cacheTimeout": null,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "deckbytes"
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 19
+      },
+      "hiddenSeries": false,
+      "hideTimeOverride": false,
+      "id": 17,
+      "interval": "24h",
+      "legend": {
+        "avg": false,
+        "current": false,
+        "hideEmpty": true,
+        "hideZero": true,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 10,
+      "links": [],
+      "maxDataPoints": 1,
+      "nullPointMode": "connected",
+      "percentage": false,
+      "pluginVersion": "7.1.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$tag_backupxfs",
+          "groupBy": [
+            {
+              "params": [
+                "15m"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "backupxfs"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "repoxfs"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_fastclone_stats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT sum(\"totaldisk\") FROM \"veeam_refs\" WHERE (\"repo\" = 'T') AND $timeFilter GROUP BY time(1d), \"repo\" fill(null)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "totaldisk"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "repoxfs",
+              "operator": "=~",
+              "value": "/^$repositoryxfs$/"
+            },
+            {
+              "condition": "AND",
+              "key": "type",
+              "operator": "=",
+              "value": "XFS"
+            },
+            {
+              "condition": "AND",
+              "key": "backupxfs",
+              "operator": "=~",
+              "value": "/^$jobxfs$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_repoxfs Real Disk Consumed (reflink)",
+          "groupBy": [
+            {
+              "params": [
+                "15m"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "repoxfs"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_fastclone_stats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT sum(\"savings\") FROM \"veeam_refs\" WHERE (\"repo\" = 'T') AND $timeFilter GROUP BY time(1d), \"repo\" fill(null)",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "realconsumed"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "repoxfs",
+              "operator": "=~",
+              "value": "/^$repositoryxfs$/"
+            },
+            {
+              "condition": "AND",
+              "key": "type",
+              "operator": "=",
+              "value": "XFS"
+            },
+            {
+              "condition": "AND",
+              "key": "backupxfs",
+              "operator": "=~",
+              "value": "/^$jobxfs$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": "7d",
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Linux Repository - $repositoryxfs - XFS",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "transformations": [],
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1180",
+          "decimals": 0,
+          "format": "deckbytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1181",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 26,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "SHOW TAG VALUES FROM veeam_fastclone_stats WITH KEY=reporefs",
+        "hide": 0,
+        "includeAll": true,
+        "label": "ReFS Repository",
+        "multi": true,
+        "name": "repositoryrefs",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM veeam_fastclone_stats WITH KEY=reporefs",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "SHOW TAG VALUES FROM veeam_fastclone_stats WITH KEY=repoxfs",
+        "hide": 0,
+        "includeAll": true,
+        "label": "XFS Repository",
+        "multi": true,
+        "name": "repositoryxfs",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM veeam_fastclone_stats WITH KEY=repoxfs",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "SHOW TAG VALUES FROM veeam_fastclone_stats WITH KEY=backup  WHERE \"type\" =~ /$type/",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Backup Job ReFS",
+        "multi": true,
+        "name": "job",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM veeam_fastclone_stats WITH KEY=backup  WHERE \"type\" =~ /$type/",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "SHOW TAG VALUES FROM veeam_fastclone_stats WITH KEY=backupxfs  WHERE \"type\" =~ /$type/",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Backup Job XFS",
+        "multi": true,
+        "name": "jobxfs",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM veeam_fastclone_stats WITH KEY=backupxfs  WHERE \"type\" =~ /$type/",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "SHOW TAG VALUES FROM veeam_fastclone_stats WITH KEY=type",
+        "hide": 0,
+        "includeAll": true,
+        "label": "ReFS/XFS",
+        "multi": true,
+        "name": "type",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM veeam_fastclone_stats WITH KEY=type",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-12h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "Veeam Repository Disk Savings using fast-clone",
+  "uid": "gFNOM5ggz",
+  "version": 30
+}
