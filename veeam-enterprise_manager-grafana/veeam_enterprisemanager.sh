@@ -255,8 +255,7 @@ for JobUid in $(echo "$veeamEMJobSessionsUrl" | jq -r '.BackupJobSessions[].JobU
         else
             arrayjobsessions=$arrayjobsessions+1
     fi
-    done
-done
+    
   
 done
 
