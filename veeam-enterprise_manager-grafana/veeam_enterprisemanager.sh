@@ -242,42 +242,44 @@ veeamEMUrl="https://$veeamRestServer:$veeamRestPort/api/backupSessions?format=En
 veeamEMJobSessionsUrl=$(curl -X GET "$veeamEMUrl" -H "Accept:application/json" -H "X-RestSvcSessionId: $veeamXRestSvcSessionId" -H "Cookie: X-RestSvcSessionId=$veeamXRestSvcSessionId" -H "Content-Length: 0" 2>&1 -k --silent | awk 'NR==1{sub(/^\xef\xbb\xbf/,"")}1' | jq '[.BackupJobSessions[] | select(.CreationTimeUTC> "'$timestart'")]')
 
 declare -i arrayjobsessions=0
-for JobUid in $(echo "$veeamEMJobSessionsUrl" | jq -r '.[].JobUid'); do
-    veeamBackupSessionsName=$(echo "$veeamEMJobSessionsUrl" | jq --raw-output ".[$arrayjobsessions].JobName" | awk '{gsub(/ /,"\\ ");print}')
-    veeamVBR=$(echo "$veeamEMJobSessionsUrl" | jq --raw-output ".[$arrayjobsessions].Links[0].Name" | awk '{gsub(/ /,"\\ ");print}') 
-    veeamBackupSessionsJobType=$(echo "$veeamEMJobSessionsUrl" | jq --raw-output ".[$arrayjobsessions].JobType") 
-    veeamBackupSessionsJobState=$(echo "$veeamEMJobSessionsUrl" | jq --raw-output ".[$arrayjobsessions].State")
-    veeamBackupSessionsJobResult=$(echo "$veeamEMJobSessionsUrl" | jq --raw-output ".[$arrayjobsessions].Result")     
-    case $veeamBackupSessionsJobResult in
-        Success)
-            jobStatus="1"
-        ;;
-        Warning)
-            jobStatus="2"
-        ;;
-        Failed)
-            jobStatus="3"
-        ;;
-        esac
-    veeamBackupSessionsTime=$(echo "$veeamEMJobSessionsUrl" | jq --raw-output ".[$arrayjobsessions].CreationTimeUTC")
-    creationTimeUnix=$(date -d "$veeamBackupSessionsTime" +"%s")
-    veeamBackupSessionsTimeEnd=$(echo "$veeamEMJobSessionsUrl" | jq --raw-output ".[$arrayjobsessions].EndTimeUTC")
-    endTimeUnix=$(date -d "$veeamBackupSessionsTimeEnd" +"%s")
-    veeamBackupSessionsTimeDuration=$(($endTimeUnix-$creationTimeUnix))
-   
-    #echo "veeam_em_job_sessions,veeamBackupSessionsName=$veeamBackupSessionsName,veeamVBR=$veeamVBR,veeamBackupSessionsJobType=$veeamBackupSessionsJobType,veeamBackupSessionsJobState=$veeamBackupSessionsJobState veeamBackupSessionsJobResult=$jobStatus $creationTimeUnix"
-    
-    ##Comment the Curl while debugging
-    echo "Writing veeam_em_job_sessions to InfluxDB"      
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_job_sessions,veeamBackupSessionsName=$veeamBackupSessionsName,veeamVBR=$veeamVBR,veeamBackupSessionsJobType=$veeamBackupSessionsJobType,veeamBackupSessionsJobState=$veeamBackupSessionsJobState veeamBackupSessionsJobResult=$jobStatus,veeamBackupSessionsTimeDuration=$veeamBackupSessionsTimeDuration $creationTimeUnix"
-    if [[ $arrayjobsessions = $veeamJobSessions ]]; then
-        break
-        else
-            arrayjobsessions=$arrayjobsessions+1
-    fi
-    
-  
-done
+if [[ "$veeamEMJobSessionsUrl" == "[]" ]]; then
+    echo "There are not new veeam_em_job_sessions since $timestart"
+else
+    for JobUid in $(echo "$veeamEMJobSessionsUrl" | jq -r '.[].JobUid'); do
+        veeamBackupSessionsName=$(echo "$veeamEMJobSessionsUrl" | jq --raw-output ".[$arrayjobsessions].JobName" | awk '{gsub(/ /,"\\ ");print}')
+        veeamVBR=$(echo "$veeamEMJobSessionsUrl" | jq --raw-output ".[$arrayjobsessions].Links[0].Name" | awk '{gsub(/ /,"\\ ");print}') 
+        veeamBackupSessionsJobType=$(echo "$veeamEMJobSessionsUrl" | jq --raw-output ".[$arrayjobsessions].JobType") 
+        veeamBackupSessionsJobState=$(echo "$veeamEMJobSessionsUrl" | jq --raw-output ".[$arrayjobsessions].State")
+        veeamBackupSessionsJobResult=$(echo "$veeamEMJobSessionsUrl" | jq --raw-output ".[$arrayjobsessions].Result")     
+        case $veeamBackupSessionsJobResult in
+            Success)
+                jobStatus="1"
+            ;;
+            Warning)
+                jobStatus="2"
+            ;;
+            Failed)
+                jobStatus="3"
+            ;;
+            esac
+        veeamBackupSessionsTime=$(echo "$veeamEMJobSessionsUrl" | jq --raw-output ".[$arrayjobsessions].CreationTimeUTC")
+        creationTimeUnix=$(date -d "$veeamBackupSessionsTime" +"%s")
+        veeamBackupSessionsTimeEnd=$(echo "$veeamEMJobSessionsUrl" | jq --raw-output ".[$arrayjobsessions].EndTimeUTC")
+        endTimeUnix=$(date -d "$veeamBackupSessionsTimeEnd" +"%s")
+        veeamBackupSessionsTimeDuration=$(($endTimeUnix-$creationTimeUnix))
+
+        #echo "veeam_em_job_sessions,veeamBackupSessionsName=$veeamBackupSessionsName,veeamVBR=$veeamVBR,veeamBackupSessionsJobType=$veeamBackupSessionsJobType,veeamBackupSessionsJobState=$veeamBackupSessionsJobState veeamBackupSessionsJobResult=$jobStatus $creationTimeUnix"
+
+        ##Comment the Curl while debugging
+        echo "Writing veeam_em_job_sessions to InfluxDB"      
+        curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_job_sessions,veeamBackupSessionsName=$veeamBackupSessionsName,veeamVBR=$veeamVBR,veeamBackupSessionsJobType=$veeamBackupSessionsJobType,veeamBackupSessionsJobState=$veeamBackupSessionsJobState veeamBackupSessionsJobResult=$jobStatus,veeamBackupSessionsTimeDuration=$veeamBackupSessionsTimeDuration $creationTimeUnix"
+        if [[ $arrayjobsessions = $veeamJobSessions ]]; then
+            break
+            else
+                arrayjobsessions=$arrayjobsessions+1
+        fi
+    done
+fi
 
 ##
 # Veeam Enterprise Manager Backup Job Sessions per VM. Overview of Backup Job Sessions per VM. Really useful to display if a VM it is protected or not
@@ -286,74 +288,82 @@ veeamEMUrl="https://$veeamRestServer:$veeamRestPort/api/backupTaskSessions?forma
 veeamEMJobSessionsVMUrl=$(curl -X GET "$veeamEMUrl" -H "Accept:application/json" -H "X-RestSvcSessionId: $veeamXRestSvcSessionId" -H "Cookie: X-RestSvcSessionId=$veeamXRestSvcSessionId" -H "Content-Length: 0" 2>&1 -k --silent | awk 'NR==1{sub(/^\xef\xbb\xbf/,"")}1' | jq '[.BackupTaskSessions[] | select(.CreationTimeUTC> "'$timestart'")]')
 
 declare -i arrayjobsessionsvm=0
-for JobSessionUid in $(echo "$veeamEMJobSessionsVMUrl" | jq -r '.[].JobSessionUid'); do
-    veeamBackupSessionsVmDisplayName=$(echo "$veeamEMJobSessionsVMUrl" | jq --raw-output ".[$arrayjobsessionsvm].VmDisplayName" | awk '{gsub(/ /,"\\ ");print}')
-    veeamVBR=$(echo "$veeamEMJobSessionsVMUrl" | jq --raw-output ".[$arrayjobsessionsvm].Links[0].Name" | awk '{gsub(/ /,"\\ ");print}') 
-    veeamBackupSessionsTotalSize=$(echo "$veeamEMJobSessionsVMUrl" | jq --raw-output ".[$arrayjobsessionsvm].TotalSize")    
-    veeamBackupSessionsJobVMState=$(echo "$veeamEMJobSessionsVMUrl" | jq --raw-output ".[$arrayjobsessionsvm].State")
-    veeamBackupSessionsJobVMResult=$(echo "$veeamEMJobSessionsVMUrl" | jq --raw-output ".[$arrayjobsessionsvm].Result") 
-    case $veeamBackupSessionsJobVMResult in
-        Success)
-            jobStatus="1"
-        ;;
-        Warning)
-            jobStatus="2"
-        ;;
-        Failed)
-            jobStatus="3"
-        ;;
-        esac
-    veeamBackupSessionsVMTime=$(echo "$veeamEMJobSessionsVMUrl" | jq --raw-output ".[$arrayjobsessionsvm].CreationTimeUTC")
-    creationTimeUnix=$(date -d "$veeamBackupSessionsVMTime" +"%s")
-    veeamBackupSessionsVMTimeEnd=$(echo "$veeamEMJobSessionsVMUrl" | jq --raw-output ".[$arrayjobsessionsvm].EndTimeUTC")
-    endTimeUnix=$(date -d "$veeamBackupSessionsVMTimeEnd" +"%s")
-    veeamBackupSessionsVMDuration=$(($endTimeUnix-$creationTimeUnix))
-   
-    #echo "veeam_em_job_sessionsvm,veeamBackupSessionsVmDisplayName=$veeamBackupSessionsVmDisplayName,veeamVBR=$veeamVBR,veeamBackupSessionsJobVMState=$veeamBackupSessionsJobVMState veeamBackupSessionsTotalSize=$veeamBackupSessionsTotalSize,veeamBackupSessionsJobVMResult=$jobStatus $creationTimeUnix"
-    
-    ##Comment the Curl while debugging
-    echo "Writing veeam_em_job_sessionsvm to InfluxDB"     
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_job_sessionsvm,veeamBackupSessionsVmDisplayName=$veeamBackupSessionsVmDisplayName,veeamVBR=$veeamVBR,veeamBackupSessionsJobVMState=$veeamBackupSessionsJobVMState veeamBackupSessionsTotalSize=$veeamBackupSessionsTotalSize,veeamBackupSessionsJobVMResult=$jobStatus,veeamBackupSessionsVMDuration=$veeamBackupSessionsVMDuration $creationTimeUnix"
-  arrayjobsessionsvm=$arrayjobsessionsvm+1
-done
+if [[ "$veeamEMJobSessionsVMUrl" == "[]" ]]; then
+    echo "There are not new veeam_em_job_sessionsvm since $timestart"
+else
+    for JobSessionUid in $(echo "$veeamEMJobSessionsVMUrl" | jq -r '.[].JobSessionUid'); do
+        veeamBackupSessionsVmDisplayName=$(echo "$veeamEMJobSessionsVMUrl" | jq --raw-output ".[$arrayjobsessionsvm].VmDisplayName" | awk '{gsub(/ /,"\\ ");print}')
+        veeamVBR=$(echo "$veeamEMJobSessionsVMUrl" | jq --raw-output ".[$arrayjobsessionsvm].Links[0].Name" | awk '{gsub(/ /,"\\ ");print}') 
+        veeamBackupSessionsTotalSize=$(echo "$veeamEMJobSessionsVMUrl" | jq --raw-output ".[$arrayjobsessionsvm].TotalSize")    
+        veeamBackupSessionsJobVMState=$(echo "$veeamEMJobSessionsVMUrl" | jq --raw-output ".[$arrayjobsessionsvm].State")
+        veeamBackupSessionsJobVMResult=$(echo "$veeamEMJobSessionsVMUrl" | jq --raw-output ".[$arrayjobsessionsvm].Result") 
+        case $veeamBackupSessionsJobVMResult in
+            Success)
+                jobStatus="1"
+            ;;
+            Warning)
+                jobStatus="2"
+            ;;
+            Failed)
+                jobStatus="3"
+            ;;
+            esac
+        veeamBackupSessionsVMTime=$(echo "$veeamEMJobSessionsVMUrl" | jq --raw-output ".[$arrayjobsessionsvm].CreationTimeUTC")
+        creationTimeUnix=$(date -d "$veeamBackupSessionsVMTime" +"%s")
+        veeamBackupSessionsVMTimeEnd=$(echo "$veeamEMJobSessionsVMUrl" | jq --raw-output ".[$arrayjobsessionsvm].EndTimeUTC")
+        endTimeUnix=$(date -d "$veeamBackupSessionsVMTimeEnd" +"%s")
+        veeamBackupSessionsVMDuration=$(($endTimeUnix-$creationTimeUnix))
+
+        #echo "veeam_em_job_sessionsvm,veeamBackupSessionsVmDisplayName=$veeamBackupSessionsVmDisplayName,veeamVBR=$veeamVBR,veeamBackupSessionsJobVMState=$veeamBackupSessionsJobVMState veeamBackupSessionsTotalSize=$veeamBackupSessionsTotalSize,veeamBackupSessionsJobVMResult=$jobStatus $creationTimeUnix"
+
+        ##Comment the Curl while debugging
+        echo "Writing veeam_em_job_sessionsvm to InfluxDB"     
+        curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_job_sessionsvm,veeamBackupSessionsVmDisplayName=$veeamBackupSessionsVmDisplayName,veeamVBR=$veeamVBR,veeamBackupSessionsJobVMState=$veeamBackupSessionsJobVMState veeamBackupSessionsTotalSize=$veeamBackupSessionsTotalSize,veeamBackupSessionsJobVMResult=$jobStatus,veeamBackupSessionsVMDuration=$veeamBackupSessionsVMDuration $creationTimeUnix"
+      arrayjobsessionsvm=$arrayjobsessionsvm+1
+    done
+fi
 
 ##
 # Veeam Enterprise Manager Replica Job Sessions. Overview of Replica Job Sessions
 ##
 veeamEMUrl="https://$veeamRestServer:$veeamRestPort/api/replicaSessions?format=Entity"
-veeamEMJobReplicaSessionsUrl=$(curl -X GET "$veeamEMUrl" -H "Accept:application/json" -H "X-RestSvcSessionId: $veeamXRestSvcSessionId" -H "Cookie: X-RestSvcSessionId=$veeamXRestSvcSessionId" -H "Content-Length: 0" 2>&1 -k --silent | awk 'NR==1{sub(/^\xef\xbb\xbf/,"")}1' | jq '[.ReplicaJobSessions[] | select(.CreationTimeUTC> "'$timestart'")]')
+veeamEMJobReplicaSessionsUrl="$(curl -X GET "$veeamEMUrl" -H "Accept:application/json" -H "X-RestSvcSessionId: $veeamXRestSvcSessionId" -H "Cookie: X-RestSvcSessionId=$veeamXRestSvcSessionId" -H "Content-Length: 0" 2>&1 -k --silent | awk 'NR==1{sub(/^\xef\xbb\xbf/,"")}1' | jq '[.ReplicaJobSessions[] | select(.CreationTimeUTC> "'$timestart'")]')"
 
 declare -i arrayjobrepsessions=0
-for JobUid in $(echo "$veeamEMJobReplicaSessionsUrl" | jq -r '.[].JobUid'); do
-    veeamReplicaSessionsName=$(echo "$veeamEMJobReplicaSessionsUrl" | jq --raw-output ".[$arrayjobrepsessions].JobName" | awk '{gsub(/ /,"\\ ");print}')
-    veeamVBR=$(echo "$veeamEMJobReplicaSessionsUrl" | jq --raw-output ".[$arrayjobrepsessions].Links[0].Name" | awk '{gsub(/ /,"\\ ");print}') 
-    veeamReplicaSessionsJobType=$(echo "$veeamEMJobReplicaSessionsUrl" | jq --raw-output ".[$arrayjobrepsessions].JobType") 
-    veeamReplicaSessionsJobState=$(echo "$veeamEMJobReplicaSessionsUrl" | jq --raw-output ".[$arrayjobrepsessions].State")
-    veeamReplicaSessionsJobResult=$(echo "$veeamEMJobReplicaSessionsUrl" | jq --raw-output ".[$arrayjobrepsessions].Result")     
-    case $veeamReplicaSessionsJobResult in
-        Success)
-            jobStatus="1"
-        ;;
-        Warning)
-            jobStatus="2"
-        ;;
-        Failed)
-            jobStatus="3"
-        ;;
-        esac
-    veeamReplicaSessionsTime=$(echo "$veeamEMJobReplicaSessionsUrl" | jq --raw-output ".[$arrayjobrepsessions].CreationTimeUTC")
-    creationTimeUnix=$(date -d "$veeamReplicaSessionsTime" +"%s")
-    veeamReplicaSessionsTimeEnd=$(echo "$veeamEMJobReplicaSessionsUrl" | jq --raw-output ".[$arrayjobrepsessions].EndTimeUTC")
-    endTimeUnix=$(date -d "$veeamReplicaSessionsTimeEnd" +"%s")
-    veeamReplicaSessionsDuration=$(($endTimeUnix-$creationTimeUnix))
-    
-    #echo "veeam_em_job_sessions,veeamReplicaSessionsName=$veeamReplicaSessionsName,veeamVBR=$veeamVBR,veeamReplicaSessionsJobType=$veeamReplicaSessionsJobType,veeamReplicaSessionsJobState=$veeamReplicaSessionsJobState veeamReplicaSessionsJobResult=$jobStatus $creationTimeUnix"
-    
-    ##Comment the Curl while debugging
-    echo "Writing veeam_em_job_sessions Replica to InfluxDB"     
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_job_sessions,veeamReplicaSessionsName=$veeamReplicaSessionsName,veeamVBR=$veeamVBR,veeamReplicaSessionsJobType=$veeamReplicaSessionsJobType,veeamReplicaSessionsJobState=$veeamReplicaSessionsJobState veeamReplicaSessionsJobResult=$jobStatus,veeamReplicaSessionsDuration=$veeamReplicaSessionsDuration $creationTimeUnix"
-  arrayjobrepsessions=$arrayjobrepsessions+1
-done
+if [[ "$veeamEMJobReplicaSessionsUrl" == "[]" ]]; then
+    echo "There are not new veeam_em_job_sessions since $timestart"
+else
+    for JobUid in $(echo "$veeamEMJobReplicaSessionsUrl" | jq -r '.[].JobUid'); do
+        veeamReplicaSessionsName=$(echo "$veeamEMJobReplicaSessionsUrl" | jq --raw-output ".[$arrayjobrepsessions].JobName" | awk '{gsub(/ /,"\\ ");print}')
+        veeamVBR=$(echo "$veeamEMJobReplicaSessionsUrl" | jq --raw-output ".[$arrayjobrepsessions].Links[0].Name" | awk '{gsub(/ /,"\\ ");print}') 
+        veeamReplicaSessionsJobType=$(echo "$veeamEMJobReplicaSessionsUrl" | jq --raw-output ".[$arrayjobrepsessions].JobType") 
+        veeamReplicaSessionsJobState=$(echo "$veeamEMJobReplicaSessionsUrl" | jq --raw-output ".[$arrayjobrepsessions].State")
+        veeamReplicaSessionsJobResult=$(echo "$veeamEMJobReplicaSessionsUrl" | jq --raw-output ".[$arrayjobrepsessions].Result")     
+        case $veeamReplicaSessionsJobResult in
+            Success)
+                jobStatus="1"
+            ;;
+            Warning)
+                jobStatus="2"
+            ;;
+            Failed)
+                jobStatus="3"
+            ;;
+            esac
+        veeamReplicaSessionsTime=$(echo "$veeamEMJobReplicaSessionsUrl" | jq --raw-output ".[$arrayjobrepsessions].CreationTimeUTC")
+        creationTimeUnix=$(date -d "$veeamReplicaSessionsTime" +"%s")
+        veeamReplicaSessionsTimeEnd=$(echo "$veeamEMJobReplicaSessionsUrl" | jq --raw-output ".[$arrayjobrepsessions].EndTimeUTC")
+        endTimeUnix=$(date -d "$veeamReplicaSessionsTimeEnd" +"%s")
+        veeamReplicaSessionsDuration=$(($endTimeUnix-$creationTimeUnix))
+
+        #echo "veeam_em_job_sessions,veeamReplicaSessionsName=$veeamReplicaSessionsName,veeamVBR=$veeamVBR,veeamReplicaSessionsJobType=$veeamReplicaSessionsJobType,veeamReplicaSessionsJobState=$veeamReplicaSessionsJobState veeamReplicaSessionsJobResult=$jobStatus $creationTimeUnix"
+
+        ##Comment the Curl while debugging
+        echo "Writing veeam_em_job_sessions Replica to InfluxDB"     
+        curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_job_sessions,veeamReplicaSessionsName=$veeamReplicaSessionsName,veeamVBR=$veeamVBR,veeamReplicaSessionsJobType=$veeamReplicaSessionsJobType,veeamReplicaSessionsJobState=$veeamReplicaSessionsJobState veeamReplicaSessionsJobResult=$jobStatus,veeamReplicaSessionsDuration=$veeamReplicaSessionsDuration $creationTimeUnix"
+      arrayjobrepsessions=$arrayjobrepsessions+1
+    done
+fi
 
 ##
 # Veeam Enterprise Manager Replica Job Sessions per VM. Overview of Replica Job Sessions per VM. Really useful to display if a VM it is protected or not
@@ -362,36 +372,40 @@ veeamEMUrl="https://$veeamRestServer:$veeamRestPort/api/replicaTaskSessions?form
 veeamEMJobReplicaSessionsVMUrl=$(curl -X GET "$veeamEMUrl" -H "Accept:application/json" -H "X-RestSvcSessionId: $veeamXRestSvcSessionId" -H "Cookie: X-RestSvcSessionId=$veeamXRestSvcSessionId" -H "Content-Length: 0" 2>&1 -k --silent | awk 'NR==1{sub(/^\xef\xbb\xbf/,"")}1' | jq '[.ReplicaTaskSessions[] | select(.CreationTimeUTC> "'$timestart'")]')
 
 declare -i arrayjobrepsessionsvm=0
-for JobSessionUid in $(echo "$veeamEMJobReplicaSessionsVMUrl" | jq -r '.[].JobSessionUid'); do
-    veeamReplicaSessionsVmDisplayName=$(echo "$veeamEMJobReplicaSessionsVMUrl" | jq --raw-output ".[$arrayjobrepsessionsvm].VmDisplayName" | awk '{gsub(/ /,"\\ ");print}')
-    veeamVBR=$(echo "$veeamEMJobReplicaSessionsVMUrl" | jq --raw-output ".[$arrayjobrepsessionsvm].Links[0].Name" | awk '{gsub(/ /,"\\ ");print}') 
-    veeamReplicaSessionsTotalSize=$(echo "$veeamEMJobReplicaSessionsVMUrl" | jq --raw-output ".[$arrayjobrepsessionsvm].TotalSize")    
-    veeamReplicaSessionsJobVMState=$(echo "$veeamEMJobReplicaSessionsVMUrl" | jq --raw-output ".[$arrayjobrepsessionsvm].State")
-    veeamReplicaSessionsJobVMResult=$(echo "$veeamEMJobReplicaSessionsVMUrl" | jq --raw-output ".[$arrayjobrepsessionsvm].Result") 
-    case $veeamReplicaSessionsJobVMResult in
-        Success)
-            jobStatus="1"
-        ;;
-        Warning)
-            jobStatus="2"
-        ;;
-        Failed)
-            jobStatus="3"
-        ;;
-        esac
-    veeamReplicaSessionsVMTime=$(echo "$veeamEMJobReplicaSessionsVMUrl" | jq --raw-output ".[$arrayjobrepsessionsvm].CreationTimeUTC")
-    creationTimeUnix=$(date -d "$veeamReplicaSessionsVMTime" +"%s")
-    veeamReplicaSessionsVMTimeEnd=$(echo "$veeamEMJobReplicaSessionsVMUrl" | jq --raw-output ".[$arrayjobrepsessionsvm].EndTimeUTC")
-    endTimeUnix=$(date -d "$veeamReplicaSessionsVMTimeEnd" +"%s")
-    veeamReplicaSessionsVMDuration=$(($endTimeUnix-$creationTimeUnix))
-   
-    #echo "veeam_em_job_sessionsvm,veeamReplicaSessionsVmDisplayName=$veeamReplicaSessionsVmDisplayName,veeamVBR=$veeamVBR,veeamReplicaSessionsJobVMState=$veeamReplicaSessionsJobVMState veeamReplicaSessionsTotalSize=$veeamReplicaSessionsTotalSize,veeamReplicaSessionsJobVMResult=$jobStatus $creationTimeUnix"
-    
-    ##Comment the Curl while debugging
-    echo "Writing veeam_em_job_sessionsvm Replica to InfluxDB"     
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_job_sessionsvm,veeamReplicaSessionsVmDisplayName=$veeamReplicaSessionsVmDisplayName,veeamVBR=$veeamVBR,veeamReplicaSessionsJobVMState=$veeamReplicaSessionsJobVMState veeamReplicaSessionsTotalSize=$veeamReplicaSessionsTotalSize,veeamReplicaSessionsJobVMResult=$jobStatus,veeamReplicaSessionsVMDuration=$veeamReplicaSessionsVMDuration $creationTimeUnix"
-  arrayjobrepsessionsvm=$arrayjobrepsessionsvm+1
-done
+if [[ "$veeamEMJobReplicaSessionsVMUrl" == "[]" ]]; then
+    echo "There are not new veeam_em_job_sessionsvm since $timestart"
+else
+    for JobSessionUid in $(echo "$veeamEMJobReplicaSessionsVMUrl" | jq -r '.[].JobSessionUid'); do
+        veeamReplicaSessionsVmDisplayName=$(echo "$veeamEMJobReplicaSessionsVMUrl" | jq --raw-output ".[$arrayjobrepsessionsvm].VmDisplayName" | awk '{gsub(/ /,"\\ ");print}')
+        veeamVBR=$(echo "$veeamEMJobReplicaSessionsVMUrl" | jq --raw-output ".[$arrayjobrepsessionsvm].Links[0].Name" | awk '{gsub(/ /,"\\ ");print}') 
+        veeamReplicaSessionsTotalSize=$(echo "$veeamEMJobReplicaSessionsVMUrl" | jq --raw-output ".[$arrayjobrepsessionsvm].TotalSize")    
+        veeamReplicaSessionsJobVMState=$(echo "$veeamEMJobReplicaSessionsVMUrl" | jq --raw-output ".[$arrayjobrepsessionsvm].State")
+        veeamReplicaSessionsJobVMResult=$(echo "$veeamEMJobReplicaSessionsVMUrl" | jq --raw-output ".[$arrayjobrepsessionsvm].Result") 
+        case $veeamReplicaSessionsJobVMResult in
+            Success)
+                jobStatus="1"
+            ;;
+            Warning)
+                jobStatus="2"
+            ;;
+            Failed)
+                jobStatus="3"
+            ;;
+            esac
+        veeamReplicaSessionsVMTime=$(echo "$veeamEMJobReplicaSessionsVMUrl" | jq --raw-output ".[$arrayjobrepsessionsvm].CreationTimeUTC")
+        creationTimeUnix=$(date -d "$veeamReplicaSessionsVMTime" +"%s")
+        veeamReplicaSessionsVMTimeEnd=$(echo "$veeamEMJobReplicaSessionsVMUrl" | jq --raw-output ".[$arrayjobrepsessionsvm].EndTimeUTC")
+        endTimeUnix=$(date -d "$veeamReplicaSessionsVMTimeEnd" +"%s")
+        veeamReplicaSessionsVMDuration=$(($endTimeUnix-$creationTimeUnix))
+
+        #echo "veeam_em_job_sessionsvm,veeamReplicaSessionsVmDisplayName=$veeamReplicaSessionsVmDisplayName,veeamVBR=$veeamVBR,veeamReplicaSessionsJobVMState=$veeamReplicaSessionsJobVMState veeamReplicaSessionsTotalSize=$veeamReplicaSessionsTotalSize,veeamReplicaSessionsJobVMResult=$jobStatus $creationTimeUnix"
+
+        ##Comment the Curl while debugging
+        echo "Writing veeam_em_job_sessionsvm Replica to InfluxDB"     
+        curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_job_sessionsvm,veeamReplicaSessionsVmDisplayName=$veeamReplicaSessionsVmDisplayName,veeamVBR=$veeamVBR,veeamReplicaSessionsJobVMState=$veeamReplicaSessionsJobVMState veeamReplicaSessionsTotalSize=$veeamReplicaSessionsTotalSize,veeamReplicaSessionsJobVMResult=$jobStatus,veeamReplicaSessionsVMDuration=$veeamReplicaSessionsVMDuration $creationTimeUnix"
+      arrayjobrepsessionsvm=$arrayjobrepsessionsvm+1
+    done
+fi
 
 ##
 # Veeam Enterprise Manager Backup Agent Status. Overview of the Veeam Agents. Really useful to display if an Agent it is uo to date and also the status
@@ -470,31 +484,35 @@ veeamEMUrl="https://$veeamRestServer:$veeamRestPort/api/nas/backupSessions?forma
 veeamEMNASJobsSessionsUrl=$(curl -X GET "$veeamEMUrl" -H "Accept:application/json" -H "X-RestSvcSessionId: $veeamXRestSvcSessionId" -H "Cookie: X-RestSvcSessionId=$veeamXRestSvcSessionId" -H "Content-Length: 0" 2>&1 -k --silent | awk 'NR==1{sub(/^\xef\xbb\xbf/,"")}1'| jq '[.BackupJobSessions[] | select(.CreationTimeUTC> "'$timestart'")]')
 
 declare -i arrayNASJobsSessions=0
-for JobSessionUid in $(echo "$veeamEMNASJobsSessionsUrl" | jq -r '.[].JobUid'); do
-    veeamNASJobName=$(echo "$veeamEMNASJobsSessionsUrl" | jq --raw-output ".[$arrayNASJobsSessions].JobName" | awk '{gsub(/ /,"\\ ");print}')
-    veeamVBR=$(echo "$veeamEMNASJobsSessionsUrl" | jq --raw-output ".[$arrayNASJobsSessions].Links[0].Name" | awk '{gsub(/ /,"\\ ");print}')
-    veeamNASJobResult=$(echo "$veeamEMNASJobsSessionsUrl" | jq --raw-output ".[$arrayNASJobsSessions].Result") 
-    case $veeamNASJobResult in
-        Success)
-            jobStatus="1"
-        ;;
-        Warning)
-            jobStatus="2"
-        ;;
-        Failed)
-            jobStatus="3"
-        ;;
-        esac
-    veeamNASJobTime=$(echo "$veeamEMNASJobsSessionsUrl" | jq --raw-output ".[$arrayNASJobsSessions].CreationTimeUTC")
-    creationTimeUnix=$(date -d "$veeamNASJobTime" +"%s")
-    veeamNASJobimeEnd=$(echo "$veeamEMNASJobsSessionsUrl" | jq --raw-output ".[$arrayNASJobsSessions].EndTimeUTC")
-    endTimeUnix=$(date -d "$veeamNASJobimeEnd" +"%s")
-    veeamNASJobDuration=$(($endTimeUnix-$creationTimeUnix))   
-   
-    #echo "veeam_em_nas_sessions,veeamNASJobName=$veeamNASJobName,veeamVBR=$veeamVBR veeamNASJobResult=$jobStatus $creationTimeUnix"
-    
-    ##Comment the Curl while debugging
-    echo "Writing veeam_em_nas_sessions to InfluxDB"    
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_nas_sessions,veeamNASJobName=$veeamNASJobName,veeamVBR=$veeamVBR veeamNASJobResult=$jobStatus,veeamNASJobDuration=$veeamNASJobDuration $creationTimeUnix"
-  arrayNASJobsSessions=$arrayNASJobsSessions+1
-done
+if [[ "$veeamEMNASJobsSessionsUrl" == "[]" ]]; then
+    echo "There are not new veeam_em_nas_sessions since $timestart"
+else
+    for JobSessionUid in $(echo "$veeamEMNASJobsSessionsUrl" | jq -r '.[].JobUid'); do
+        veeamNASJobName=$(echo "$veeamEMNASJobsSessionsUrl" | jq --raw-output ".[$arrayNASJobsSessions].JobName" | awk '{gsub(/ /,"\\ ");print}')
+        veeamVBR=$(echo "$veeamEMNASJobsSessionsUrl" | jq --raw-output ".[$arrayNASJobsSessions].Links[0].Name" | awk '{gsub(/ /,"\\ ");print}')
+        veeamNASJobResult=$(echo "$veeamEMNASJobsSessionsUrl" | jq --raw-output ".[$arrayNASJobsSessions].Result") 
+        case $veeamNASJobResult in
+            Success)
+                jobStatus="1"
+            ;;
+            Warning)
+                jobStatus="2"
+            ;;
+            Failed)
+                jobStatus="3"
+            ;;
+            esac
+        veeamNASJobTime=$(echo "$veeamEMNASJobsSessionsUrl" | jq --raw-output ".[$arrayNASJobsSessions].CreationTimeUTC")
+        creationTimeUnix=$(date -d "$veeamNASJobTime" +"%s")
+        veeamNASJobimeEnd=$(echo "$veeamEMNASJobsSessionsUrl" | jq --raw-output ".[$arrayNASJobsSessions].EndTimeUTC")
+        endTimeUnix=$(date -d "$veeamNASJobimeEnd" +"%s")
+        veeamNASJobDuration=$(($endTimeUnix-$creationTimeUnix))   
+
+        #echo "veeam_em_nas_sessions,veeamNASJobName=$veeamNASJobName,veeamVBR=$veeamVBR veeamNASJobResult=$jobStatus $creationTimeUnix"
+
+        ##Comment the Curl while debugging
+        echo "Writing veeam_em_nas_sessions to InfluxDB"    
+        curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_nas_sessions,veeamNASJobName=$veeamNASJobName,veeamVBR=$veeamVBR veeamNASJobResult=$jobStatus,veeamNASJobDuration=$veeamNASJobDuration $creationTimeUnix"
+      arrayNASJobsSessions=$arrayNASJobsSessions+1
+    done
+fi
