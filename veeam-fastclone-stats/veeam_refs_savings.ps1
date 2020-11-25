@@ -67,16 +67,20 @@ function blockstatwrapper {
 #method one, list files, should be the easiest
 function method1 {
     param($exe,$listfilepath,$outputpath)
-    
 
     #$files = Get-ChildItem -Path $dir -Recurse -Depth 10 -file -Include "*.vbk","*.vib","*.vrb" | % { $_.FullName } 
     $filesgroup = Get-ChildItem -Path $dir -Recurse -Depth 10 -file -Include "*.vbk","*.vib","*.vrb" | Group-Object -Property directory
     foreach ($gr in $filesgroup) {
-
+        
+        Write-host "Processing" $gr.name        
         $files = $gr.group | % { $_.FullName }
-        $files | Set-Content -Path $listfilepath -Encoding Unicode
-        blockstatwrapper -exe $exe -listfilepath $listfilepath -outputpath $outputpath
-
+        if ($files.count -gt 1){
+            $files | Set-Content -Path $listfilepath -Encoding Unicode
+            blockstatwrapper -exe $exe -listfilepath $listfilepath -outputpath $outputpath
+        }
+        else {
+            write-host "Only 1 file found. Skipping " $gr.Name 
+        }
     }
     
 }
