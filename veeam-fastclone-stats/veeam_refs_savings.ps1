@@ -50,7 +50,8 @@ function blockstatwrapper {
 
     $fod = 0
     $result.result.shares.ChildNodes | % { $sl=$_;$fod+=([Int64]::Parse($sl.ratio)*[Int64]::Parse($sl.bytes))}
-    $repo = $dir.Trim(':\')
+    $diradjusted = $dir.Trim(':\')
+    $repo = $env:computername + '-' + $diradjusted
     $savings = $result.result.totalshare.bytes
     $fragments= $result.result.fragments.count
     $backupjobname= $gr.Name -creplace '^[^\\]*\\', ''
