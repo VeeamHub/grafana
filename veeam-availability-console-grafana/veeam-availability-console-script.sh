@@ -318,7 +318,7 @@ for id in $(echo "$veeamJobsUrl" | jq -r '.[].id'); do
     typeJob=$(echo "$veeamJobsUrl" | jq --raw-output ".[$arrayJobs].type" | awk '{gsub(/ /,"\\ ");print}')    
     lastRunJob=$(echo "$veeamJobsUrl" | jq --raw-output ".[$arrayJobs].lastRun")
     lastRunTimeUnix=$(date -d "$lastRunJob" +"%s")
-    if [[ $lastRunTimeUnix = "-62135596725" ]]; then
+    if [[ $lastRunTimeUnix < "0" ]]; then
             lastRunTimeUnix="1"
     fi
     totalDuration=$(echo "$veeamJobsUrl" | jq --raw-output ".[$arrayJobs].duration")
