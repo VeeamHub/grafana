@@ -42,7 +42,7 @@ declare -i arraylicense=0
 for id in $(echo "$TenantUrl" | jq -r ".[].id"); do
     TenantId=$(echo "$TenantUrl" | jq --raw-output ".[$arraylicense].id")
     TenantName=$(echo "$TenantUrl" | jq --raw-output ".[$arraylicense].name")
-    TenantEnabled=$(echo "$TenantUrl" | jq --raw-output ".[$arraylicense].name")
+    TenantEnabled=$(echo "$TenantUrl" | jq --raw-output ".[$arraylicense].isEnabled")
     TenantmaxConcurrentTasks=$(echo "$TenantUrl" | jq --raw-output ".[$arraylicense].maxConcurrentTasks")
     TenantbandwidthThrottlingEnabled=$(echo "$TenantUrl" | jq --raw-output ".[$arraylicense].bandwidthThrottlingEnabled")
     TenantallowedBandwidth=$(echo "$TenantUrl" | jq --raw-output ".[$arraylicense].allowedBandwidth")
