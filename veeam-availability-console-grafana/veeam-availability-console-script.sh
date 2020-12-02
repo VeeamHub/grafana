@@ -32,6 +32,10 @@ RestServer="YOURVACURL"
 RestPort="1281" #Default Port
 Bearer=$(curl -X POST --header "Content-Type: application/x-www-form-urlencoded" --header "Accept: application/json" -d "grant_type=password&username=$Username&password=$Password" "$RestServer:$RestPort/token" -k --silent | jq -r '.access_token')
 
+# Unix Epoc Time - Jan 1, 2030
+# Used for those cases where there is no expirey, but things giving null causes problems
+NoExpiration="1893456000"
+
 ##
 # Veeam Availability Console - Licenses per Tenant. This section will check on every Tenant and retrieve Licensing Information
 ##
@@ -41,7 +45,7 @@ TenantUrl=$(curl -X GET --header "Accept:application/json" --header "Authorizati
 declare -i arraylicense=0
 for id in $(echo "$TenantUrl" | jq -r ".[].id"); do
     TenantId=$(echo "$TenantUrl" | jq --raw-output ".[$arraylicense].id")
-    TenantName=$(echo "$TenantUrl" | jq --raw-output ".[$arraylicense].name")
+    TenantName=$(echo "$TenantUrl" | jq --raw-output ".[$arraylicense].name" | awk '{gsub(/ /,"\\ ");print}')
     TenantEnabled=$(echo "$TenantUrl" | jq --raw-output ".[$arraylicense].isEnabled")
     TenantmaxConcurrentTasks=$(echo "$TenantUrl" | jq --raw-output ".[$arraylicense].maxConcurrentTasks")
     TenantbandwidthThrottlingEnabled=$(echo "$TenantUrl" | jq --raw-output ".[$arraylicense].bandwidthThrottlingEnabled")
@@ -59,8 +63,9 @@ for id in $(echo "$TenantUrl" | jq -r ".[].id"); do
         TenantexpirationDate=$(echo "$TenantUrl" | jq --raw-output ".[$arraylicense].expirationDate") 
         TenantexpirationDateUnix=$(date -d "$TenantexpirationDate" +"%s")
     else
-        declare -i TenantexpirationDateUnix=0
+        declare -i TenantexpirationDateUnix=$NoExpiration
     fi
+
     #echo "veeam_vac_tenant,companyName=$TenantName,enabled=$TenantEnabled,expirationEnabled=$TenantexpirationEnabled,expirationDate=$TenantexpirationDate maxConcurrentTasks=$TenantmaxConcurrentTasks,bandwidthThrottlingEnabled=$TenantbandwidthThrottlingEnabled,allowedBandwidth=$TenantallowedBandwidth,vMsBackedUp=$TenantvMsBackedUp,vMsReplicated=$TenantvMsReplicated,vMsBackedUpToCloud=$TenantvMsBackedUpToCloud,managedPhysicalWorkstations=$TenantmanagedPhysicalWorkstations,managedCloudWorkstations=$TenantmanagedCloudWorkstations,managedPhysicalServers=$TenantmanagedPhysicalServers,managedCloudServers=$TenantmanagedCloudServers"
     curl -i -XPOST "http://$InfluxDBURL:$InfluxDBPort/write?precision=s&db=$InfluxDB" --data-binary "veeam_vac_tenant,companyName=$TenantName,enabled=$TenantEnabled,expirationEnabled=$TenantexpirationEnabled,bandwidthThrottlingEnabled=$TenantbandwidthThrottlingEnabled expirationDate=$TenantexpirationDateUnix,maxConcurrentTasks=$TenantmaxConcurrentTasks,allowedBandwidth=$TenantallowedBandwidth,vMsBackedUp=$TenantvMsBackedUp,vMsReplicated=$TenantvMsReplicated,vMsBackedUpToCloud=$TenantvMsBackedUpToCloud,managedPhysicalWorkstations=$TenantmanagedPhysicalWorkstations,managedCloudWorkstations=$TenantmanagedCloudWorkstations,managedPhysicalServers=$TenantmanagedPhysicalServers,managedCloudServers=$TenantmanagedCloudServers"
     VACUrl="$RestServer:$RestPort/v2/tenants/$TenantId/backupResources"
@@ -165,11 +170,20 @@ CloudConnectLicenselicensestatus=$(echo "$CloudConnectLicenseUrl" | jq --raw-out
 CloudConnectLicenselicenseExpirationDate=$(echo "$CloudConnectLicenseUrl" | jq --raw-output ".[].licenseExpirationDate")
 CloudConnectLicenselicenseExpirationDateUnix=$(date -d "$CloudConnectLicenselicenseExpirationDate" +"%s")
 CloudConnectLicensesupportExpirationDate=$(echo "$CloudConnectLicenseUrl" | jq --raw-output ".[].supportExpirationDate")
+if [[ $CloudConnectLicensesupportExpirationDate = "null" ]] ; then
+        CloudConnectLicensesupportExpirationDate=$CloudConnectLicenselicenseExpirationDate
+fi
 CloudConnectLicensesupportExpirationDateUnix=$(date -d "$CloudConnectLicensesupportExpirationDate" +"%s")
 CloudConnectLicenselicensedVMs=$(echo "$CloudConnectLicenseUrl" | jq --raw-output ".[].licensedVMs")
 CloudConnectLicenseusedVMs=$(echo "$CloudConnectLicenseUrl" | jq --raw-output ".[].usedVMs")
 CloudConnectLicensebackupServerName=$(echo "$CloudConnectLicenseUrl" | jq --raw-output ".[].backupServerName" | awk '{gsub(/ /,"\\ ");print}')
 CloudConnectLicensecompanyName=$(echo "$CloudConnectLicenseUrl" | jq --raw-output ".[].companyName" | awk '{gsub(/ /,"\\ ");print}')
+if [[ $CloudConnectLicenselicensedTo = "null" ]] ; then
+        CloudConnectLicenselicensedTo="$CloudConnectLicensecompanyName"
+fi
+if [[ $CloudConnectLicensecontactPerson = "null" ]] ; then
+        CloudConnectLicensecontactPerson="$CloudConnectLicenselicensedTo"
+fi
 CloudConnectLicenselicensedCloudconnectBackups=$(echo "$CloudConnectLicenseUrl" | jq --raw-output ".[].licensedCloudconnectBackups")
 CloudConnectLicenseusedCloudconnectBackups=$(echo "$CloudConnectLicenseUrl" | jq --raw-output ".[].usedCloudconnectBackups")
 CloudConnectLicenselicensedCloudconnectReplicas=$(echo "$CloudConnectLicenseUrl" | jq --raw-output ".[].licensedCloudconnectReplicas")
@@ -178,6 +192,7 @@ CloudConnectLicenselicensedCloudconnectServers=$(echo "$CloudConnectLicenseUrl" 
 CloudConnectLicenseusedCloudconnectServers=$(echo "$CloudConnectLicenseUrl" | jq --raw-output ".[].usedCloudconnectServers")
 CloudConnectLicenselicensedCloudconnectWorkstations=$(echo "$CloudConnectLicenseUrl" | jq --raw-output ".[].licensedCloudconnectWorkstations")
 CloudConnectLicenseusedCloudconnectWorkstations=$(echo "$CloudConnectLicenseUrl" | jq --raw-output ".[].usedCloudconnectWorkstations")
+
 #echo "veeam_vac_vcclicense,edition=$CloudConnectLicenseEdition,status=$CloudConnectLicenselicensestatus,type=$CloudConnectLicenselicenseType,contactPerson=$CloudConnectLicensecontactPerson,licenseExpirationDate=$CloudConnectLicenselicenseExpirationDate,supportExpirationDate=$CloudConnectLicensesupportExpirationDate,backupServerName=$CloudConnectLicensebackupServerName,companyName=$CloudConnectLicensecompanyName licensedCloudConnectBackups=$CloudConnectLicenselicensedCloudconnectBackups,usedCloudConnectBackups=$CloudConnectLicenseusedCloudconnectBackups,licensedCloudConnectReplicas=$CloudConnectLicenselicensedCloudconnectReplicas,usedCloudConnectReplicas=$CloudConnectLicenseusedCloudconnectReplicas,licensedCloudConnectServers=$CloudConnectLicenselicensedCloudconnectServers,usedCloudConnectServers=$CloudConnectLicenseusedCloudconnectServers,licensedCloudConnectWorkstations=$CloudConnectLicenselicensedCloudconnectWorkstations,usedCloudConnectWorkstations=$CloudConnectLicenseusedCloudconnectWorkstations"
 curl -i -XPOST "http://$InfluxDBURL:$InfluxDBPort/write?precision=s&db=$InfluxDB" --data-binary "veeam_vac_vcclicense,edition=$CloudConnectLicenseEdition,status=$CloudConnectLicenselicensestatus,type=$CloudConnectLicenselicenseType,contactPerson=$CloudConnectLicensecontactPerson,backupServerName=$CloudConnectLicensebackupServerName,companyName=$CloudConnectLicensecompanyName licenseExpirationDate=$CloudConnectLicenselicenseExpirationDateUnix,supportExpirationDate=$CloudConnectLicensesupportExpirationDateUnix,licensedCloudConnectBackups=$CloudConnectLicenselicensedCloudconnectBackups,usedCloudConnectBackups=$CloudConnectLicenseusedCloudconnectBackups,licensedCloudConnectReplicas=$CloudConnectLicenselicensedCloudconnectReplicas,usedCloudConnectReplicas=$CloudConnectLicenseusedCloudconnectReplicas,licensedCloudConnectServers=$CloudConnectLicenselicensedCloudconnectServers,usedCloudConnectServers=$CloudConnectLicenseusedCloudconnectServers,licensedCloudConnectWorkstations=$CloudConnectLicenselicensedCloudconnectWorkstations,usedCloudConnectWorkstations=$CloudConnectLicenseusedCloudconnectWorkstations"
 
@@ -193,6 +208,9 @@ VACLicenselicensesUsedCount=$(echo "$VACLicenseUrl" | jq --raw-output ".licenses
 VACLicenselicenseExpirationDate=$(echo "$VACLicenseUrl" | jq --raw-output ".expirationDate")
 VACLicenselicenseExpirationDateUnix=$(date -d "$VACLicenselicenseExpirationDate" +"%s")
 VACLicensesupportExpirationDate=$(echo "$VACLicenseUrl" | jq --raw-output ".supportExpirationDate")
+if [[ $VACLicensesupportExpirationDate = "null" ]] ; then
+        VACLicensesupportExpirationDate=$VACLicenselicenseExpirationDate
+fi
 VACLicensesupportExpirationDateUnix=$(date -d "$VACLicensesupportExpirationDate" +"%s")
 VACLicensesupportId=$(echo "$VACLicenseUrl" | jq --raw-output ".supportId")
 VACLicensevmCount=$(echo "$VACLicenseUrl" | jq --raw-output ".vmCount")
@@ -220,6 +238,17 @@ for id in $(echo "$TenantLicenseUrl" | jq -r ".[].id"); do
         declare -i TenantLicenseSupportID=0
     fi
     TenantLicenselicenseExpirationDate=$(echo "$TenantLicenseUrl" | jq --raw-output ".[$arrayVBRLicense].licenseExpirationDate")
+    if [[ $TenantLicenselicenseExpirationDate = "null" ]] ; then
+        TenantLicenselicenseExpirationDate=""
+        TenantLicenselicenseExpirationDateUnix=$NoExpiration
+    else
+        TenantLicenselicenseExpirationDateUnix=$(date -d "$TenantLicenselicenseExpirationDate" +"%s")
+    fi
+    TenantLicensesupportExpirationDate=$(echo "$TenantLicenseUrl" | jq --raw-output ".[$arrayVBRLicense].supportExpirationDate")
+    if [[ $TenantLicensesupportExpirationDate = "null" ]] ; then
+        TenantLicensesupportExpirationDate=$TenantLicenselicenseExpirationDate
+    fi
+    TenantLicenselicenseExpirationDate=$(echo "$TenantLicenseUrl" | jq --raw-output ".[$arrayVBRLicense].licenseExpirationDate")
     TenantLicenselicenseExpirationDateUnix=$(date -d "$TenantLicenselicenseExpirationDate" +"%s")
     TenantLicensesupportExpirationDate=$(echo "$TenantLicenseUrl" | jq --raw-output ".[$arrayVBRLicense].supportExpirationDate")
     TenantLicensesupportExpirationDateUnix=$(date -d "$TenantLicensesupportExpirationDate" +"%s")
@@ -228,7 +257,7 @@ for id in $(echo "$TenantLicenseUrl" | jq -r ".[].id"); do
     TenantLicenselicensedVMs=$(echo "$TenantLicenseUrl" | jq --raw-output ".[$arrayVBRLicense].licensedVMs")
     TenantLicenseusedVMs=$(echo "$TenantLicenseUrl" | jq --raw-output ".[$arrayVBRLicense].usedVMs")
     TenantLicensebackupServerName=$(echo "$TenantLicenseUrl" | jq --raw-output ".[$arrayVBRLicense].backupServerName")
-    TenantLicensecompanyName=$(echo "$TenantLicenseUrl" | jq --raw-output ".[$arrayVBRLicense].companyName")
+    TenantLicensecompanyName=$(echo "$TenantLicenseUrl" | jq --raw-output ".[$arrayVBRLicense].companyName" | awk '{gsub(/ /,"\\ ");print}')
     #echo "veeam_vac_vbrlicense,companyName=$TenantLicensecompanyName,edition=$TenantLicenseEdition,status=$TenantLicenseStatus,SupportID=$TenantLicenseSupportID,LicenseExpirationDate=$TenantLicenselicenseExpirationDate,SupportExpirationDate=$TenantLicensesupportExpirationDate,backupServerName=$TenantLicensebackupServerName licensedSockets=$TenantLicenselicensedSockets,usedSockets=$TenantLicenseusedSockets,licensedVMs=$TenantLicenselicensedVMs,usedVMs=$TenantLicenseusedVMs"
     curl -i -XPOST "http://$InfluxDBURL:$InfluxDBPort/write?precision=s&db=$InfluxDB" --data-binary "veeam_vac_vbrlicense,companyName=$TenantLicensecompanyName,edition=$TenantLicenseEdition,status=$TenantLicenseStatus,SupportID=$TenantLicenseSupportID,backupServerName=$TenantLicensebackupServerName licenseExpirationDate=$TenantLicenselicenseExpirationDateUnix,supportExpirationDate=$TenantLicensesupportExpirationDateUnix,licensedSockets=$TenantLicenselicensedSockets,usedSockets=$TenantLicenseusedSockets,licensedVMs=$TenantLicenselicensedVMs,usedVMs=$TenantLicenseusedVMs"
     arrayVBRLicense=$arrayVBRLicense+1
@@ -313,7 +342,7 @@ veeamJobsUrl=$(curl -X GET --header "Accept:application/json" --header "Authoriz
 
 declare -i arrayJobs=0
 for id in $(echo "$veeamJobsUrl" | jq -r '.[].id'); do
-    nameJob=$(echo "$veeamJobsUrl" | jq --raw-output ".[$arrayJobs].name" | awk '{gsub(/ /,"\\ ");print}')
+    nameJob=$(echo "$veeamJobsUrl" | jq --raw-output ".[$arrayJobs].name" | awk '{gsub(/ /,"\\ ");print}' | awk '{gsub(",","\\,");print}')
     idJob=$(echo "$veeamJobsUrl" | jq --raw-output ".[$arrayJobs].id")
     typeJob=$(echo "$veeamJobsUrl" | jq --raw-output ".[$arrayJobs].type" | awk '{gsub(/ /,"\\ ");print}')    
     lastRunJob=$(echo "$veeamJobsUrl" | jq --raw-output ".[$arrayJobs].lastRun")
@@ -374,7 +403,7 @@ for id in $(echo "$veeamJobsUrl" | jq -r '.[].id'); do
         ;;
         esac
     BackupReposerverName=$(echo "$veeamJobsUrl" | jq --raw-output ".[$arrayJobs].serverName")
-    bottleneck=$(echo "$veeamJobsUrl" | jq --raw-output ".[$arrayJobs].bottleneck")
+    bottleneck=$(echo "$veeamJobsUrl" | jq --raw-output ".[$arrayJobs].bottleneck" | awk '{gsub(/ /,"\\ ");print}')
     isEnabled=$(echo "$veeamJobsUrl" | jq --raw-output ".[$arrayJobs].isEnabled")
     protectedVMs=$(echo "$veeamJobsUrl" | jq --raw-output ".[$arrayJobs].protectedVMs")
     #echo "veeam_vac_jobs,veeamjobname=$nameJob,backupServerName=$BackupReposerverName,bottleneck=$bottleneck,typeJob=$typeJob,isEnabled=$isEnabled totalDuration=$totalDuration,status=$jobStatus,processingRate=$processingRate,transferredData=$transferredData,protectedVMs=$protectedVMs $lastRunTimeUnix"
