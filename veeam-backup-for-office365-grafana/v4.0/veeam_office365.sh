@@ -1,6 +1,6 @@
 #!/bin/bash
 ##      .SYNOPSIS
-##      Grafana Dashboard for Veeam Backup for Microsoft Office 365 v5.0 - Using RestAPI to InfluxDB Script
+##      Grafana Dashboard for Veeam Backup for Microsoft Office 365 v4.0 - Using RestAPI to InfluxDB Script
 ## 
 ##      .DESCRIPTION
 ##      This Script will query the Veeam Backup for Microsoft Office 365 RestAPI and send the data directly to InfluxDB, which can be used to present it to Grafana. 
@@ -9,8 +9,8 @@
 ##      .Notes
 ##      NAME:  veeam_office365.sh
 ##      ORIGINAL NAME: veeam_office365.sh
-##      LASTEDIT: 15/12/2020
-##      VERSION: 5.0
+##      LASTEDIT: 10/08/2020
+##      VERSION: 4.0
 ##      KEYWORDS: Veeam, InfluxDB, Grafana
    
 ##      .Link
@@ -32,12 +32,12 @@ veeamUsername="YOURVBOUSER"
 veeamPassword="YOURVBOPASSWORD"
 veeamRestServer="https://YOURVBOSERVERIP"
 veeamRestPort="4443" #Default Port
-veeamBearer=$(curl -X POST --header "Content-Type: application/x-www-form-urlencoded" --header "Accept: application/json" -d "grant_type=password&username=$veeamUsername&password=$veeamPassword&refresh_token=%27%27" "$veeamRestServer:$veeamRestPort/v5/token" -k --silent | jq -r '.access_token')
+veeamBearer=$(curl -X POST --header "Content-Type: application/x-www-form-urlencoded" --header "Accept: application/json" -d "grant_type=password&username=$veeamUsername&password=$veeamPassword&refresh_token=%27%27" "$veeamRestServer:$veeamRestPort/v4/token" -k --silent | jq -r '.access_token')
 
 ##
 # Veeam Backup for Microsoft Office 365 Organization. This part will check on our Organization and retrieve Licensing Information
 ##
-veeamVBOUrl="$veeamRestServer:$veeamRestPort/v5/Organizations"
+veeamVBOUrl="$veeamRestServer:$veeamRestPort/v4/Organizations"
 veeamOrgUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
 
 declare -i arrayorg=0
@@ -46,7 +46,7 @@ for id in $(echo "$veeamOrgUrl" | jq -r '.[].id'); do
     veeamOrgName=$(echo "$veeamOrgUrl" | jq --raw-output ".[$arrayorg].name" | awk '{gsub(/ /,"\\ ");print}')
 
     ## Licensing
-    veeamVBOUrl="$veeamRestServer:$veeamRestPort/v5/Organizations/$veeamOrgId/LicensingInformation"
+    veeamVBOUrl="$veeamRestServer:$veeamRestPort/v4/Organizations/$veeamOrgId/LicensingInformation"
     veeamLicenseUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
     licensedUsers=$(echo "$veeamLicenseUrl" | jq --raw-output '.licensedUsers')
     newUsers=$(echo "$veeamLicenseUrl" | jq --raw-output '.newUsers')
@@ -57,13 +57,13 @@ for id in $(echo "$veeamOrgUrl" | jq -r '.[].id'); do
     ##
     # Veeam Backup for Microsoft Office 365 Users. This part will check the total Users and if they are protected or not
     ##
-    veeamVBOUrl="$veeamRestServer:$veeamRestPort/v5/LicensedUsers"
+    veeamVBOUrl="$veeamRestServer:$veeamRestPort/v4/Organizations/$veeamOrgId/Users"
     veeamUsersUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
-    declare -i arrayLicensed=0
+    declare -i arrayOD=0
     for id in $(echo "$veeamUsersUrl" | jq -r '.results[].id'); do
-    veeamUserId=$(echo "$veeamUsersUrl" | jq --raw-output ".results[$arrayLicensed].id")
-    veeamUserName=$(echo "$veeamUsersUrl" | jq --raw-output ".results[$arrayLicensed].name" | awk '{gsub(/ /,"\\ ");print}')
-    veeamUserBackup=$(echo "$veeamUsersUrl" | jq --raw-output ".results[$arrayLicensed].isBackedUp")   
+    veeamUserId=$(echo "$veeamUsersUrl" | jq --raw-output ".results[$arrayOD].id")
+    veeamUserName=$(echo "$veeamUsersUrl" | jq --raw-output ".results[$arrayOD].name" | awk '{gsub(/ /,"\\ ");print}')
+    veeamUserBackup=$(echo "$veeamUsersUrl" | jq --raw-output ".results[$arrayOD].isBackedUp")   
       case $veeamUserBackup in
         "true")
             protectedUser="1"
@@ -72,19 +72,59 @@ for id in $(echo "$veeamOrgUrl" | jq -r '.[].id'); do
             protectedUser="2"
         ;;
         esac
-     veeamLicensedType=$(echo "$veeamUsersUrl" | jq --raw-output ".results[$arrayLicensed].licenseState")   
-      case $veeamLicensedType in
-        "Licensed")
-            LicensedUser="1"
+     veeamUserType=$(echo "$veeamUsersUrl" | jq --raw-output ".results[$arrayOD].type")   
+      case $veeamUserType in
+        "User")
+            typeUser="1"
         ;;
-        "Unlicensed")
-            LicensedUser="2"
+        "Shared")
+            typeUser="2"
         ;;
         esac
+     ##
+     # Veeam Backup for Microsoft Office 365 Users. This part will check the total Users and if they are protected or not
+     ##
+     veeamVBOUrl="$veeamRestServer:$veeamRestPort/v4/Organizations/$veeamOrgId/Users/$veeamUserId/onedrives"
+     veeamODUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
+     veeamUserODName=$(echo "$veeamODUrl" | jq --raw-output ".results[0].name // "0"" | awk '{gsub(/ /,"\\ ");print}')
     
-    #echo "veeam_office365_overview_OD,veeamOrgName=$veeamOrgName,veeamUserName=$veeamUserName protectedUser=$protectedUser,licensedUser=$LicensedUser"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_office365_overview_OD,veeamOrgName=$veeamOrgName,veeamUserName=$veeamUserName protectedUser=$protectedUser,licensedUser=$LicensedUser"
-    arrayLicensed=$arrayLicensed+1
+    #echo "veeam_office365_overview_OD,veeamOrgName=$veeamOrgName,veeamUserName=$veeamUserName,veeamUserODName=$veeamUserODName protectedUser=$protectedUser,typeUser=$typeUser"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_office365_overview_OD,veeamOrgName=$veeamOrgName,veeamUserName=$veeamUserName,veeamUserODName=$veeamUserODName protectedUser=$protectedUser,typeUser=$typeUser"
+    arrayOD=$arrayOD+1
+    done
+    
+    ##
+    # Veeam Backup for Microsoft Office 365 SharePoint Sites. This part will check the total SharePoint Sites and if they are protected or not
+    ##
+    veeamVBOUrl="$veeamRestServer:$veeamRestPort/v4/Organizations/$veeamOrgId/sites"
+    veeamSPUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)    
+    declare -i arraySP=0
+    for id in $(echo "$veeamSPUrl" | jq -r '.results[].id'); do
+    veeamSPId=$(echo "$veeamSPUrl" | jq --raw-output ".results[$arraySP].id")
+    veeamSPName=$(echo "$veeamSPUrl" | jq --raw-output ".results[$arraySP].name" | awk '{gsub(/ /,"\\ ");print}' )
+    veeamSPFQDN=$(echo "$veeamSPUrl" | jq --raw-output ".results[$arraySP].url" | awk -F'[/:]' '{gsub(/www./,""); print $4"_"$5"_"$6}')
+    veeamSPPBackup=$(echo "$veeamSPUrl" | jq --raw-output ".results[$arraySP].isBackedup")   
+      case $veeamSPPBackup in
+        "true")
+            protectedSite="1"
+        ;;
+        "false")
+            protectedSite="2"
+        ;;
+        esac
+     veeamSPType=$(echo "$veeamSPUrl" | jq --raw-output ".results[$arraySP].isPersonal")   
+      case $veeamSPType in
+        "true")
+            typeSP="1"
+        ;;
+        "false")
+            typeSP="2"
+        ;;
+        esac
+
+    #echo "veeam_office365_overview_OD,veeamOrgName=$veeamOrgName,veeamUserName=$veeamUserName,veeamUserODName=$veeamUserODName protectedUser=$protectedUser,typeUser=$typeUser"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_office365_overview_SP,veeamOrgName=$veeamOrgName,veeamSPName=$veeamSPName,veeamSPFQDN=$veeamSPFQDN protectedSite=$protectedSite,typeSP=$typeSP"
+    arraySP=$arraySP+1
     done
 
     arrayorg=$arrayorg+1
@@ -94,7 +134,7 @@ done
 ##
 # Veeam Backup for Microsoft Office 365 Backup Repositories. This part will check the capacity and used space of the Backup Repositories
 ##
-veeamVBOUrl="$veeamRestServer:$veeamRestPort/v5/BackupRepositories"
+veeamVBOUrl="$veeamRestServer:$veeamRestPort/v4/BackupRepositories"
 veeamRepoUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
 
 declare -i arrayrepo=0
@@ -105,37 +145,35 @@ for id in $(echo "$veeamRepoUrl" | jq -r '.[].id'); do
   objectStorageId=$(echo "$veeamRepoUrl" | jq --raw-output ".[$arrayrepo].objectStorageId")
   objectStorageEncryptionEnabled=$(echo "$veeamRepoUrl" | jq --raw-output ".[$arrayrepo].objectStorageEncryptionEnabled")
   
-  #echo "veeam_office365_repository,repository=$repository capacity=$capacity,freeSpace=$freeSpace"
+  #echo "veeam_office365_repository,name=$repository,objectStorageEncryptionEnabled=$objectStorageEncryptionEnabled capacity=$capacity,freeSpace=$freeSpace"
   curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_office365_repository,repository=$repository capacity=$capacity,freeSpace=$freeSpace"
-  if [[ "$objectStorageId" == "null" ]]; then
-        echo "It seems you are not using Object Storage offload on the Repository $repository, that's fine."
-  else  
+  
   ##
   # Veeam Backup for Microsoft Office 365 Object Storage Repositories. This part will check the capacity and used space of the Object Storage Repositories
   ##
-  veeamVBOUrl="$veeamRestServer:$veeamRestPort/v5/objectstoragerepositories/$objectStorageId"
+  veeamVBOUrl="$veeamRestServer:$veeamRestPort/v4/objectstoragerepositories/$objectStorageId"
   veeamObjectUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
 
-        objectName=$(echo "$veeamObjectUrl" | jq --raw-output ".name" | awk '{gsub(/ /,"\\ ");print}')
-        usedSpaceGB=$(echo "$veeamObjectUrl" | jq --raw-output ".usedSpaceBytes")
-        type=$(echo "$veeamObjectUrl" | jq --raw-output ".type")
-        # Bucket information
-        bucketname=$(echo "$veeamObjectUrl" | jq --raw-output ".bucket.name" | awk '{gsub(/ /,"\\ ");print}')
-        servicePoint=$(echo "$veeamObjectUrl" | jq --raw-output ".bucket.servicePoint" | awk '{gsub(/ /,"\\ ");print}')
-        customRegionId=$(echo "$veeamObjectUrl" | jq --raw-output ".bucket.customRegionId" | awk '{gsub(/ /,"\\ ");print}')
+    objectName=$(echo "$veeamObjectUrl" | jq --raw-output ".name" | awk '{gsub(/ /,"\\ ");print}')
+    usedSpaceGB=$(echo "$veeamObjectUrl" | jq --raw-output ".usedSpaceBytes")
+    type=$(echo "$veeamObjectUrl" | jq --raw-output ".type")
+    # Bucket information
+    bucketname=$(echo "$veeamObjectUrl" | jq --raw-output ".bucket.name" | awk '{gsub(/ /,"\\ ");print}')
+    servicePoint=$(echo "$veeamObjectUrl" | jq --raw-output ".bucket.servicePoint" | awk '{gsub(/ /,"\\ ");print}')
+    customRegionId=$(echo "$veeamObjectUrl" | jq --raw-output ".bucket.customRegionId" | awk '{gsub(/ /,"\\ ");print}')
+   
+  
+    #echo "veeam_office365_objectstorage,name=$objectName,type=$type,bucketname=$bucketname,servicePoint=$servicePoint,customRegionId=$customRegionId usedSpaceGB=$usedSpaceGB"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_office365_objectstorage,objectname=$objectName,type=$type,bucketname=$bucketname,servicePoint=$servicePoint,customRegionId=$customRegionId,objectStorageEncryptionEnabled=$objectStorageEncryptionEnabled usedSpaceGB=$usedSpaceGB"
 
-
-        #echo "veeam_office365_objectstorage,objectname=$objectName,type=$type,bucketname=$bucketname,servicePoint=$servicePoint,customRegionId=$customRegionId,objectStorageEncryptionEnabled=$objectStorageEncryptionEnabled usedSpaceGB=$usedSpaceGB"
-        curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_office365_objectstorage,objectname=$objectName,type=$type,bucketname=$bucketname,servicePoint=$servicePoint,customRegionId=$customRegionId,objectStorageEncryptionEnabled=$objectStorageEncryptionEnabled usedSpaceGB=$usedSpaceGB"
-    fi
-    arrayrepo=$arrayrepo+1
+  arrayrepo=$arrayrepo+1
 done
 
 
 ##
 # Veeam Backup for Microsoft Office 365 Backup Proxies. This part will check the Name and Threads Number of the Backup Proxies
 ##
-veeamVBOUrl="$veeamRestServer:$veeamRestPort/v5/Proxies"
+veeamVBOUrl="$veeamRestServer:$veeamRestPort/v4/Proxies"
 veeamProxyUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
 
 declare -i arrayprox=0
@@ -152,7 +190,7 @@ done
 ##
 # Veeam Backup for Microsoft Office 365 Backup Jobs. This part will check the different Jobs, and the Job Sessions per every Job
 ##
-veeamVBOUrl="$veeamRestServer:$veeamRestPort/v5/Jobs"
+veeamVBOUrl="$veeamRestServer:$veeamRestPort/v4/Jobs"
 veeamJobsUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
 
 declare -i arrayJobs=0
@@ -161,16 +199,16 @@ for id in $(echo "$veeamJobsUrl" | jq -r '.[].id'); do
     idJob=$(echo "$veeamJobsUrl" | jq --raw-output ".[$arrayJobs].id")
     
     # Backup Job Sessions
-    veeamVBOUrl="$veeamRestServer:$veeamRestPort/v5/Jobs/$idJob/JobSessions"
+    veeamVBOUrl="$veeamRestServer:$veeamRestPort/v4/Jobs/$idJob/JobSessions"
     veeamJobSessionsUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
     declare -i arrayJobsSessions=0
-    for id in $(echo "$veeamJobSessionsUrl" | jq -r '.results[].id'); do
-      creationTime=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].creationTime")
+    for id in $(echo "$veeamJobSessionsUrl" | jq -r '.[].id'); do
+      creationTime=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".[$arrayJobsSessions].creationTime")
       creationTimeUnix=$(date -d "$creationTime" +"%s")
-      endTime=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].endTime")
+      endTime=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".[$arrayJobsSessions].endTime")
       endTimeUnix=$(date -d "$endTime" +"%s")
       totalDuration=$(($endTimeUnix - $creationTimeUnix))
-      status=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].status")
+      status=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".[$arrayJobsSessions].status")
       case $status in
         Success)
             jobStatus="1"
@@ -182,12 +220,12 @@ for id in $(echo "$veeamJobsUrl" | jq -r '.[].id'); do
             jobStatus="3"
         ;;
         esac
-      processingRate=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].statistics.processingRateBytesPS")
-      readRate=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].statistics.readRateBytesPS")
-      writeRate=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].statistics.writeRateBytesPS")
-      transferredData=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].statistics.transferredDataBytes")
-      processedObjects=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].statistics.processedObjects")
-      bottleneck=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].statistics.bottleneck")
+      processingRate=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".[$arrayJobsSessions].statistics.processingRateBytesPS")
+      readRate=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".[$arrayJobsSessions].statistics.readRateBytesPS")
+      writeRate=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".[$arrayJobsSessions].statistics.writeRateBytesPS")
+      transferredData=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".[$arrayJobsSessions].statistics.transferredDataBytes")
+      processedObjects=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".[$arrayJobsSessions].statistics.processedObjects")
+      bottleneck=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".[$arrayJobsSessions].statistics.bottleneck")
       
       #echo "veeam_office365_jobs,veeamjobname=$nameJob,bottleneck=$bottleneck totalDuration=$totalDuration,status=$jobStatus,processingRate=$processingRate,readRate=$readRate,writeRate=$writeRate,transferredData=$transferredData,processedObjects=$processedObjects $endTimeUnix"
       curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_office365_jobs,veeamjobname=$nameJob,bottleneck=$bottleneck totalDuration=$totalDuration,status=$jobStatus,processingRate=$processingRate,readRate=$readRate,writeRate=$writeRate,transferredData=$transferredData,processedObjects=$processedObjects $endTimeUnix"
@@ -203,7 +241,7 @@ done
 ##
 # Veeam Backup for Microsoft Office 365 Restore Sessions. This part will check the Number of Restore Sessions
 ##
-veeamVBOUrl="$veeamRestServer:$veeamRestPort/v5/RestoreSessions"
+veeamVBOUrl="$veeamRestServer:$veeamRestPort/v4/RestoreSessions"
 veeamRestoreSessionsUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
 
 declare -i arrayRestoreSessions=0
