@@ -26,7 +26,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "7.0.0"
+      "version": "7.3.5"
     },
     {
       "type": "panel",
@@ -44,6 +44,12 @@
       "type": "panel",
       "id": "stat",
       "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
       "version": ""
     },
     {
@@ -71,7 +77,7 @@
   "gnetId": 11516,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1590507182716,
+  "iteration": 1610034075553,
   "links": [],
   "panels": [
     {
@@ -204,10 +210,12 @@
           "calcs": [
             "mean"
           ],
+          "fields": "",
           "values": false
-        }
+        },
+        "textMode": "auto"
       },
-      "pluginVersion": "7.0.0",
+      "pluginVersion": "7.3.5",
       "targets": [
         {
           "alias": "Backup Servers",
@@ -625,11 +633,12 @@
           "calcs": [
             "lastNotNull"
           ],
+          "fields": "",
           "values": false
         },
         "showUnfilled": true
       },
-      "pluginVersion": "7.0.0",
+      "pluginVersion": "7.3.5",
       "targets": [
         {
           "alias": "$tag_veeamRepositoryName",
@@ -730,7 +739,7 @@
           },
           "gridPos": {
             "h": 4,
-            "w": 4,
+            "w": 4.8,
             "x": 0,
             "y": 10
           },
@@ -743,19 +752,20 @@
               "calcs": [
                 "lastNotNull"
               ],
+              "fields": "",
               "values": false
             },
             "showThresholdLabels": false,
             "showThresholdMarkers": true
           },
-          "pluginVersion": "7.0.0",
+          "pluginVersion": "7.3.5",
           "repeat": "repository",
           "repeatDirection": "h",
           "scopedVars": {
             "repository": {
               "selected": false,
-              "text": "Default Backup Repository",
-              "value": "Default Backup Repository"
+              "text": "AWS-COMPATIBLE-IMMUTABLE",
+              "value": "AWS-COMPATIBLE-IMMUTABLE"
             }
           },
           "targets": [
@@ -853,11 +863,11 @@
           },
           "gridPos": {
             "h": 4,
-            "w": 4,
-            "x": 4,
+            "w": 4.8,
+            "x": 4.8,
             "y": 10
           },
-          "id": 885,
+          "id": 922,
           "links": [],
           "maxPerRow": 6,
           "options": {
@@ -866,21 +876,21 @@
               "calcs": [
                 "lastNotNull"
               ],
+              "fields": "",
               "values": false
             },
             "showThresholdLabels": false,
             "showThresholdMarkers": true
           },
-          "pluginVersion": "7.0.0",
-          "repeat": null,
+          "pluginVersion": "7.3.5",
           "repeatDirection": "h",
-          "repeatIteration": 1590507182712,
+          "repeatIteration": 1610034075552,
           "repeatPanelId": 34,
           "scopedVars": {
             "repository": {
               "selected": false,
-              "text": "GOLD-001-tenant001",
-              "value": "GOLD-001-tenant001"
+              "text": "AWS-S3-LOCAL",
+              "value": "AWS-S3-LOCAL"
             }
           },
           "targets": [
@@ -978,11 +988,11 @@
           },
           "gridPos": {
             "h": 4,
-            "w": 4,
-            "x": 8,
+            "w": 4.8,
+            "x": 9.6,
             "y": 10
           },
-          "id": 886,
+          "id": 923,
           "links": [],
           "maxPerRow": 6,
           "options": {
@@ -991,21 +1001,21 @@
               "calcs": [
                 "lastNotNull"
               ],
+              "fields": "",
               "values": false
             },
             "showThresholdLabels": false,
             "showThresholdMarkers": true
           },
-          "pluginVersion": "7.0.0",
-          "repeat": null,
+          "pluginVersion": "7.3.5",
           "repeatDirection": "h",
-          "repeatIteration": 1590507182712,
+          "repeatIteration": 1610034075552,
           "repeatPanelId": 34,
           "scopedVars": {
             "repository": {
               "selected": false,
-              "text": "SOBR-GFS",
-              "value": "SOBR-GFS"
+              "text": "CONFIG-REPO",
+              "value": "CONFIG-REPO"
             }
           },
           "targets": [
@@ -1103,11 +1113,11 @@
           },
           "gridPos": {
             "h": 4,
-            "w": 4,
-            "x": 12,
+            "w": 4.8,
+            "x": 14.399999999999999,
             "y": 10
           },
-          "id": 887,
+          "id": 924,
           "links": [],
           "maxPerRow": 6,
           "options": {
@@ -1116,390 +1126,15 @@
               "calcs": [
                 "lastNotNull"
               ],
+              "fields": "",
               "values": false
             },
             "showThresholdLabels": false,
             "showThresholdMarkers": true
           },
-          "pluginVersion": "7.0.0",
-          "repeat": null,
+          "pluginVersion": "7.3.5",
           "repeatDirection": "h",
-          "repeatIteration": 1590507182712,
-          "repeatPanelId": 34,
-          "scopedVars": {
-            "repository": {
-              "selected": false,
-              "text": "SOBR-SLA-01",
-              "value": "SOBR-SLA-01"
-            }
-          },
-          "targets": [
-            {
-              "alias": "",
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "hide": false,
-              "measurement": "veeam_office365_repository",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "SELECT (mean(\"veeamRepositoryCapacity\") - mean(\"veeamRepositoryFreeSpace\")) * (100 / mean(\"veeamRepositoryCapacity\"))  FROM  \"veeam_em_overview_repositories\" WHERE (\"veeamRepositoryName\" =~ /^$repository$/ AND \"veeamVBR\" =~ /^$veeamserver$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
-              "rawQuery": true,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "capacity"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "repository",
-                  "operator": "=~",
-                  "value": "/^$repository$/"
-                }
-              ]
-            }
-          ],
-          "title": "$repository",
-          "type": "gauge"
-        },
-        {
-          "cacheTimeout": null,
-          "datasource": "${DS_INFLUXDB}",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "custom": {},
-              "mappings": [
-                {
-                  "id": 0,
-                  "op": "=",
-                  "text": "N/A",
-                  "type": 1,
-                  "value": "null"
-                }
-              ],
-              "max": 100,
-              "min": 0,
-              "nullValueMode": "connected",
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "dark-green",
-                    "value": null
-                  },
-                  {
-                    "color": "dark-orange",
-                    "value": 65
-                  },
-                  {
-                    "color": "dark-red",
-                    "value": 85
-                  }
-                ]
-              },
-              "unit": "percent"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 4,
-            "w": 4,
-            "x": 16,
-            "y": 10
-          },
-          "id": 888,
-          "links": [],
-          "maxPerRow": 6,
-          "options": {
-            "orientation": "horizontal",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "values": false
-            },
-            "showThresholdLabels": false,
-            "showThresholdMarkers": true
-          },
-          "pluginVersion": "7.0.0",
-          "repeat": null,
-          "repeatDirection": "h",
-          "repeatIteration": 1590507182712,
-          "repeatPanelId": 34,
-          "scopedVars": {
-            "repository": {
-              "selected": false,
-              "text": "SOBR-SLA-24/06",
-              "value": "SOBR-SLA-24/06"
-            }
-          },
-          "targets": [
-            {
-              "alias": "",
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "hide": false,
-              "measurement": "veeam_office365_repository",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "SELECT (mean(\"veeamRepositoryCapacity\") - mean(\"veeamRepositoryFreeSpace\")) * (100 / mean(\"veeamRepositoryCapacity\"))  FROM  \"veeam_em_overview_repositories\" WHERE (\"veeamRepositoryName\" =~ /^$repository$/ AND \"veeamVBR\" =~ /^$veeamserver$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
-              "rawQuery": true,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "capacity"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "repository",
-                  "operator": "=~",
-                  "value": "/^$repository$/"
-                }
-              ]
-            }
-          ],
-          "title": "$repository",
-          "type": "gauge"
-        },
-        {
-          "cacheTimeout": null,
-          "datasource": "${DS_INFLUXDB}",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "custom": {},
-              "mappings": [
-                {
-                  "id": 0,
-                  "op": "=",
-                  "text": "N/A",
-                  "type": 1,
-                  "value": "null"
-                }
-              ],
-              "max": 100,
-              "min": 0,
-              "nullValueMode": "connected",
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "dark-green",
-                    "value": null
-                  },
-                  {
-                    "color": "dark-orange",
-                    "value": 65
-                  },
-                  {
-                    "color": "dark-red",
-                    "value": 85
-                  }
-                ]
-              },
-              "unit": "percent"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 4,
-            "w": 4,
-            "x": 20,
-            "y": 10
-          },
-          "id": 889,
-          "links": [],
-          "maxPerRow": 6,
-          "options": {
-            "orientation": "horizontal",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "values": false
-            },
-            "showThresholdLabels": false,
-            "showThresholdMarkers": true
-          },
-          "pluginVersion": "7.0.0",
-          "repeat": null,
-          "repeatDirection": "h",
-          "repeatIteration": 1590507182712,
-          "repeatPanelId": 34,
-          "scopedVars": {
-            "repository": {
-              "selected": false,
-              "text": "VEEAM-DEDUPE-001",
-              "value": "VEEAM-DEDUPE-001"
-            }
-          },
-          "targets": [
-            {
-              "alias": "",
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "hide": false,
-              "measurement": "veeam_office365_repository",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "SELECT (mean(\"veeamRepositoryCapacity\") - mean(\"veeamRepositoryFreeSpace\")) * (100 / mean(\"veeamRepositoryCapacity\"))  FROM  \"veeam_em_overview_repositories\" WHERE (\"veeamRepositoryName\" =~ /^$repository$/ AND \"veeamVBR\" =~ /^$veeamserver$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
-              "rawQuery": true,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "capacity"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "repository",
-                  "operator": "=~",
-                  "value": "/^$repository$/"
-                }
-              ]
-            }
-          ],
-          "title": "$repository",
-          "type": "gauge"
-        },
-        {
-          "cacheTimeout": null,
-          "datasource": "${DS_INFLUXDB}",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "custom": {},
-              "mappings": [
-                {
-                  "id": 0,
-                  "op": "=",
-                  "text": "N/A",
-                  "type": 1,
-                  "value": "null"
-                }
-              ],
-              "max": 100,
-              "min": 0,
-              "nullValueMode": "connected",
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "dark-green",
-                    "value": null
-                  },
-                  {
-                    "color": "dark-orange",
-                    "value": 65
-                  },
-                  {
-                    "color": "dark-red",
-                    "value": 85
-                  }
-                ]
-              },
-              "unit": "percent"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 4,
-            "w": 4,
-            "x": 0,
-            "y": 14
-          },
-          "id": 890,
-          "links": [],
-          "maxPerRow": 6,
-          "options": {
-            "orientation": "horizontal",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "values": false
-            },
-            "showThresholdLabels": false,
-            "showThresholdMarkers": true
-          },
-          "pluginVersion": "7.0.0",
-          "repeat": null,
-          "repeatDirection": "h",
-          "repeatIteration": 1590507182712,
+          "repeatIteration": 1610034075552,
           "repeatPanelId": 34,
           "scopedVars": {
             "repository": {
@@ -1603,11 +1238,11 @@
           },
           "gridPos": {
             "h": 4,
-            "w": 4,
-            "x": 4,
-            "y": 14
+            "w": 4.8,
+            "x": 19.2,
+            "y": 10
           },
-          "id": 891,
+          "id": 925,
           "links": [],
           "maxPerRow": 6,
           "options": {
@@ -1616,271 +1251,21 @@
               "calcs": [
                 "lastNotNull"
               ],
+              "fields": "",
               "values": false
             },
             "showThresholdLabels": false,
             "showThresholdMarkers": true
           },
-          "pluginVersion": "7.0.0",
-          "repeat": null,
+          "pluginVersion": "7.3.5",
           "repeatDirection": "h",
-          "repeatIteration": 1590507182712,
+          "repeatIteration": 1610034075552,
           "repeatPanelId": 34,
           "scopedVars": {
             "repository": {
               "selected": false,
-              "text": "VEEAM-REFS-001",
-              "value": "VEEAM-REFS-001"
-            }
-          },
-          "targets": [
-            {
-              "alias": "",
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "hide": false,
-              "measurement": "veeam_office365_repository",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "SELECT (mean(\"veeamRepositoryCapacity\") - mean(\"veeamRepositoryFreeSpace\")) * (100 / mean(\"veeamRepositoryCapacity\"))  FROM  \"veeam_em_overview_repositories\" WHERE (\"veeamRepositoryName\" =~ /^$repository$/ AND \"veeamVBR\" =~ /^$veeamserver$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
-              "rawQuery": true,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "capacity"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "repository",
-                  "operator": "=~",
-                  "value": "/^$repository$/"
-                }
-              ]
-            }
-          ],
-          "title": "$repository",
-          "type": "gauge"
-        },
-        {
-          "cacheTimeout": null,
-          "datasource": "${DS_INFLUXDB}",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "custom": {},
-              "mappings": [
-                {
-                  "id": 0,
-                  "op": "=",
-                  "text": "N/A",
-                  "type": 1,
-                  "value": "null"
-                }
-              ],
-              "max": 100,
-              "min": 0,
-              "nullValueMode": "connected",
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "dark-green",
-                    "value": null
-                  },
-                  {
-                    "color": "dark-orange",
-                    "value": 65
-                  },
-                  {
-                    "color": "dark-red",
-                    "value": 85
-                  }
-                ]
-              },
-              "unit": "percent"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 4,
-            "w": 4,
-            "x": 8,
-            "y": 14
-          },
-          "id": 892,
-          "links": [],
-          "maxPerRow": 6,
-          "options": {
-            "orientation": "horizontal",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "values": false
-            },
-            "showThresholdLabels": false,
-            "showThresholdMarkers": true
-          },
-          "pluginVersion": "7.0.0",
-          "repeat": null,
-          "repeatDirection": "h",
-          "repeatIteration": 1590507182712,
-          "repeatPanelId": 34,
-          "scopedVars": {
-            "repository": {
-              "selected": false,
-              "text": "VEEAM-REFS-002",
-              "value": "VEEAM-REFS-002"
-            }
-          },
-          "targets": [
-            {
-              "alias": "",
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "hide": false,
-              "measurement": "veeam_office365_repository",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "SELECT (mean(\"veeamRepositoryCapacity\") - mean(\"veeamRepositoryFreeSpace\")) * (100 / mean(\"veeamRepositoryCapacity\"))  FROM  \"veeam_em_overview_repositories\" WHERE (\"veeamRepositoryName\" =~ /^$repository$/ AND \"veeamVBR\" =~ /^$veeamserver$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
-              "rawQuery": true,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "capacity"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "repository",
-                  "operator": "=~",
-                  "value": "/^$repository$/"
-                }
-              ]
-            }
-          ],
-          "title": "$repository",
-          "type": "gauge"
-        },
-        {
-          "cacheTimeout": null,
-          "datasource": "${DS_INFLUXDB}",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "custom": {},
-              "mappings": [
-                {
-                  "id": 0,
-                  "op": "=",
-                  "text": "N/A",
-                  "type": 1,
-                  "value": "null"
-                }
-              ],
-              "max": 100,
-              "min": 0,
-              "nullValueMode": "connected",
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "dark-green",
-                    "value": null
-                  },
-                  {
-                    "color": "dark-orange",
-                    "value": 65
-                  },
-                  {
-                    "color": "dark-red",
-                    "value": 85
-                  }
-                ]
-              },
-              "unit": "percent"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 4,
-            "w": 4,
-            "x": 12,
-            "y": 14
-          },
-          "id": 893,
-          "links": [],
-          "maxPerRow": 6,
-          "options": {
-            "orientation": "horizontal",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "values": false
-            },
-            "showThresholdLabels": false,
-            "showThresholdMarkers": true
-          },
-          "pluginVersion": "7.0.0",
-          "repeat": null,
-          "repeatDirection": "h",
-          "repeatIteration": 1590507182712,
-          "repeatPanelId": 34,
-          "scopedVars": {
-            "repository": {
-              "selected": false,
-              "text": "VEEAM-XFS-001",
-              "value": "VEEAM-XFS-001"
+              "text": "VEEAM-ReFS-001",
+              "value": "VEEAM-ReFS-001"
             }
           },
           "targets": [
@@ -1958,7 +1343,8 @@
           "decimals": null,
           "fieldConfig": {
             "defaults": {
-              "custom": {}
+              "custom": {},
+              "links": []
             },
             "overrides": []
           },
@@ -1990,17 +1376,18 @@
           "links": [],
           "nullPointMode": "null",
           "options": {
-            "dataLinks": []
+            "alertThreshold": true
           },
           "percentage": false,
+          "pluginVersion": "7.3.5",
           "pointradius": 2,
           "points": false,
           "renderer": "flot",
           "scopedVars": {
             "veeamserver": {
               "selected": false,
-              "text": "vbr.jorgedelacruz.es",
-              "value": "vbr.jorgedelacruz.es"
+              "text": "veeam-vbr.jorgedelacruz.es",
+              "value": "veeam-vbr.jorgedelacruz.es"
             }
           },
           "seriesOverrides": [],
@@ -2150,7 +1537,8 @@
           "decimals": null,
           "fieldConfig": {
             "defaults": {
-              "custom": {}
+              "custom": {},
+              "links": []
             },
             "overrides": []
           },
@@ -2182,17 +1570,18 @@
           "links": [],
           "nullPointMode": "null",
           "options": {
-            "dataLinks": []
+            "alertThreshold": true
           },
           "percentage": false,
+          "pluginVersion": "7.3.5",
           "pointradius": 2,
           "points": false,
           "renderer": "flot",
           "scopedVars": {
             "veeamserver": {
               "selected": false,
-              "text": "vbr.jorgedelacruz.es",
-              "value": "vbr.jorgedelacruz.es"
+              "text": "veeam-vbr.jorgedelacruz.es",
+              "value": "veeam-vbr.jorgedelacruz.es"
             }
           },
           "seriesOverrides": [],
@@ -2387,15 +1776,17 @@
               "calcs": [
                 "mean"
               ],
+              "fields": "",
               "values": false
-            }
+            },
+            "textMode": "auto"
           },
-          "pluginVersion": "7.0.0",
+          "pluginVersion": "7.3.5",
           "scopedVars": {
             "veeamserver": {
               "selected": false,
-              "text": "vbr.jorgedelacruz.es",
-              "value": "vbr.jorgedelacruz.es"
+              "text": "veeam-vbr.jorgedelacruz.es",
+              "value": "veeam-vbr.jorgedelacruz.es"
             }
           },
           "targets": [
@@ -2479,16 +1870,17 @@
               "calcs": [
                 "mean"
               ],
+              "fields": "",
               "values": false
             },
             "showUnfilled": true
           },
-          "pluginVersion": "7.0.0",
+          "pluginVersion": "7.3.5",
           "scopedVars": {
             "veeamserver": {
               "selected": false,
-              "text": "vbr.jorgedelacruz.es",
-              "value": "vbr.jorgedelacruz.es"
+              "text": "veeam-vbr.jorgedelacruz.es",
+              "value": "veeam-vbr.jorgedelacruz.es"
             }
           },
           "targets": [
@@ -2564,7 +1956,8 @@
           "decimals": null,
           "fieldConfig": {
             "defaults": {
-              "custom": {}
+              "custom": {},
+              "links": []
             },
             "overrides": []
           },
@@ -2596,17 +1989,18 @@
           "links": [],
           "nullPointMode": "null",
           "options": {
-            "dataLinks": []
+            "alertThreshold": true
           },
           "percentage": false,
+          "pluginVersion": "7.3.5",
           "pointradius": 2,
           "points": false,
           "renderer": "flot",
           "scopedVars": {
             "veeamserver": {
               "selected": false,
-              "text": "vbr.jorgedelacruz.es",
-              "value": "vbr.jorgedelacruz.es"
+              "text": "veeam-vbr.jorgedelacruz.es",
+              "value": "veeam-vbr.jorgedelacruz.es"
             }
           },
           "seriesOverrides": [],
@@ -2742,168 +2136,178 @@
       "type": "row"
     },
     {
-      "collapsed": false,
+      "collapsed": true,
       "datasource": "${DS_INFLUXDB}",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 21
+        "y": 11
       },
       "id": 569,
-      "panels": [],
+      "panels": [
+        {
+          "cacheTimeout": null,
+          "datasource": "${DS_INFLUXDB}",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "decimals": 0,
+              "mappings": [
+                {
+                  "id": 0,
+                  "op": "=",
+                  "text": "Success",
+                  "type": 1,
+                  "value": "1"
+                },
+                {
+                  "id": 1,
+                  "op": "=",
+                  "text": "Warning",
+                  "type": 1,
+                  "value": "2"
+                },
+                {
+                  "id": 2,
+                  "op": "=",
+                  "text": "Failed",
+                  "type": 1,
+                  "value": "3"
+                }
+              ],
+              "nullValueMode": "connected",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "rgb(133, 133, 133)",
+                    "value": null
+                  },
+                  {
+                    "color": "dark-green",
+                    "value": 0
+                  },
+                  {
+                    "color": "dark-orange",
+                    "value": 1.1
+                  },
+                  {
+                    "color": "dark-red",
+                    "value": 2.1
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 4,
+            "x": 0,
+            "y": 12
+          },
+          "id": 109,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "maxPerRow": 6,
+          "options": {
+            "colorMode": "background",
+            "fieldOptions": {
+              "calcs": [
+                "lastNotNull"
+              ]
+            },
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.3.5",
+          "repeat": "backupjob",
+          "repeatDirection": "h",
+          "scopedVars": {
+            "veeamserver": {
+              "selected": false,
+              "text": "veeam-vbr.jorgedelacruz.es",
+              "value": "veeam-vbr.jorgedelacruz.es"
+            }
+          },
+          "targets": [
+            {
+              "alias": "$tag_veeamBackupSessionsName",
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "veeamBackupSessionsName"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "none"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "veeam_em_job_sessions",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "SELECT last(\"uptime_latest\") FROM \"vsphere_host_sys\" WHERE (\"esxhostname\" =~ /^$esxi$/ AND \"vcenter\" =~ /^$vcenter$/ AND \"clustername\" =~ /^$clustername$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+              "rawQuery": false,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "veeamBackupSessionsJobResult"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "veeamBackupSessionsName",
+                  "operator": "=~",
+                  "value": "/^$backupjob$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "veeamVBR",
+                  "operator": "=~",
+                  "value": "/^$veeamserver$/"
+                }
+              ]
+            }
+          ],
+          "title": "$backupjob - Last Result",
+          "type": "stat"
+        }
+      ],
       "repeat": "veeamserver",
       "title": "$veeamserver v$veeamversionM ($veeamversion) - Backup Jobs",
       "type": "row"
-    },
-    {
-      "cacheTimeout": null,
-      "datasource": "${DS_INFLUXDB}",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {},
-          "decimals": 0,
-          "mappings": [
-            {
-              "id": 0,
-              "op": "=",
-              "text": "Success",
-              "type": 1,
-              "value": "1"
-            },
-            {
-              "id": 1,
-              "op": "=",
-              "text": "Warning",
-              "type": 1,
-              "value": "2"
-            },
-            {
-              "id": 2,
-              "op": "=",
-              "text": "Failed",
-              "type": 1,
-              "value": "3"
-            }
-          ],
-          "nullValueMode": "connected",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "rgb(133, 133, 133)",
-                "value": null
-              },
-              {
-                "color": "dark-green",
-                "value": 0
-              },
-              {
-                "color": "dark-orange",
-                "value": 1.1
-              },
-              {
-                "color": "dark-red",
-                "value": 2.1
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 0,
-        "y": 22
-      },
-      "id": 109,
-      "interval": null,
-      "links": [],
-      "maxDataPoints": 100,
-      "maxPerRow": 6,
-      "options": {
-        "colorMode": "background",
-        "fieldOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "values": false
-        }
-      },
-      "pluginVersion": "7.0.0",
-      "repeat": "backupjob",
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "alias": "$tag_veeamBackupSessionsName",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "veeamBackupSessionsName"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "none"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "veeam_em_job_sessions",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT last(\"uptime_latest\") FROM \"vsphere_host_sys\" WHERE (\"esxhostname\" =~ /^$esxi$/ AND \"vcenter\" =~ /^$vcenter$/ AND \"clustername\" =~ /^$clustername$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
-          "rawQuery": false,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "veeamBackupSessionsJobResult"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "veeamBackupSessionsName",
-              "operator": "=~",
-              "value": "/^$backupjob$/"
-            },
-            {
-              "condition": "AND",
-              "key": "veeamVBR",
-              "operator": "=~",
-              "value": "/^$veeamserver$/"
-            }
-          ]
-        }
-      ],
-      "title": "$backupjob - Last Result",
-      "type": "stat"
     },
     {
       "collapsed": true,
@@ -2912,7 +2316,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 71
+        "y": 12
       },
       "id": 608,
       "panels": [
@@ -3011,8 +2415,8 @@
             },
             "veeamserver": {
               "selected": false,
-              "text": "vbr.jorgedelacruz.es",
-              "value": "vbr.jorgedelacruz.es"
+              "text": "veeam-vbr.jorgedelacruz.es",
+              "value": "veeam-vbr.jorgedelacruz.es"
             }
           },
           "targets": [
@@ -3089,7 +2493,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 143
+        "y": 13
       },
       "id": 622,
       "panels": [],
@@ -3156,7 +2560,7 @@
         "h": 4,
         "w": 2,
         "x": 0,
-        "y": 144
+        "y": 14
       },
       "id": 369,
       "interval": null,
@@ -3177,10 +2581,12 @@
           "calcs": [
             "lastNotNull"
           ],
+          "fields": "",
           "values": false
-        }
+        },
+        "textMode": "auto"
       },
-      "pluginVersion": "7.0.0",
+      "pluginVersion": "7.3.5",
       "repeat": "backupvm",
       "repeatDirection": "h",
       "targets": [
@@ -3252,7 +2658,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 308
+        "y": 26
       },
       "id": 625,
       "panels": [
@@ -3350,8 +2756,8 @@
             },
             "veeamserver": {
               "selected": false,
-              "text": "vbr.jorgedelacruz.es",
-              "value": "vbr.jorgedelacruz.es"
+              "text": "veeam-vbr.jorgedelacruz.es",
+              "value": "veeam-vbr.jorgedelacruz.es"
             }
           },
           "targets": [
@@ -3506,8 +2912,8 @@
             },
             "veeamserver": {
               "selected": false,
-              "text": "vbr.jorgedelacruz.es",
-              "value": "vbr.jorgedelacruz.es"
+              "text": "veeam-vbr.jorgedelacruz.es",
+              "value": "veeam-vbr.jorgedelacruz.es"
             }
           },
           "targets": [
@@ -3662,8 +3068,8 @@
             },
             "veeamserver": {
               "selected": false,
-              "text": "vbr.jorgedelacruz.es",
-              "value": "vbr.jorgedelacruz.es"
+              "text": "veeam-vbr.jorgedelacruz.es",
+              "value": "veeam-vbr.jorgedelacruz.es"
             }
           },
           "targets": [
@@ -3818,8 +3224,8 @@
             },
             "veeamserver": {
               "selected": false,
-              "text": "vbr.jorgedelacruz.es",
-              "value": "vbr.jorgedelacruz.es"
+              "text": "veeam-vbr.jorgedelacruz.es",
+              "value": "veeam-vbr.jorgedelacruz.es"
             }
           },
           "targets": [
@@ -3974,8 +3380,8 @@
             },
             "veeamserver": {
               "selected": false,
-              "text": "vbr.jorgedelacruz.es",
-              "value": "vbr.jorgedelacruz.es"
+              "text": "veeam-vbr.jorgedelacruz.es",
+              "value": "veeam-vbr.jorgedelacruz.es"
             }
           },
           "targets": [
@@ -4046,7 +3452,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 617
+        "y": 27
       },
       "id": 668,
       "panels": [],
@@ -4055,171 +3461,122 @@
       "type": "row"
     },
     {
-      "columns": [],
       "datasource": "${DS_INFLUXDB}",
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {
+            "displayMode": "color-background",
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue",
+                "value": null
+              }
+            ]
+          }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Veeam Agent Status"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "from": "",
+                    "id": 1,
+                    "text": "✅",
+                    "to": "",
+                    "type": 1,
+                    "value": "1"
+                  },
+                  {
+                    "from": "",
+                    "id": 2,
+                    "text": "⚠️",
+                    "to": "",
+                    "type": 1,
+                    "value": "2"
+                  },
+                  {
+                    "from": "",
+                    "id": 3,
+                    "text": "❌",
+                    "to": "",
+                    "type": 1,
+                    "value": "3"
+                  },
+                  {
+                    "from": "",
+                    "id": 4,
+                    "text": "No info",
+                    "to": "",
+                    "type": 1,
+                    "value": "null"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Last Seen"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "from": "",
+                    "id": 1,
+                    "text": "✅",
+                    "to": "",
+                    "type": 1,
+                    "value": "1"
+                  },
+                  {
+                    "from": "",
+                    "id": 2,
+                    "text": "❌",
+                    "to": "",
+                    "type": 1,
+                    "value": "2"
+                  },
+                  {
+                    "from": "",
+                    "id": 3,
+                    "text": "No info",
+                    "to": "",
+                    "type": 1,
+                    "value": "null"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       },
-      "fontSize": "100%",
       "gridPos": {
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 618
+        "y": 28
       },
       "hideTimeOverride": false,
       "id": 750,
       "links": [],
-      "pageSize": null,
-      "scroll": true,
-      "showHeader": true,
-      "sort": {
-        "col": 0,
-        "desc": true
+      "options": {
+        "showHeader": true
       },
-      "styles": [
-        {
-          "alias": "Time",
-          "align": "auto",
-          "dateFormat": "MMMM D, YYYY LT",
-          "link": false,
-          "pattern": "Time",
-          "type": "hidden"
-        },
-        {
-          "alias": "Veeam Agent Name",
-          "align": "auto",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 0,
-          "mappingType": 1,
-          "pattern": "veeamAgentName",
-          "thresholds": [],
-          "type": "number",
-          "unit": "none"
-        },
-        {
-          "alias": "Status",
-          "align": "auto",
-          "colorMode": null,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "decimals": 0,
-          "link": false,
-          "mappingType": 1,
-          "pattern": "agentstatus",
-          "preserveFormat": false,
-          "sanitize": true,
-          "thresholds": [
-            ""
-          ],
-          "type": "string",
-          "unit": "short",
-          "valueMaps": [
-            {
-              "text": "✅",
-              "value": "1"
-            },
-            {
-              "text": "⚠️",
-              "value": "2"
-            },
-            {
-              "text": "❌",
-              "value": "3"
-            },
-            {
-              "text": "",
-              "value": "4"
-            },
-            {
-              "text": "No info",
-              "value": "null"
-            }
-          ]
-        },
-        {
-          "alias": "Last seen",
-          "align": "auto",
-          "colorMode": null,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "link": false,
-          "mappingType": 1,
-          "pattern": "agenthoststatus",
-          "preserveFormat": false,
-          "sanitize": false,
-          "thresholds": [
-            ""
-          ],
-          "type": "string",
-          "unit": "short",
-          "valueMaps": [
-            {
-              "text": "✅",
-              "value": "1"
-            },
-            {
-              "text": "❌",
-              "value": "2"
-            },
-            {
-              "text": "No Info",
-              "value": "null"
-            }
-          ]
-        },
-        {
-          "alias": "Veeam Agent Version",
-          "align": "auto",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "veeamAgentVersion",
-          "thresholds": [],
-          "type": "number",
-          "unit": "short"
-        },
-        {
-          "alias": "Veeam Agent OS Version",
-          "align": "auto",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "veeamAgentOsVersion",
-          "thresholds": [],
-          "type": "number",
-          "unit": "short"
-        }
-      ],
+      "pluginVersion": "7.3.5",
       "targets": [
         {
           "alias": "$tag_veeamAgentName",
@@ -4233,6 +3590,12 @@
             {
               "params": [
                 "veeamAgentOsVersion"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "veeamAgentVersion"
               ],
               "type": "tag"
             }
@@ -4285,19 +3648,11 @@
                 "veeamAgentName"
               ],
               "type": "tag"
-            },
-            {
-              "params": [
-                "veeamAgentVersion"
-              ],
-              "type": "tag"
             }
           ],
           "measurement": "veeam_em_agents",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT last(\"veeamAgentHostStatus\") AS \"agenthoststatus\" FROM \"veeam_em_agents\" WHERE (\"veeamAgentName\" =~ /^$veeamagent$/ AND \"veeamVBR\" =~ /^$veeamserver$/) AND $timeFilter GROUP BY \"veeamAgentName\", \"veeamAgentVersion\"",
-          "rawQuery": false,
           "refId": "B",
           "resultFormat": "table",
           "select": [
@@ -4332,14 +3687,49 @@
               "operator": "=~",
               "value": "/^$veeamserver$/"
             }
-          ]
+          ],
+          "tz": ""
         }
       ],
       "timeFrom": null,
       "timeShift": null,
       "title": "Veeam Agent Status and Information",
-      "transform": "table",
-      "type": "table-old"
+      "transformations": [
+        {
+          "id": "seriesToColumns",
+          "options": {
+            "byField": "veeamAgentName"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time 1": true,
+              "Time 2": true
+            },
+            "indexByName": {
+              "Time 1": 5,
+              "Time 2": 6,
+              "agenthoststatus": 4,
+              "agentstatus": 3,
+              "veeamAgentName": 0,
+              "veeamAgentOsVersion": 1,
+              "veeamAgentVersion": 2
+            },
+            "renameByName": {
+              "agenthoststatus": "Last Seen",
+              "agentstatus": "Veeam Agent Status",
+              "veeamAgentName": "Veeam Agent Name",
+              "veeamAgentOsVersion": "Veeam Agent OS version",
+              "veeamAgentOsVersion 1": "Veeam Agent OS version",
+              "veeamAgentVersion": "Veeam Agent version",
+              "veeamAgentVersion 1": "Veeam Agent version"
+            }
+          }
+        }
+      ],
+      "type": "table"
     },
     {
       "collapsed": false,
@@ -4348,7 +3738,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 1248
+        "y": 34
       },
       "id": 752,
       "panels": [],
@@ -4357,143 +3747,40 @@
       "type": "row"
     },
     {
-      "columns": [],
       "datasource": "${DS_INFLUXDB}",
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {
+            "align": null,
+            "displayMode": "color-background",
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-purple",
+                "value": null
+              }
+            ]
+          }
         },
         "overrides": []
       },
-      "fontSize": "100%",
       "gridPos": {
         "h": 9,
         "w": 13,
         "x": 0,
-        "y": 1249
+        "y": 35
       },
       "hideTimeOverride": false,
       "id": 755,
       "links": [],
-      "pageSize": null,
-      "scroll": true,
-      "showHeader": true,
-      "sort": {
-        "col": 0,
-        "desc": true
+      "options": {
+        "showHeader": true
       },
-      "styles": [
-        {
-          "alias": "Time",
-          "align": "auto",
-          "dateFormat": "MMMM D, YYYY LT",
-          "link": false,
-          "pattern": "Time",
-          "type": "hidden"
-        },
-        {
-          "alias": "Veeam NAS Job Name",
-          "align": "left",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 0,
-          "mappingType": 1,
-          "pattern": "veeamNASJobName",
-          "preserveFormat": true,
-          "sanitize": true,
-          "thresholds": [],
-          "type": "string",
-          "unit": "none"
-        },
-        {
-          "alias": "NAS Path",
-          "align": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "decimals": 0,
-          "link": false,
-          "mappingType": 1,
-          "pattern": "veeamNASJobPath",
-          "preserveFormat": true,
-          "sanitize": true,
-          "thresholds": [
-            ""
-          ],
-          "type": "string",
-          "unit": "short",
-          "valueMaps": []
-        },
-        {
-          "alias": "Short Term Retention",
-          "align": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "link": false,
-          "mappingType": 1,
-          "pattern": "Short-Term",
-          "preserveFormat": true,
-          "sanitize": true,
-          "thresholds": [
-            ""
-          ],
-          "type": "string",
-          "unit": "short",
-          "valueMaps": []
-        },
-        {
-          "alias": "NAS Exclusions",
-          "align": "auto",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "veeamNASJobExclusions",
-          "preserveFormat": true,
-          "sanitize": true,
-          "thresholds": [],
-          "type": "string",
-          "unit": "short"
-        },
-        {
-          "alias": "Retention Type",
-          "align": "auto",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "veeamNASJobShortTermType",
-          "preserveFormat": true,
-          "sanitize": true,
-          "thresholds": [],
-          "type": "string",
-          "unit": "short"
-        }
-      ],
+      "pluginVersion": "7.3.5",
       "targets": [
         {
           "alias": "$tag_veeamAgentName",
@@ -4623,8 +3910,36 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Veeam Agent Status and Information",
-      "transform": "table",
-      "type": "table-old"
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "Short-Term": 2,
+              "Time": 5,
+              "veeamNASJobExclusions": 4,
+              "veeamNASJobName": 0,
+              "veeamNASJobPath": 1,
+              "veeamNASJobShortTermType": 3
+            },
+            "renameByName": {
+              "Short-Term": "Short-Term Retention",
+              "veeamNASJobExclusions": "NAS Exclusions",
+              "veeamNASJobName": "Veeam NAS Job Name",
+              "veeamNASJobPath": "SMB/CIFS Path",
+              "veeamNASJobShortTermType": "Retention Type"
+            }
+          }
+        }
+      ],
+      "type": "table"
     },
     {
       "aliasColors": {},
@@ -4634,7 +3949,8 @@
       "datasource": "${DS_INFLUXDB}",
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -4644,7 +3960,7 @@
         "h": 9,
         "w": 11,
         "x": 13,
-        "y": 1249
+        "y": 35
       },
       "hiddenSeries": false,
       "hideTimeOverride": false,
@@ -4667,9 +3983,10 @@
       "links": [],
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.3.5",
       "pointradius": 3,
       "points": true,
       "renderer": "flot",
@@ -4779,7 +4096,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 2516
+        "y": 44
       },
       "id": 627,
       "panels": [],
@@ -4801,7 +4118,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 2517
+        "y": 45
       },
       "hideTimeOverride": false,
       "id": 113,
@@ -4815,6 +4132,7 @@
       },
       "styles": [
         {
+          "$$hashKey": "object:1030",
           "alias": "Time",
           "align": "auto",
           "dateFormat": "MMMM D, YYYY LT",
@@ -4823,6 +4141,7 @@
           "type": "date"
         },
         {
+          "$$hashKey": "object:1031",
           "alias": "",
           "align": "auto",
           "colorMode": null,
@@ -4845,18 +4164,22 @@
           "unit": "short",
           "valueMaps": [
             {
+              "$$hashKey": "object:1066",
               "text": "✅",
               "value": "1"
             },
             {
+              "$$hashKey": "object:1067",
               "text": "⚠️",
               "value": "2"
             },
             {
+              "$$hashKey": "object:1068",
               "text": "❌",
               "value": "3"
             },
             {
+              "$$hashKey": "object:1069",
               "text": "",
               "value": "null"
             }
@@ -4934,7 +4257,8 @@
       "datasource": "${DS_INFLUXDB}",
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -4944,7 +4268,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 2517
+        "y": 45
       },
       "hiddenSeries": false,
       "hideTimeOverride": false,
@@ -4968,9 +4292,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.3.5",
       "pointradius": 3,
       "points": true,
       "renderer": "flot",
@@ -5136,7 +4461,7 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 25,
+  "schemaVersion": 26,
   "style": "dark",
   "tags": [
     "Veeam",
@@ -5153,6 +4478,7 @@
           "text": "auto",
           "value": "$__auto_interval_inter"
         },
+        "error": null,
         "hide": 0,
         "label": "Sampling",
         "name": "inter",
@@ -5224,6 +4550,7 @@
         "current": {},
         "datasource": "${DS_INFLUXDB}",
         "definition": "SHOW TAG VALUES FROM veeam_em_overview WITH KEY=host",
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": "Enterprise Manager",
@@ -5246,6 +4573,7 @@
         "current": {},
         "datasource": "${DS_INFLUXDB}",
         "definition": "SHOW TAG VALUES FROM veeam_em_job_sessions WITH KEY=veeamVBR",
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": "Veeam Backup Server",
@@ -5268,6 +4596,7 @@
         "current": {},
         "datasource": "${DS_INFLUXDB}",
         "definition": "SHOW TAG VALUES FROM veeam_em_overview_repositories WITH KEY=veeamRepositoryName WHERE \"veeamVBR\" =~ /$veeamserver/",
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": "Backup Repository",
@@ -5290,6 +4619,7 @@
         "current": {},
         "datasource": "${DS_INFLUXDB}",
         "definition": "SHOW TAG VALUES FROM veeam_em_job_sessions WITH KEY=veeamBackupSessionsName WHERE \"veeamVBR\" =~ /$veeamserver/",
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": "Backup Job",
@@ -5312,6 +4642,7 @@
         "current": {},
         "datasource": "${DS_INFLUXDB}",
         "definition": "SHOW TAG VALUES FROM veeam_em_job_sessions WITH KEY=veeamReplicaSessionsName WHERE \"veeamVBR\" =~ /$veeamserver/",
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": "Replica Job",
@@ -5334,6 +4665,7 @@
         "current": {},
         "datasource": "${DS_INFLUXDB}",
         "definition": "SHOW TAG VALUES FROM veeam_em_job_sessionsvm WITH KEY=veeamBackupSessionsVmDisplayName WHERE \"veeamVBR\" =~ /$veeamserver/",
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": "Protected VM",
@@ -5356,6 +4688,7 @@
         "current": {},
         "datasource": "${DS_INFLUXDB}",
         "definition": "SHOW TAG VALUES FROM veeam_em_job_sessionsvm WITH KEY=veeamReplicaSessionsVmDisplayName WHERE \"veeamVBR\" =~ /$veeamserver/",
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": "Replicated VM",
@@ -5378,6 +4711,7 @@
         "current": {},
         "datasource": "${DS_INFLUXDB}",
         "definition": "SHOW TAG VALUES FROM veeam_em_backup_servers WITH KEY=veeamBackupServersVersion WHERE \"veeamVBR\" =~ /$veeamserver/",
+        "error": null,
         "hide": 2,
         "includeAll": false,
         "label": "",
@@ -5400,6 +4734,7 @@
         "current": {},
         "datasource": "${DS_INFLUXDB}",
         "definition": "SHOW TAG VALUES FROM veeam_em_backup_servers WITH KEY=veeamBackupServersVersionM WHERE \"veeamVBR\" =~ /$veeamserver/",
+        "error": null,
         "hide": 2,
         "includeAll": false,
         "label": "",
@@ -5422,6 +4757,7 @@
         "current": {},
         "datasource": "${DS_INFLUXDB}",
         "definition": "SHOW TAG VALUES FROM veeam_em_agents WITH KEY=veeamAgentName WHERE \"veeamVBR\" =~ /$veeamserver/",
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": "Veeam Agent",
@@ -5444,6 +4780,7 @@
         "current": {},
         "datasource": "${DS_INFLUXDB}",
         "definition": "SHOW TAG VALUES FROM veeam_em_nas_jobs WITH KEY=veeamNASJobPath WHERE \"veeamVBR\" =~ /$veeamserver/",
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": "NAS",
@@ -5466,6 +4803,7 @@
         "current": {},
         "datasource": "${DS_INFLUXDB}",
         "definition": "SHOW TAG VALUES FROM veeam_em_nas_sessions WITH KEY=veeamNASJobName WHERE \"veeamVBR\" =~ /$veeamserver/",
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": "NAS  Job",
@@ -5516,5 +4854,5 @@
   "timezone": "browser",
   "title": "Grafana Dashboard for Veeam Enterprise Manager",
   "uid": "WmrXrCYZk",
-  "version": 23
+  "version": 2
 }
