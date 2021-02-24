@@ -14,19 +14,19 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "6.6.2"
+      "version": "7.3.5"
     },
     {
       "type": "panel",
       "id": "grafana-piechart-panel",
       "name": "Pie Chart",
-      "version": "1.4.0"
+      "version": "1.6.1"
     },
     {
       "type": "panel",
       "id": "grafana-worldmap-panel",
       "name": "Worldmap Panel",
-      "version": "0.2.1"
+      "version": "0.3.2"
     },
     {
       "type": "panel",
@@ -39,12 +39,6 @@
       "id": "influxdb",
       "name": "InfluxDB",
       "version": "1.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "singlestat",
-      "name": "Singlestat",
-      "version": ""
     },
     {
       "type": "panel",
@@ -78,17 +72,22 @@
       }
     ]
   },
-  "description": "Grafana Dashboard for Veeam Backup for Azure",
+  "description": "Grafana Dashboard for Veeam Backup for Azure (v2)",
   "editable": true,
-  "gnetId": null,
+  "gnetId": 12204,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1589027753706,
+  "iteration": 1612654145366,
   "links": [],
   "panels": [
     {
-      "content": "<a href=\"https://www.veeam.com/backup-azure.html\" target=\"_blank\"><img src=\"https://www.jorgedelacruz.es/VCB_product_icon.svg\" alt=\"drawing\" width=\"50\"/></a>\n\n",
       "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 2,
         "w": 1,
@@ -96,8 +95,11 @@
         "y": 0
       },
       "id": 28,
-      "mode": "html",
-      "options": {},
+      "options": {
+        "content": "<a href=\"https://www.veeam.com/backup-azure.html\" target=\"_blank\"><img src=\"https://www.jorgedelacruz.es/VCB_product_icon.svg\" alt=\"drawing\" width=\"50\"/></a>\n\n",
+        "mode": "html"
+      },
+      "pluginVersion": "7.3.5",
       "targets": [
         {
           "groupBy": [
@@ -143,6 +145,28 @@
     },
     {
       "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#135f4b",
+            "mode": "fixed"
+          },
+          "custom": {},
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#135f4b",
+                "value": null
+              }
+            ]
+          },
+          "unit": "locale"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 2,
         "w": 15,
@@ -151,34 +175,20 @@
       },
       "id": 2,
       "options": {
-        "colorMode": "value",
-        "fieldOptions": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
           "calcs": [
             "lastNotNull"
           ],
-          "defaults": {
-            "decimals": 2,
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "#d8d9da",
-                  "value": null
-                }
-              ]
-            },
-            "title": "",
-            "unit": "locale"
-          },
-          "overrides": [],
+          "fields": "",
           "values": false
         },
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "vertical"
+        "textMode": "value_and_name"
       },
-      "pluginVersion": "6.6.2",
+      "pluginVersion": "7.3.5",
       "targets": [
         {
           "alias": "Total Policies",
@@ -337,23 +347,32 @@
     },
     {
       "cacheTimeout": null,
-      "colorBackground": false,
-      "colorPrefix": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
       "datasource": "${DS_INFLUXDB}",
-      "decimals": null,
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [
+            {
+              "id": 0,
+              "op": "=",
+              "text": "N/A",
+              "type": 1,
+              "value": "null"
+            }
+          ],
+          "nullValueMode": "connected",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#135f4b",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 2,
@@ -364,45 +383,25 @@
       "id": 22,
       "interval": null,
       "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
       "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "pluginVersion": "6.6.2",
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "Version",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "name"
       },
-      "tableColumn": "version",
+      "pluginVersion": "7.3.5",
       "targets": [
         {
-          "alias": "$tag_workerversion",
+          "alias": "Version $tag_version",
           "groupBy": [
             {
               "params": [
@@ -427,7 +426,7 @@
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
-          "resultFormat": "table",
+          "resultFormat": "time_series",
           "select": [
             [
               {
@@ -445,39 +444,39 @@
           "tags": []
         }
       ],
-      "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
       "title": "",
-      "type": "singlestat",
-      "valueFontSize": "70%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "current"
+      "type": "stat"
     },
     {
       "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
       "datasource": "${DS_INFLUXDB}",
-      "decimals": null,
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [
+            {
+              "id": 0,
+              "op": "=",
+              "text": "N/A",
+              "type": 1,
+              "value": "null"
+            }
+          ],
+          "nullValueMode": "connected",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#135f4b",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 2,
@@ -488,45 +487,25 @@
       "id": 21,
       "interval": null,
       "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
       "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "pluginVersion": "6.6.2",
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "Worker Version",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "name"
       },
-      "tableColumn": "workerversion",
+      "pluginVersion": "7.3.5",
       "targets": [
         {
-          "alias": "$tag_workerversion",
+          "alias": "Worker $tag_workerversion",
           "groupBy": [
             {
               "params": [
@@ -551,7 +530,7 @@
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
-          "resultFormat": "table",
+          "resultFormat": "time_series",
           "select": [
             [
               {
@@ -569,20 +548,10 @@
           "tags": []
         }
       ],
-      "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
       "title": "",
-      "type": "singlestat",
-      "valueFontSize": "70%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "current"
+      "type": "stat"
     },
     {
       "circleMaxSize": "10",
@@ -594,26 +563,31 @@
       "datasource": "${DS_INFLUXDB}",
       "decimals": 0,
       "description": "On this Map, you can quickly know which VMs are not Protected by Veeam Backup for Azure. \nWith a simple, yet powerful view, you can understand and try to mitigate the red spots.",
-      "esGeoPoint": "geohash/VMRegion",
+      "esGeoPoint": "geohash",
       "esLocationName": "",
       "esMetric": "metric",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
       "gridPos": {
-        "h": 12,
-        "w": 24,
+        "h": 16,
+        "w": 12,
         "x": 0,
         "y": 2
       },
       "hideEmpty": true,
       "hideZero": true,
       "id": 8,
-      "initialZoom": "3",
+      "initialZoom": "2",
       "locationData": "table",
       "mapCenter": "custom",
       "mapCenterLatitude": "45",
       "mapCenterLongitude": "8",
       "maxDataPoints": 1,
       "mouseWheelZoom": false,
-      "options": {},
       "showLegend": false,
       "stickyLabels": false,
       "tableQueryOptions": {
@@ -626,7 +600,7 @@
       },
       "targets": [
         {
-          "alias": "$tag_VMRegion",
+          "alias": "$tag_geohash",
           "groupBy": [
             {
               "params": [
@@ -637,12 +611,6 @@
             {
               "params": [
                 "geohash"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "VMName"
               ],
               "type": "tag"
             },
@@ -675,7 +643,7 @@
               },
               {
                 "params": [],
-                "type": "count"
+                "type": "last"
               },
               {
                 "params": [
@@ -692,16 +660,17 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Unprotected VMs",
+      "transformations": [],
       "type": "grafana-worldmap-panel",
       "unitPlural": "Unprotected VMs",
       "unitSingle": "",
       "unitSingular": "Unprotected VM",
-      "valueName": "total"
+      "valueName": "current"
     },
     {
       "aliasColors": {
-        "Protected VMs": "#8acc5a",
-        "Unprotected VMs": "#e77c6b"
+        "Protected VMs": "#37872D",
+        "Unprotected VMs": "#C4162A"
       },
       "breakPoint": "50%",
       "cacheTimeout": null,
@@ -711,13 +680,19 @@
       },
       "datasource": "${DS_INFLUXDB}",
       "decimals": null,
-      "fontSize": "80%",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fontSize": "100%",
       "format": "none",
       "gridPos": {
         "h": 9,
         "w": 4,
-        "x": 0,
-        "y": 14
+        "x": 12,
+        "y": 2
       },
       "id": 30,
       "interval": null,
@@ -731,7 +706,6 @@
       "links": [],
       "maxDataPoints": 3,
       "nullPointMode": "connected",
-      "options": {},
       "pieType": "pie",
       "strokeWidth": "0",
       "targets": [
@@ -817,211 +791,26 @@
       "valueName": "max"
     },
     {
-      "cacheTimeout": null,
-      "columns": [],
-      "datasource": "${DS_INFLUXDB}",
-      "description": "On this Panel, you can quickly know which VMs are not Protected by Veeam Backup for Azure. With all the needed details as VM Name, Operating System, Azure Region, and Azure Instance Type.",
-      "fontSize": "100%",
-      "gridPos": {
-        "h": 9,
-        "w": 10,
-        "x": 4,
-        "y": 14
-      },
-      "id": 26,
-      "interval": "",
-      "links": [],
-      "options": {},
-      "pageSize": null,
-      "pluginVersion": "6.6.2",
-      "showHeader": true,
-      "sort": {
-        "col": 0,
-        "desc": true
-      },
-      "styles": [
-        {
-          "alias": "Time",
-          "align": "auto",
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "Time",
-          "type": "hidden"
-        },
-        {
-          "alias": "VM Name",
-          "align": "left",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "decimals": 2,
-          "pattern": "VMName",
-          "preserveFormat": true,
-          "sanitize": true,
-          "thresholds": [],
-          "type": "string",
-          "unit": "short"
-        },
-        {
-          "alias": "",
-          "align": "auto",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 0,
-          "link": false,
-          "mappingType": 1,
-          "pattern": "VM  Size",
-          "thresholds": [],
-          "type": "number",
-          "unit": "decgbytes"
-        },
-        {
-          "alias": "OS",
-          "align": "left",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "VMOSType",
-          "preserveFormat": true,
-          "sanitize": true,
-          "thresholds": [],
-          "type": "string",
-          "unit": "short"
-        },
-        {
-          "alias": "Azure Region",
-          "align": "auto",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "VMRegion",
-          "thresholds": [],
-          "type": "number",
-          "unit": "short"
-        },
-        {
-          "alias": "Instance Type",
-          "align": "auto",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "VMType",
-          "thresholds": [],
-          "type": "number",
-          "unit": "short"
-        }
-      ],
-      "targets": [
-        {
-          "alias": "",
-          "groupBy": [
-            {
-              "params": [
-                "VMName"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "VMRegion"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "VMType"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "VMOSType"
-              ],
-              "type": "tag"
-            }
-          ],
-          "measurement": "veeam_azure_vm_unprotected",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT last(\"VMSize\") AS \"VM  Size\" FROM \"veeam_azure_vm_unprotected\" WHERE (\"VMName\" =~ /^$VMName$/) AND $timeFilter GROUP BY \"VMName\", \"VMRegion\" ",
-          "rawQuery": false,
-          "refId": "A",
-          "resultFormat": "table",
-          "select": [
-            [
-              {
-                "params": [
-                  "VMSize"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              },
-              {
-                "params": [
-                  "VM  Size"
-                ],
-                "type": "alias"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "VMName",
-              "operator": "=~",
-              "value": "/^$VMName$/"
-            }
-          ],
-          "tz": ""
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Unprotected VMs",
-      "transform": "table",
-      "type": "table"
-    },
-    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": "${DS_INFLUXDB}",
       "description": "On this Panel, you can quickly know how much time did a Backup, or Snapshot Policy take. You can quickly filter by Policy Name on the top menu.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "links": []
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 4,
-        "w": 10,
-        "x": 14,
-        "y": 14
+        "h": 9,
+        "w": 8,
+        "x": 16,
+        "y": 2
       },
       "hiddenSeries": false,
       "hideTimeOverride": false,
@@ -1045,9 +834,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.3.5",
       "pointradius": 3,
       "points": true,
       "renderer": "flot",
@@ -1161,110 +951,111 @@
       }
     },
     {
-      "columns": [],
       "datasource": "${DS_INFLUXDB}",
-      "fontSize": "100%",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "center",
+            "displayMode": "color-background",
+            "filterable": true
+          },
+          "mappings": [
+            {
+              "from": "",
+              "id": 1,
+              "text": "Success",
+              "to": "",
+              "type": 1,
+              "value": "1"
+            },
+            {
+              "from": "",
+              "id": 2,
+              "text": "Warning",
+              "to": "",
+              "type": 1,
+              "value": "2"
+            },
+            {
+              "from": "",
+              "id": 3,
+              "text": "Failed",
+              "to": "",
+              "type": 1,
+              "value": "3"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue",
+                "value": null
+              },
+              {
+                "color": "dark-green",
+                "value": 1
+              },
+              {
+                "color": "dark-orange",
+                "value": 2
+              },
+              {
+                "color": "dark-red",
+                "value": 3
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Policy Name"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Policy Type"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode"
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
-        "h": 5,
-        "w": 10,
-        "x": 14,
-        "y": 18
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 11
       },
       "hideTimeOverride": false,
       "id": 17,
       "links": [],
-      "options": {},
-      "pageSize": null,
-      "scroll": true,
-      "showHeader": true,
-      "sort": {
-        "col": 0,
-        "desc": true
+      "options": {
+        "showHeader": true
       },
-      "styles": [
-        {
-          "alias": "Date",
-          "align": "auto",
-          "dateFormat": "MMMM D, YYYY LT",
-          "link": false,
-          "pattern": "Time",
-          "type": "date"
-        },
-        {
-          "alias": "Result",
-          "align": "auto",
-          "colorMode": null,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "decimals": 0,
-          "link": false,
-          "mappingType": 1,
-          "pattern": "last",
-          "preserveFormat": false,
-          "sanitize": true,
-          "thresholds": [
-            "2",
-            "3"
-          ],
-          "type": "string",
-          "unit": "short",
-          "valueMaps": [
-            {
-              "text": "✅",
-              "value": "1"
-            },
-            {
-              "text": "⚠️",
-              "value": "2"
-            },
-            {
-              "text": "❌",
-              "value": "3"
-            },
-            {
-              "text": "",
-              "value": "null"
-            }
-          ]
-        },
-        {
-          "alias": "Policy Name",
-          "align": "auto",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "sessionPolicyName",
-          "thresholds": [],
-          "type": "number",
-          "unit": "short"
-        },
-        {
-          "alias": "Session Type",
-          "align": "auto",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "sessionType",
-          "thresholds": [],
-          "type": "number",
-          "unit": "short"
-        }
-      ],
+      "pluginVersion": "7.3.5",
       "targets": [
         {
           "alias": "$tag_sessionPolicyName",
@@ -1374,21 +1165,869 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Job Historical Information",
-      "transform": "table",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "Time": "",
+              "last": "Last Result",
+              "sessionPolicyName": "Policy Name",
+              "sessionType": "Policy Type"
+            }
+          }
+        }
+      ],
       "type": "table"
     },
     {
-      "content": "<a href=\"https://www.jorgedelacruz.es\"><img src=\"https://www.jorgedelacruz.es/wp-content/uploads/2019/04/jorgedelacruz-banner_2efede4ef704c939e63a3763231f5961.png\"></a>\n\n\n\n",
+      "cacheTimeout": null,
       "datasource": "${DS_INFLUXDB}",
+      "description": "On this Panel, you can quickly see all your Backup Repositories, with name, type, etc.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "center",
+            "displayMode": "color-background",
+            "filterable": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#da5041",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Encryption"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "from": "",
+                    "id": 1,
+                    "text": "False",
+                    "to": "",
+                    "type": 1,
+                    "value": "0"
+                  },
+                  {
+                    "from": "",
+                    "id": 2,
+                    "text": "True",
+                    "to": "",
+                    "type": 1,
+                    "value": "1"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 18
+      },
+      "id": 33,
+      "interval": "",
+      "links": [],
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "7.3.5",
+      "targets": [
+        {
+          "alias": "",
+          "groupBy": [
+            {
+              "params": [
+                "repoAccountName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "repoContainer"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "repoDescription"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "repoName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "RepositoryTier"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "veeam_azure_repositories",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"VMSize\") AS \"VM  Size\" FROM \"veeam_azure_vm_unprotected\" WHERE (\"VMName\" =~ /^$VMName$/) AND $timeFilter GROUP BY \"VMName\", \"VMRegion\" ",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "repoEncryption"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "Encryption"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "repoName",
+              "operator": "=~",
+              "value": "/^$Repository$/"
+            }
+          ],
+          "tz": ""
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Backup Repositories",
+      "transformations": [
+        {
+          "id": "seriesToColumns",
+          "options": {
+            "byField": "repoName"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "PolicyDescription 1": false,
+              "Time": true,
+              "Time 1": true,
+              "Time 2": true,
+              "Time 3": true,
+              "Time 4": true,
+              "Time 5": true
+            },
+            "indexByName": {
+              "Encryption": 6,
+              "RepositoryTier": 3,
+              "Time": 0,
+              "repoAccountName": 4,
+              "repoContainer": 5,
+              "repoDescription": 2,
+              "repoName": 1
+            },
+            "renameByName": {
+              "Application-Aware": "Application-Aware",
+              "Daily": "Daily Snapshots",
+              "Encryption": "Encryption",
+              "Monthly": "Monthly Snapshots",
+              "PolicyDescription 1": "Description",
+              "PolicyName": "Name",
+              "PolicyStatus": "Enabled",
+              "PolicyStatus 1": "",
+              "RepositoryTier": "Tier",
+              "Weekly": "Weekly Snapshots",
+              "Yearly": "Yearly Snapshots",
+              "repoAccountName": "Storage Account",
+              "repoContainer": "Storage Container",
+              "repoDescription": "Description",
+              "repoName": "Name"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "${DS_INFLUXDB}",
+      "description": "On this Panel, you can quickly see your different Policies, the retention, if it has application-aware enabled, etc.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "center",
+            "displayMode": "color-background",
+            "filterable": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-purple",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Application-Aware"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "from": "",
+                    "id": 1,
+                    "text": "Disabled",
+                    "to": "",
+                    "type": 1,
+                    "value": "0"
+                  },
+                  {
+                    "from": "",
+                    "id": 2,
+                    "text": "Enabled",
+                    "to": "",
+                    "type": 1,
+                    "value": "1"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 18
+      },
+      "id": 32,
+      "interval": "",
+      "links": [],
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "7.3.5",
+      "targets": [
+        {
+          "alias": "",
+          "groupBy": [
+            {
+              "params": [
+                "PolicyName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "PolicyStatus"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "veeam_azure_policies",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"VMSize\") AS \"VM  Size\" FROM \"veeam_azure_vm_unprotected\" WHERE (\"VMName\" =~ /^$VMName$/) AND $timeFilter GROUP BY \"VMName\", \"VMRegion\" ",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "PolicyAppAware"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "Application-Aware"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "PolicyName",
+              "operator": "=~",
+              "value": "/^$PolicyName$/"
+            }
+          ],
+          "tz": ""
+        },
+        {
+          "alias": "",
+          "groupBy": [
+            {
+              "params": [
+                "PolicyName"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "veeam_azure_policies",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"VMSize\") AS \"VM  Size\" FROM \"veeam_azure_vm_unprotected\" WHERE (\"VMName\" =~ /^$VMName$/) AND $timeFilter GROUP BY \"VMName\", \"VMRegion\" ",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "PolicySnapshotCountDaily"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "Daily"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "PolicyName",
+              "operator": "=~",
+              "value": "/^$PolicyName$/"
+            }
+          ],
+          "tz": ""
+        },
+        {
+          "alias": "",
+          "groupBy": [
+            {
+              "params": [
+                "PolicyName"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "veeam_azure_policies",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"VMSize\") AS \"VM  Size\" FROM \"veeam_azure_vm_unprotected\" WHERE (\"VMName\" =~ /^$VMName$/) AND $timeFilter GROUP BY \"VMName\", \"VMRegion\" ",
+          "rawQuery": false,
+          "refId": "C",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "PolicySnapshotCountWeekly"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "Weekly"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "PolicyName",
+              "operator": "=~",
+              "value": "/^$PolicyName$/"
+            }
+          ],
+          "tz": ""
+        },
+        {
+          "alias": "",
+          "groupBy": [
+            {
+              "params": [
+                "PolicyName"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "veeam_azure_policies",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"VMSize\") AS \"VM  Size\" FROM \"veeam_azure_vm_unprotected\" WHERE (\"VMName\" =~ /^$VMName$/) AND $timeFilter GROUP BY \"VMName\", \"VMRegion\" ",
+          "rawQuery": false,
+          "refId": "D",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "PolicySnapshotCountMonthly"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "Monthly"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "PolicyName",
+              "operator": "=~",
+              "value": "/^$PolicyName$/"
+            }
+          ],
+          "tz": ""
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Protection Policies",
+      "transformations": [
+        {
+          "id": "seriesToColumns",
+          "options": {
+            "byField": "PolicyName"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "PolicyDescription 1": false,
+              "Time 1": true,
+              "Time 2": true,
+              "Time 3": true,
+              "Time 4": true,
+              "Time 5": true
+            },
+            "indexByName": {
+              "Application-Aware": 9,
+              "Daily": 13,
+              "Monthly": 21,
+              "PolicyDescription 1": 6,
+              "PolicyDescription 2": 10,
+              "PolicyDescription 3": 14,
+              "PolicyDescription 4": 18,
+              "PolicyDescription 5": 22,
+              "PolicyName": 5,
+              "PolicyStatus 1": 7,
+              "PolicyStatus 2": 11,
+              "PolicyStatus 3": 15,
+              "PolicyStatus 4": 19,
+              "PolicyStatus 5": 23,
+              "TenantID 1": 8,
+              "TenantID 2": 12,
+              "TenantID 3": 16,
+              "TenantID 4": 20,
+              "TenantID 5": 24,
+              "Time 1": 0,
+              "Time 2": 1,
+              "Time 3": 2,
+              "Time 4": 3,
+              "Time 5": 4,
+              "Weekly": 17,
+              "Yearly": 25
+            },
+            "renameByName": {
+              "Application-Aware": "Application-Aware",
+              "Daily": "Daily Snapshots",
+              "Monthly": "Monthly Snapshots",
+              "PolicyDescription 1": "Description",
+              "PolicyName": "Name",
+              "PolicyStatus": "Enabled",
+              "PolicyStatus 1": "",
+              "Weekly": "Weekly Snapshots",
+              "Yearly": "Yearly Snapshots"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "${DS_INFLUXDB}",
+      "description": "On this Panel, you can quickly know which VMs are not Protected by Veeam Backup for Azure. With all the needed details as VM Name, Operating System, Azure Region, and Azure Instance Type.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "center",
+            "displayMode": "color-background",
+            "filterable": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-red",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Size"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decgbytes"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "id": 26,
+      "interval": "",
+      "links": [],
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "7.3.5",
+      "targets": [
+        {
+          "alias": "",
+          "groupBy": [
+            {
+              "params": [
+                "VMName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "VMRegion"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "VMType"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "VMOSType"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "VMprivateIP"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "veeam_azure_vm_unprotected",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"VMSize\") AS \"VM  Size\" FROM \"veeam_azure_vm_unprotected\" WHERE (\"VMName\" =~ /^$VMName$/) AND $timeFilter GROUP BY \"VMName\", \"VMRegion\" ",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "VMSize"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "VM  Size"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "VMName",
+              "operator": "=~",
+              "value": "/^$VMName$/"
+            }
+          ],
+          "tz": ""
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Unprotected VMs",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "Time": 0,
+              "VM  Size": 5,
+              "VMName": 1,
+              "VMOSType": 2,
+              "VMRegion": 4,
+              "VMType": 3
+            },
+            "renameByName": {
+              "Time": "",
+              "VM  Size": "Size",
+              "VMName": "VM Name",
+              "VMOSType": "VM OS",
+              "VMRegion": "Region",
+              "VMType": "Type",
+              "VMprivateIP": "Private IP",
+              "VMpublicIP": "Public IP",
+              "VMsubnet": "Subnet"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "${DS_INFLUXDB}",
+      "description": "On this Panel, you can quickly know which VMs are Protected by Veeam Backup for Azure. With all the needed details as VM Name, Operating System, Azure Region, and Azure Instance Type.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "center",
+            "displayMode": "color-background",
+            "filterable": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Size"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decgbytes"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "id": 31,
+      "interval": "",
+      "links": [],
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "7.3.5",
+      "targets": [
+        {
+          "alias": "",
+          "groupBy": [
+            {
+              "params": [
+                "VMName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "VMRegion"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "VMType"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "VMOSType"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "VMprivateIP"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "veeam_azure_vm",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"VMSize\") AS \"VM  Size\" FROM \"veeam_azure_vm_unprotected\" WHERE (\"VMName\" =~ /^$VMName$/) AND $timeFilter GROUP BY \"VMName\", \"VMRegion\" ",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "VMSize"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "VM  Size"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [],
+          "tz": ""
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Protected VMs",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "Time": 0,
+              "VM  Size": 5,
+              "VMName": 1,
+              "VMOSType": 2,
+              "VMRegion": 4,
+              "VMType": 3
+            },
+            "renameByName": {
+              "Time": "",
+              "VM  Size": "Size",
+              "VMName": "VM Name",
+              "VMOSType": "VM OS",
+              "VMRegion": "Region",
+              "VMType": "Type",
+              "VMprivateIP": "Private IP",
+              "VMpublicIP": "Public IP",
+              "VMsubnet": "Subnet"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 3,
         "w": 5,
         "x": 19,
-        "y": 23
+        "y": 31
       },
       "id": 10,
-      "mode": "html",
-      "options": {},
+      "options": {
+        "content": "<a href=\"https://www.jorgedelacruz.es\"><img src=\"https://www.jorgedelacruz.es/wp-content/uploads/2019/04/jorgedelacruz-banner_2efede4ef704c939e63a3763231f5961.png\"></a>\n\n\n\n",
+        "mode": "html"
+      },
+      "pluginVersion": "7.3.5",
       "targets": [
         {
           "groupBy": [
@@ -1434,9 +2073,14 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 22,
+  "schemaVersion": 26,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "veeam",
+    "azure",
+    "veeam azure",
+    "vba"
+  ],
   "templating": {
     "list": [
       {
@@ -1444,6 +2088,7 @@
         "current": {},
         "datasource": "${DS_INFLUXDB}",
         "definition": "SHOW TAG VALUES FROM veeam_azure_sessions WITH KEY=sessionPolicyName",
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": "Policy Name",
@@ -1466,6 +2111,7 @@
         "current": {},
         "datasource": "${DS_INFLUXDB}",
         "definition": "SHOW TAG VALUES FROM veeam_azure_vm_unprotected WITH KEY=VMName",
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": "Unprotected VM",
@@ -1488,6 +2134,7 @@
         "current": {},
         "datasource": "${DS_INFLUXDB}",
         "definition": "SHOW TAG VALUES FROM veeam_azure_repositories WITH KEY=repoName",
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": "Blob Repository",
@@ -1510,6 +2157,7 @@
         "current": {},
         "datasource": "${DS_INFLUXDB}",
         "definition": "SHOW TAG VALUES FROM veeam_azure_sessions WITH KEY=sessionType",
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": "Policy Type",
@@ -1530,7 +2178,7 @@
     ]
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {
@@ -1550,5 +2198,5 @@
   "timezone": "",
   "title": "Grafana Dashboard for Veeam Backup for Azure",
   "uid": "NHs2j76Zz",
-  "version": 42
+  "version": 4
 }

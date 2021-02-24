@@ -1,11 +1,11 @@
 Grafana Dashboard for Veeam Backup for Microsoft Azure
 ===================
 
-![alt tag](https://jorgedelacruz.uk/wp-content/uploads/2021/04/veeam-grafana-azure-002.png)
+![alt tag](https://www.jorgedelacruz.es/wp-content/uploads/2021/02/azuregrafanav2.png)
 
 This project consists in a Bash Shell script to retrieve the Veeam Backup for Microsoft Azure information, directly from the RESTfulAPI, about last jobs, VMs and much more. The information is being saved it into InfluxDB output directly into the InfluxDB database using curl, then in Grafana: a Dashboard is created to present all the information.
 
-We use Veeam Backup for Microsoft Azure v1.0 RESTfulAPI to reduce the workload and increase the speed of script execution. 
+We use Veeam Backup for Microsoft Azure v2.0 RESTfulAPI to reduce the workload and increase the speed of script execution. 
 
 ----------
 
