@@ -9,7 +9,7 @@
 ##      .Notes
 ##      NAME:  veeam_one.sh
 ##      ORIGINAL NAME: veeam_one.sh
-##      LASTEDIT: 01/03/2021
+##      LASTEDIT: 05/03/2021
 ##      VERSION: 1.0
 ##      KEYWORDS: Veeam, InfluxDB, Grafana
    
@@ -34,6 +34,45 @@ veeamONEPort="1239" #Default Port
 
 veeamBearer=$(curl -X POST --header "Content-Type: application/x-www-form-urlencoded" --header "Accept: application/json" -H  "Content-Type: application/x-www-form-urlencoded" -d "username=$veeamUsername&password=$veeamPassword&rememberMe=&asCurrentUser=&grant_type=password&refresh_token=" "$veeamONEServer:$veeamONEPort/api/token" -k --silent | jq -r '.access_token')
 
+##
+# Building the ID to Query - Thanks, Sergey Zhukov
+#
+veeamONEURL="$veeamONEServer:$veeamONEPort/api/v1/dashboards"
+veeamONEFoundationUrl=$(curl -X GET $veeamONEURL -H "Authorization: Bearer $veeamBearer" -H  "accept: application/json" 2>&1 -k --silent)
+    VBRDashboardID=$(echo "$veeamONEFoundationUrl" | jq --raw-output '.[] | select(.name | startswith("Veeam Backup and Replication")) | .dashboardId')
+
+veeamONEURL="$veeamONEServer:$veeamONEPort/api/v1/dashboards/$VBRDashboardID"
+veeamONEFoundationWidgetUrl=$(curl -X GET $veeamONEURL -H "Authorization: Bearer $veeamBearer" -H  "accept: application/json" 2>&1 -k --silent)
+    VBRWBackupInfraID=$(echo "$veeamONEFoundationWidgetUrl" | jq --raw-output '.dashboardWidgets[] | select(.caption| startswith("Backup Infrastructure Inventory")) | .widgetId')    
+    VBRWProtectedVMSID=$(echo "$veeamONEFoundationWidgetUrl" | jq --raw-output '.dashboardWidgets[] | select(.caption| startswith("Protected VMs Overview")) | .widgetId')    
+    VBRWBackupWindowID=$(echo "$veeamONEFoundationWidgetUrl" | jq --raw-output '.dashboardWidgets[] | select(.caption| startswith("Backup Window")) | .widgetId')    
+    VBRWTopJobsID=$(echo "$veeamONEFoundationWidgetUrl" | jq --raw-output '.dashboardWidgets[] | select(.caption| startswith("Top Jobs by Duration")) | .widgetId')    
+    VBRWJobStatusID=$(echo "$veeamONEFoundationWidgetUrl" | jq --raw-output '.dashboardWidgets[] | select(.caption| startswith("Jobs Status")) | .widgetId')    
+    VBRWTopReposID=$(echo "$veeamONEFoundationWidgetUrl" | jq --raw-output '.dashboardWidgets[] | select(.caption| startswith("Top Repositories by Used Space")) | .widgetId')    
+
+veeamONEURL="$veeamONEServer:$veeamONEPort/api/v1/dashboards/$VBRDashboardID/widgets/$VBRWBackupInfraID/datasources"
+veeamONEFounDSBKIUrl=$(curl -X GET $veeamONEURL -H "Authorization: Bearer $veeamBearer" -H  "accept: application/json" 2>&1 -k --silent)
+    VBRWBackupInfraDSID=$(echo "$veeamONEFounDSBKIUrl" | jq --raw-output '.[].datasourceId')
+
+veeamONEURL="$veeamONEServer:$veeamONEPort/api/v1/dashboards/$VBRDashboardID/widgets/$VBRWProtectedVMSID/datasources"
+veeamONEFounDSPVMUrl=$(curl -X GET $veeamONEURL -H "Authorization: Bearer $veeamBearer" -H  "accept: application/json" 2>&1 -k --silent)
+    VBRWProtectedVMSDSID=$(echo "$veeamONEFounDSPVMUrl" | jq --raw-output '.[].datasourceId')
+    
+veeamONEURL="$veeamONEServer:$veeamONEPort/api/v1/dashboards/$VBRDashboardID/widgets/$VBRWBackupWindowID/datasources"
+veeamONEFounDSBKWUrl=$(curl -X GET $veeamONEURL -H "Authorization: Bearer $veeamBearer" -H  "accept: application/json" 2>&1 -k --silent)
+    VBRWBackupWindowDSID=$(echo "$veeamONEFounDSBKWUrl" | jq --raw-output '.[].datasourceId')
+    
+veeamONEURL="$veeamONEServer:$veeamONEPort/api/v1/dashboards/$VBRDashboardID/widgets/$VBRWTopJobsID/datasources"
+veeamONEFounDSTopJUrl=$(curl -X GET $veeamONEURL -H "Authorization: Bearer $veeamBearer" -H  "accept: application/json" 2>&1 -k --silent)
+    VBRWTopJobsDSID=$(echo "$veeamONEFounDSTopJUrl" | jq --raw-output '.[].datasourceId')
+    
+veeamONEURL="$veeamONEServer:$veeamONEPort/api/v1/dashboards/$VBRDashboardID/widgets/$VBRWJobStatusID/datasources"
+veeamONEFounDSJobSUrl=$(curl -X GET $veeamONEURL -H "Authorization: Bearer $veeamBearer" -H  "accept: application/json" 2>&1 -k --silent)
+    VBRWJobStatusDSID=$(echo "$veeamONEFounDSJobSUrl" | jq --raw-output '.[].datasourceId')
+    
+veeamONEURL="$veeamONEServer:$veeamONEPort/api/v1/dashboards/$VBRDashboardID/widgets/$VBRWTopReposID/datasources"
+veeamONEFounDSTopRUrl=$(curl -X GET $veeamONEURL -H "Authorization: Bearer $veeamBearer" -H  "accept: application/json" 2>&1 -k --silent)
+    VBRWTopReposDSID=$(echo "$veeamONEFounDSTopRUrl" | jq --raw-output '.[].datasourceId')
 
 ##
 # Veeam ONE About
@@ -53,7 +92,7 @@ veeamONEAboutUrl=$(curl -X GET $veeamONEURL -H "Authorization: Bearer $veeamBear
 # Veeam Backup & Replication Overview. This part will check The VONE v11 VBR Overview
 # Veeam Backup Window
 ##
-veeamONEURL="$veeamONEServer:$veeamONEPort/api/v1/dashboards/1/widgets/3/datasources/62/data?forceRefresh=false"
+veeamONEURL="$veeamONEServer:$veeamONEPort/api/v1/dashboards/$VBRDashboardID/widgets/$VBRWBackupWindowID/datasources/$VBRWBackupWindowDSID/data?forceRefresh=false"
 veeamONEOverviewUrl=$(curl -X GET $veeamONEURL -H "Authorization: Bearer $veeamBearer" -H  "accept: application/json" 2>&1 -k --silent)
 
     declare -i arraybackupwindow=0
@@ -78,7 +117,7 @@ veeamONEOverviewUrl=$(curl -X GET $veeamONEURL -H "Authorization: Bearer $veeamB
 # Veeam Backup & Replication Overview. This part will check The VONE v11 VBR Overview
 # Protected VMs
 ##
-veeamONEURL="$veeamONEServer:$veeamONEPort/api/v1/dashboards/1/widgets/2/datasources/60/data?forceRefresh=false"
+veeamONEURL="$veeamONEServer:$veeamONEPort/api/v1/dashboards/$VBRDashboardID/widgets/$VBRWProtectedVMSID/datasources/$VBRWProtectedVMSDSID/data?forceRefresh=false"
 veeamONEProtectedVMsUrl=$(curl -X GET $veeamONEURL -H "Authorization: Bearer $veeamBearer" -H  "accept: application/json" 2>&1 -k --silent)
 
     protectedvms=$(echo "$veeamONEProtectedVMsUrl" | jq --raw-output ".data[0].number")    
@@ -149,7 +188,7 @@ veeamONEProtectedVMsUrl=$(curl -X GET $veeamONEURL -H "Authorization: Bearer $ve
 # Veeam Backup & Replication Overview. This part will check The VONE v11 VBR Overview
 # Backup Infrastructure Inventory
 ##
-veeamONEURL="$veeamONEServer:$veeamONEPort/api/v1/dashboards/1/widgets/1/datasources/58/data?forceRefresh=false"
+veeamONEURL="$veeamONEServer:$veeamONEPort/api/v1/dashboards/$VBRDashboardID/widgets/$VBRWBackupInfraID/datasources/$VBRWBackupInfraDSID/data?forceRefresh=false"
 veeamONEInventoryUrl=$(curl -X GET $veeamONEURL -H "Authorization: Bearer $veeamBearer" -H  "accept: application/json" 2>&1 -k --silent)
 
     totalvbr=$(echo "$veeamONEInventoryUrl" | jq --raw-output ".data[0].name" | awk -F"[()]" '{print $2}')    
@@ -173,7 +212,7 @@ veeamONEInventoryUrl=$(curl -X GET $veeamONEURL -H "Authorization: Bearer $veeam
 # Veeam Backup & Replication Overview. This part will check The VONE v11 VBR Overview
 # Jobs Status
 ##
-veeamONEURL="$veeamONEServer:$veeamONEPort/api/v1/dashboards/1/widgets/5/datasources/61/data?forceRefresh=false"
+veeamONEURL="$veeamONEServer:$veeamONEPort/api/v1/dashboards/$VBRDashboardID/widgets/$VBRWJobStatusID/datasources/$VBRWJobStatusDSID/data?forceRefresh=false"
 veeamONEJobsUrl=$(curl -X GET $veeamONEURL -H "Authorization: Bearer $veeamBearer" -H  "accept: application/json" 2>&1 -k --silent)
 
 declare -i arrayjobs=0
@@ -197,7 +236,7 @@ done
 # Veeam Backup & Replication Overview. This part will check The VONE v11 VBR Overview
 # Top Jobs by Duration
 ##
-veeamONEURL="$veeamONEServer:$veeamONEPort/api/v1/dashboards/1/widgets/4/datasources/59/data?forceRefresh=false"
+veeamONEURL="$veeamONEServer:$veeamONEPort/api/v1/dashboards/$VBRDashboardID/widgets/$VBRWTopJobsID/datasources/$VBRWTopJobsDSID/data?forceRefresh=false"
 veeamONEJobsDurationUrl=$(curl -X GET $veeamONEURL -H "Authorization: Bearer $veeamBearer" -H  "accept: application/json" 2>&1 -k --silent)
 
 lastUpdateTime=$(echo "$veeamONEJobsDurationUrl" | jq --raw-output ".lastUpdateTimeUtc")
@@ -241,7 +280,7 @@ done
 # Veeam Backup & Replication Overview. This part will check The VONE v11 VBR Overview
 # Top Repositories by Used Space
 ##
-veeamONEURL="$veeamONEServer:$veeamONEPort/api/v1/dashboards/1/widgets/6/datasources/63/data?forceRefresh=false"
+veeamONEURL="$veeamONEServer:$veeamONEPort/api/v1/dashboards/$VBRDashboardID/widgets/$VBRWTopReposID/datasources/$VBRWTopReposDSID/data?forceRefresh=false"
 veeamONERepositoriesUrl=$(curl -X GET $veeamONEURL -H "Authorization: Bearer $veeamBearer" -H  "accept: application/json" 2>&1 -k --silent)
 
 lastUpdateTime=$(echo "$veeamONERepositoriesUrl" | jq --raw-output ".lastUpdateTimeUtc")
