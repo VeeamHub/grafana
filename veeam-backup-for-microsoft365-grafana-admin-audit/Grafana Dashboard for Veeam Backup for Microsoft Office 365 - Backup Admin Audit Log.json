@@ -59,7 +59,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1627713306020,
+  "iteration": 1627713306023,
   "links": [],
   "panels": [
     {
@@ -237,14 +237,20 @@
           "tags": [
             {
               "key": "action",
-              "operator": "!=",
-              "value": "Starting"
+              "operator": "=",
+              "value": "created"
             },
             {
-              "condition": "AND",
+              "condition": "OR",
               "key": "action",
-              "operator": "!=",
-              "value": "Editing"
+              "operator": "=",
+              "value": "edited"
+            },
+            {
+              "condition": "OR",
+              "key": "action",
+              "operator": "=",
+              "value": "Deleting"
             }
           ]
         }
@@ -539,7 +545,13 @@
               }
             ]
           ],
-          "tags": []
+          "tags": [
+            {
+              "key": "veeamjobname",
+              "operator": "=~",
+              "value": "/^$backupjob$/"
+            }
+          ]
         }
       ],
       "timeFrom": null,
@@ -1236,5 +1248,5 @@
   "timezone": "",
   "title": "Grafana Dashboard for Veeam Backup for Microsoft Office 365 - Backup Admin Audit Log",
   "uid": "o4nnD3Znz",
-  "version": 13
+  "version": 14
 }
