@@ -59,7 +59,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1627713306023,
+  "iteration": 1627890936478,
   "links": [],
   "panels": [
     {
@@ -281,7 +281,53 @@
           "min": 0,
           "unit": "short"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": " VEEAMVBO3\\poland-backup-admin"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": " VEEAMVBO3\\germany-backup-admin"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "semi-dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": " VEEAMVBO3\\Administrator"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "semi-dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 9,
@@ -550,6 +596,24 @@
               "key": "veeamjobname",
               "operator": "=~",
               "value": "/^$backupjob$/"
+            },
+            {
+              "condition": "AND",
+              "key": "veeamjobname",
+              "operator": "!=",
+              "value": "Exchange account was not found"
+            },
+            {
+              "condition": "AND",
+              "key": "veeamjobname",
+              "operator": "!=",
+              "value": "OneDrive was not found"
+            },
+            {
+              "condition": "AND",
+              "key": "veeamjobname",
+              "operator": "!=",
+              "value": "Personal site was not found"
             }
           ]
         }
@@ -847,6 +911,10 @@
               {
                 "id": "custom.displayMode",
                 "value": "color-background"
+              },
+              {
+                "id": "custom.width",
+                "value": null
               }
             ]
           },
@@ -874,7 +942,8 @@
       "id": 3,
       "interval": "24h",
       "options": {
-        "showHeader": true
+        "showHeader": true,
+        "sortBy": []
       },
       "pluginVersion": "8.0.1",
       "targets": [
@@ -935,14 +1004,20 @@
             {
               "condition": "AND",
               "key": "action",
-              "operator": "!=",
-              "value": "Starting"
+              "operator": "=",
+              "value": "created"
             },
             {
-              "condition": "AND",
+              "condition": "OR",
               "key": "action",
-              "operator": "!=",
-              "value": "Editing"
+              "operator": "=",
+              "value": "edited"
+            },
+            {
+              "condition": "OR",
+              "key": "action",
+              "operator": "=",
+              "value": "Deleting"
             }
           ]
         }
@@ -1248,5 +1323,5 @@
   "timezone": "",
   "title": "Grafana Dashboard for Veeam Backup for Microsoft Office 365 - Backup Admin Audit Log",
   "uid": "o4nnD3Znz",
-  "version": 14
+  "version": 18
 }
