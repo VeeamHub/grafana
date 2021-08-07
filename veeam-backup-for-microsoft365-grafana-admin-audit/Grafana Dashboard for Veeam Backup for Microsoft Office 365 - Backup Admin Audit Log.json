@@ -59,7 +59,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1627890936478,
+  "iteration": 1627999654989,
   "links": [],
   "panels": [
     {
@@ -255,7 +255,7 @@
           ]
         }
       ],
-      "timeFrom": "30d",
+      "timeFrom": null,
       "timeShift": null,
       "title": "Veeam Backup Microsoft 365 - Job Audit History",
       "transformations": [],
@@ -952,12 +952,6 @@
           "groupBy": [
             {
               "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
                 "veeamjobname"
               ],
               "type": "tag"
@@ -967,12 +961,6 @@
                 "action"
               ],
               "type": "tag"
-            },
-            {
-              "params": [
-                "none"
-              ],
-              "type": "fill"
             }
           ],
           "hide": false,
@@ -988,10 +976,6 @@
                   "nrjob"
                 ],
                 "type": "field"
-              },
-              {
-                "params": [],
-                "type": "count"
               }
             ]
           ],
@@ -1029,7 +1013,7 @@
         {
           "id": "calculateField",
           "options": {
-            "mode": "reduceRow",
+            "mode": "binary",
             "reduce": {
               "include": [],
               "reducer": "sum"
@@ -1044,7 +1028,8 @@
               "Total": false,
               "count": true,
               "count 1": true,
-              "count 2": true
+              "count 2": true,
+              "nrjob": true
             },
             "indexByName": {
               "Time": 0,
@@ -1165,21 +1150,9 @@
           "groupBy": [
             {
               "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
                 "operator"
               ],
               "type": "tag"
-            },
-            {
-              "params": [
-                "none"
-              ],
-              "type": "fill"
             }
           ],
           "hide": false,
@@ -1195,10 +1168,6 @@
                   "nroper"
                 ],
                 "type": "field"
-              },
-              {
-                "params": [],
-                "type": "count"
               }
             ]
           ],
@@ -1230,7 +1199,8 @@
           "options": {
             "excludeByName": {
               "Total": true,
-              "count": true
+              "count": true,
+              "nroper": true
             },
             "indexByName": {
               "Time": 0,
@@ -1323,5 +1293,5 @@
   "timezone": "",
   "title": "Grafana Dashboard for Veeam Backup for Microsoft Office 365 - Backup Admin Audit Log",
   "uid": "o4nnD3Znz",
-  "version": 18
+  "version": 21
 }
