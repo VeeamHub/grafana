@@ -14,12 +14,12 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "7.3.5"
+      "version": "8.1.7"
     },
     {
       "type": "panel",
       "id": "grafana-piechart-panel",
-      "name": "Pie Chart",
+      "name": "Pie Chart (old)",
       "version": "1.6.1"
     },
     {
@@ -31,7 +31,7 @@
     {
       "type": "panel",
       "id": "graph",
-      "name": "Graph",
+      "name": "Graph (old)",
       "version": ""
     },
     {
@@ -68,6 +68,12 @@
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
@@ -77,17 +83,11 @@
   "gnetId": 12204,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1608634385450,
+  "iteration": 1634389008959,
   "links": [],
   "panels": [
     {
       "datasource": "${DS_INFLUXDB}",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "gridPos": {
         "h": 2,
         "w": 1,
@@ -99,7 +99,7 @@
         "content": "<a href=\"https://www.veeam.com/backup-azure.html\" target=\"_blank\"><img src=\"https://www.jorgedelacruz.es/VCB_product_icon.svg\" alt=\"drawing\" width=\"50\"/></a>\n\n",
         "mode": "html"
       },
-      "pluginVersion": "7.3.5",
+      "pluginVersion": "8.1.7",
       "targets": [
         {
           "groupBy": [
@@ -139,7 +139,6 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "",
       "transparent": true,
       "type": "text"
     },
@@ -151,7 +150,6 @@
             "fixedColor": "#135f4b",
             "mode": "fixed"
           },
-          "custom": {},
           "decimals": 2,
           "mappings": [],
           "thresholds": {
@@ -186,9 +184,10 @@
           "fields": "",
           "values": false
         },
+        "text": {},
         "textMode": "value_and_name"
       },
-      "pluginVersion": "7.3.5",
+      "pluginVersion": "8.1.7",
       "targets": [
         {
           "alias": "Total Policies",
@@ -341,7 +340,6 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "",
       "transparent": true,
       "type": "stat"
     },
@@ -351,18 +349,17 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "mappings": [
             {
-              "$$hashKey": "object:825",
-              "id": 0,
-              "op": "=",
-              "text": "N/A",
-              "type": 1,
-              "value": "null"
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
             }
           ],
-          "nullValueMode": "connected",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -398,9 +395,12 @@
           "fields": "",
           "values": false
         },
+        "text": {
+          "valueSize": 30
+        },
         "textMode": "name"
       },
-      "pluginVersion": "7.3.5",
+      "pluginVersion": "8.1.7",
       "targets": [
         {
           "alias": "Version $tag_version",
@@ -448,7 +448,6 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "",
       "type": "stat"
     },
     {
@@ -456,18 +455,17 @@
       "datasource": "${DS_INFLUXDB}",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "mappings": [
             {
-              "$$hashKey": "object:901",
-              "id": 0,
-              "op": "=",
-              "text": "N/A",
-              "type": 1,
-              "value": "null"
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
             }
           ],
-          "nullValueMode": "connected",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -503,9 +501,12 @@
           "fields": "",
           "values": false
         },
+        "text": {
+          "valueSize": 30
+        },
         "textMode": "name"
       },
-      "pluginVersion": "7.3.5",
+      "pluginVersion": "8.1.7",
       "targets": [
         {
           "alias": "License: $tag_LicenseType",
@@ -553,7 +554,6 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "",
       "type": "stat"
     },
     {
@@ -569,15 +569,9 @@
       "esGeoPoint": "geohash",
       "esLocationName": "",
       "esMetric": "metric",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "gridPos": {
         "h": 16,
-        "w": 12,
+        "w": 11,
         "x": 0,
         "y": 2
       },
@@ -683,18 +677,12 @@
       },
       "datasource": "${DS_INFLUXDB}",
       "decimals": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fontSize": "100%",
       "format": "none",
       "gridPos": {
         "h": 9,
-        "w": 4,
-        "x": 12,
+        "w": 5,
+        "x": 11,
         "y": 2
       },
       "id": 30,
@@ -802,7 +790,6 @@
       "description": "On this Panel, you can quickly know how much time did a Backup, or Snapshot Policy take. You can quickly filter by Policy Name on the top menu.",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "links": [],
           "unit": "ms"
         },
@@ -878,7 +865,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.5",
+      "pluginVersion": "8.1.7",
       "pointradius": 3,
       "points": true,
       "renderer": "flot",
@@ -1059,28 +1046,18 @@
           },
           "mappings": [
             {
-              "from": "",
-              "id": 1,
-              "text": "Success",
-              "to": "",
-              "type": 1,
-              "value": "1"
-            },
-            {
-              "from": "",
-              "id": 2,
-              "text": "Warning",
-              "to": "",
-              "type": 1,
-              "value": "2"
-            },
-            {
-              "from": "",
-              "id": 3,
-              "text": "Failed",
-              "to": "",
-              "type": 1,
-              "value": "3"
+              "options": {
+                "1": {
+                  "text": "Success"
+                },
+                "2": {
+                  "text": "Warning"
+                },
+                "3": {
+                  "text": "Failed"
+                }
+              },
+              "type": "value"
             }
           ],
           "thresholds": {
@@ -1144,8 +1121,8 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 12,
-        "x": 12,
+        "w": 13,
+        "x": 11,
         "y": 11
       },
       "hideTimeOverride": false,
@@ -1154,7 +1131,7 @@
       "options": {
         "showHeader": true
       },
-      "pluginVersion": "7.3.5",
+      "pluginVersion": "8.1.7",
       "targets": [
         {
           "alias": "$tag_sessionPolicyName",
@@ -1234,7 +1211,11 @@
     },
     {
       "collapsed": false,
-      "datasource": "${DS_INFLUXDB}",
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1301,7 +1282,7 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "7.3.5",
+      "pluginVersion": "8.1.7",
       "targets": [
         {
           "alias": "",
@@ -1445,7 +1426,7 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "7.3.5",
+      "pluginVersion": "8.1.7",
       "targets": [
         {
           "alias": "",
@@ -1596,7 +1577,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "7.3.5",
+      "pluginVersion": "8.1.7",
       "targets": [
         {
           "alias": "",
@@ -1746,7 +1727,7 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "7.3.5",
+      "pluginVersion": "8.1.7",
       "targets": [
         {
           "alias": "",
@@ -1863,6 +1844,165 @@
     {
       "cacheTimeout": null,
       "datasource": "${DS_INFLUXDB}",
+      "description": "On this Panel, you can quickly list all your protected EFS Instances",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-yellow",
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": "center",
+            "displayMode": "color-background",
+            "filterable": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "EFS Size"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bytes"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 33
+      },
+      "id": 39,
+      "interval": "",
+      "links": [],
+      "options": {
+        "frameIndex": 0,
+        "showHeader": true
+      },
+      "pluginVersion": "8.1.7",
+      "targets": [
+        {
+          "alias": "",
+          "groupBy": [
+            {
+              "params": [
+                "efsname"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "efsperformance"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "efsregion"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "efsawsid"
+              ],
+              "type": "tag"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_aws_efs",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"VMSize\") AS \"VM  Size\" FROM \"veeam_azure_vm_unprotected\" WHERE (\"VMName\" =~ /^$VMName$/) AND $timeFilter GROUP BY \"VMName\", \"VMRegion\" ",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "rdssize"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "RDS  Size"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [],
+          "tz": ""
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Protected Amazon EFS",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Unprotected": false
+            },
+            "indexByName": {
+              "RDS  Size": 5,
+              "Time": 0,
+              "efsawsid": 2,
+              "efsname": 1,
+              "efsperformance": 4,
+              "efsregion": 3
+            },
+            "renameByName": {
+              "RDS  Size": "EFS Size",
+              "Time": "",
+              "efsawsid": "EFS AWS ID",
+              "efsname": "EFS Name",
+              "efsperformance": "EFS Performance",
+              "efsregion": "EFS Region",
+              "rdsclass": "Type",
+              "rdsdns": "DNS",
+              "rdsengine": "Engine",
+              "rdsengineversion": "Engine Version",
+              "rdsname": "Name",
+              "rdsregion": "Region"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "${DS_INFLUXDB}",
       "description": "On this Panel, you can quickly list all your repositories, with their bucket location, folder, region, and if the Encryption is enabled or not.",
       "fieldConfig": {
         "defaults": {
@@ -1898,20 +2038,15 @@
                 "id": "mappings",
                 "value": [
                   {
-                    "from": "",
-                    "id": 1,
-                    "text": "Disabled",
-                    "to": "",
-                    "type": 1,
-                    "value": "0"
-                  },
-                  {
-                    "from": "",
-                    "id": 2,
-                    "text": "Enabled",
-                    "to": "",
-                    "type": 1,
-                    "value": "1"
+                    "options": {
+                      "0": {
+                        "text": "Disabled"
+                      },
+                      "1": {
+                        "text": "Enabled"
+                      }
+                    },
+                    "type": "value"
                   }
                 ]
               }
@@ -1935,7 +2070,7 @@
         "h": 9,
         "w": 14,
         "x": 0,
-        "y": 33
+        "y": 39
       },
       "id": 37,
       "interval": "",
@@ -1944,7 +2079,7 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "7.3.5",
+      "pluginVersion": "8.1.7",
       "targets": [
         {
           "alias": "",
@@ -2098,20 +2233,15 @@
                 "id": "mappings",
                 "value": [
                   {
-                    "from": "",
-                    "id": 1,
-                    "text": "EC2",
-                    "to": "",
-                    "type": 1,
-                    "value": "Ec2"
-                  },
-                  {
-                    "from": "",
-                    "id": 2,
-                    "text": "RDS",
-                    "to": "",
-                    "type": 1,
-                    "value": "Rds"
+                    "options": {
+                      "Ec2": {
+                        "text": "EC2"
+                      },
+                      "Rds": {
+                        "text": "RDS"
+                      }
+                    },
+                    "type": "value"
                   }
                 ]
               }
@@ -2123,7 +2253,7 @@
         "h": 9,
         "w": 10,
         "x": 14,
-        "y": 33
+        "y": 39
       },
       "id": 38,
       "interval": "",
@@ -2132,7 +2262,7 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "7.3.5",
+      "pluginVersion": "8.1.7",
       "targets": [
         {
           "alias": "",
@@ -2248,24 +2378,18 @@
     },
     {
       "datasource": "${DS_INFLUXDB}",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "gridPos": {
         "h": 3,
         "w": 5,
         "x": 19,
-        "y": 42
+        "y": 48
       },
       "id": 10,
       "options": {
         "content": "<a href=\"https://www.jorgedelacruz.es\"><img src=\"https://www.jorgedelacruz.es/wp-content/uploads/2019/04/jorgedelacruz-banner_2efede4ef704c939e63a3763231f5961.png\"></a>\n\n\n\n",
         "mode": "html"
       },
-      "pluginVersion": "7.3.5",
+      "pluginVersion": "8.1.7",
       "targets": [
         {
           "groupBy": [
@@ -2305,13 +2429,12 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "",
       "transparent": true,
       "type": "text"
     }
   ],
   "refresh": false,
-  "schemaVersion": 26,
+  "schemaVersion": 30,
   "style": "dark",
   "tags": [
     "veeam",
@@ -2325,6 +2448,7 @@
         "current": {},
         "datasource": "${DS_INFLUXDB}",
         "definition": "",
+        "description": null,
         "error": null,
         "hide": 0,
         "includeAll": true,
@@ -2333,12 +2457,11 @@
         "name": "PolicyName",
         "options": [],
         "query": "SHOW TAG VALUES FROM veeam_aws_sessions WITH KEY=sessionPolicyName",
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -2348,6 +2471,7 @@
         "current": {},
         "datasource": "${DS_INFLUXDB}",
         "definition": "",
+        "description": null,
         "error": null,
         "hide": 0,
         "includeAll": true,
@@ -2356,12 +2480,11 @@
         "name": "VMName",
         "options": [],
         "query": "SHOW TAG VALUES FROM veeam_aws_vm_unprotected WITH KEY=VMName",
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -2371,6 +2494,7 @@
         "current": {},
         "datasource": "${DS_INFLUXDB}",
         "definition": "",
+        "description": null,
         "error": null,
         "hide": 0,
         "includeAll": true,
@@ -2379,12 +2503,11 @@
         "name": "Repository",
         "options": [],
         "query": "SHOW TAG VALUES FROM veeam_aws_repositories WITH KEY=repoName",
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -2394,6 +2517,7 @@
         "current": {},
         "datasource": "${DS_INFLUXDB}",
         "definition": "",
+        "description": null,
         "error": null,
         "hide": 0,
         "includeAll": true,
@@ -2407,7 +2531,6 @@
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -2415,7 +2538,7 @@
     ]
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {
@@ -2435,5 +2558,5 @@
   "timezone": "",
   "title": "Grafana Dashboard for Veeam Backup for AWS",
   "uid": "mnwmhVbGk",
-  "version": 12
+  "version": 15
 }

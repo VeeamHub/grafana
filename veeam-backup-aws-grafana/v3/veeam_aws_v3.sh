@@ -1,6 +1,6 @@
 #!/bin/bash
 ##      .SYNOPSIS
-##      Grafana Dashboard for Veeam Backup AWS v4.0 - Using API to InfluxDB Script
+##      Grafana Dashboard for Veeam Backup AWS v3.0 - Using API to InfluxDB Script
 ## 
 ##      .DESCRIPTION
 ##      This Script will query the Veeam Backup for AWS API and send the data directly to InfluxDB, which can be used to present it to Grafana. 
@@ -9,8 +9,8 @@
 ##      .Notes
 ##      NAME:  veeam_aws.sh
 ##      ORIGINAL NAME: veeam_aws.sh
-##      LASTEDIT: 16/10/2021
-##      VERSION: 4.0
+##      LASTEDIT: 22/12/2020
+##      VERSION: 3.0
 ##      KEYWORDS: Veeam, InfluxDB, Grafana
    
 ##      .Link
@@ -32,18 +32,18 @@ veeamPassword="YOURVEEAMBACKUPPASS"
 veeamBackupAWSServer="https://YOURVEEAMBACKUPFORAWSIP"
 veeamBackupAWSPort="11005" #Default Port
 
-veeamBearer=$(curl -X POST --header "Content-Type: application/x-www-form-urlencoded" --header "Accept: application/json" --header "x-api-version: 1.2-rev0" -d "username=$veeamUsername&password=$veeamPassword&grant_type=password" "$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/token" -k --silent | jq -r '.access_token')
+veeamBearer=$(curl -X POST --header "Content-Type: application/x-www-form-urlencoded" --header "Accept: application/json" --header "x-api-version: 1.1-rev0" -d "username=$veeamUsername&password=$veeamPassword&grant_type=password" "$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/token" -k --silent | jq -r '.access_token')
 
 ##
 # Veeam Backup for AWS Overview. This part will check VBA Overview
 ##
 veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/system/version"
-veeamVBAOverviewUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.2-rev0" "accept: application/json" 2>&1 -k --silent)
+veeamVBAOverviewUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H -H "x-api-version: 1.1-rev0" "accept: application/json" 2>&1 -k --silent)
 
-    version=$(echo "$veeamVBAOverviewUrl" | jq --raw-output ".version" |awk '{$1=$1};NF')
+    version=$(echo "$veeamVBAOverviewUrl" | jq --raw-output ".version" |awk '{$1=$1};1')
     
 veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/statistics/summary"
-veeamVBAOverviewUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.2-rev0" "accept: application/json" 2>&1 -k --silent)
+veeamVBAOverviewUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H -H "x-api-version: 1.1-rev0" "accept: application/json" 2>&1 -k --silent)
 
     VMsCount=$(echo "$veeamVBAOverviewUrl" | jq --raw-output ".instancesCount")
     VMsProtected=$(echo "$veeamVBAOverviewUrl" | jq --raw-output ".protectedInstancesCount")
@@ -51,7 +51,7 @@ veeamVBAOverviewUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamB
     RepositoriesCount=$(echo "$veeamVBAOverviewUrl" | jq --raw-output ".repositoriesCount")
 
 veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/licensing/license"
-veeamVBAOverviewUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.2-rev0" -H  "accept: application/json" 2>&1 -k --silent)
+veeamVBAOverviewUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.1-rev0" -H  "accept: application/json" 2>&1 -k --silent)
 
     LicenseType=$(echo "$veeamVBAOverviewUrl" | jq --raw-output ".licenseType")
     LicenseInstances=$(echo "$veeamVBAOverviewUrl" | jq --raw-output ".instancesUses")
@@ -63,7 +63,7 @@ veeamVBAOverviewUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamB
 # Veeam Backup for AWS Instances. This part will check VBA and report all the protected Instances
 ##
 veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/virtualMachines?ProtectionStatus=Protected"
-veeamVBAInstancesUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.2-rev0" -H  "accept: application/json" 2>&1 -k --silent)
+veeamVBAInstancesUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.1-rev0" -H  "accept: application/json" 2>&1 -k --silent)
 
 declare -i arrayinstances=0
 for id in $(echo "$veeamVBAInstancesUrl" | jq -r '.results[].id'); do
@@ -82,8 +82,8 @@ for id in $(echo "$veeamVBAInstancesUrl" | jq -r '.results[].id'); do
     curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm,VMID=$VMID,VMName=$VMName,VMResourceId=$VMResourceID,VMType=$VMType,VMPolicy=$VMPolicy,VMRegion=$VMRegion VMSize=$VMSize"
     
     # Restore Points per Instance
-    veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/virtualMachines/restorePoints?VirtualMachineId=$VMID&onlyLatest=False"
-    veeamRestorePointsUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.2-rev0" -H  "accept: application/json" 2>&1 -k --silent)
+    veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/vmRestorePoints?VirtualMachineId=$VMID&onlyLatest=False"
+    veeamRestorePointsUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.1-rev0" -H  "accept: application/json" 2>&1 -k --silent)
     
     VMJobTotal=$(echo "$veeamRestorePointsUrl" | jq --raw-output ".totalCount")
     declare -i arrayRestorePoint=0
@@ -106,8 +106,8 @@ done
 ##
 # Veeam Backup for AWS Instances. This part will check VBA and report all the unprotected Instances
 ##
-veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/virtualMachines?ProtectedByPolicy=Unprotected"
-veeamVBAUnprotectedUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.2-rev0" -H  "accept: application/json" 2>&1 -k --silent)
+veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/virtualMachines?ProtectionStatus=Unprotected"
+veeamVBAUnprotectedUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.1-rev0" -H  "accept: application/json" 2>&1 -k --silent)
 
 declare -i arrayUnprotected=0
 for id in $(echo "$veeamVBAUnprotectedUrl" | jq -r '.results[].id'); do
@@ -118,7 +118,7 @@ for id in $(echo "$veeamVBAUnprotectedUrl" | jq -r '.results[].id'); do
     VMType=$(echo "$veeamVBAUnprotectedUrl" | jq --raw-output ".results[$arrayUnprotected].instanceType")    
     VMRegion=$(echo "$veeamVBAUnprotectedUrl" | jq --raw-output ".results[$arrayUnprotected].region.name")
     
-    #echo "veeam_aws_vm_unprotected,VMID=$VMID,VMName=$VMName,VMResourceId=$VMResourceID,VMType=$VMType,VMRegion=$VMRegion VMSize=$VMSize"
+    #echo "veeam_aws_vm_unprotected,VMID=$VMID,VMName=$VMName,VMResourceId=$VMResourceID,VMType=$VMType,VMRegion=$VMRegion"
     curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMID=$VMID,VMName=$VMName,VMResourceId=$VMResourceID,VMType=$VMType,VMRegion=$VMRegion VMSize=$VMSize"
            
     arrayUnprotected=$arrayUnprotected+1
@@ -177,7 +177,7 @@ done
 # Veeam Backup for AWS RDS. This part will check VBA and report all the RDS
 ##
 veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/rds"
-veeamVBARDSUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.2-rev0" -H  "accept: application/json" 2>&1 -k --silent)
+veeamVBARDSUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.1-rev0" -H  "accept: application/json" 2>&1 -k --silent)
 
 declare -i arrayRDS=0
 for id in $(echo "$veeamVBARDSUrl" | jq -r '.results[].id'); do
@@ -198,41 +198,10 @@ for id in $(echo "$veeamVBARDSUrl" | jq -r '.results[].id'); do
 done
 
 ##
-# Veeam Backup for AWS EFS. This part will check VBA and report all the EFS
-##
-veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/efs"
-veeamVBAEFSUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.2-rev0" -H  "accept: application/json" 2>&1 -k --silent)
-
-declare -i arrayEFS=0
-for id in $(echo "$veeamVBAEFSUrl" | jq -r '.results[].id'); do
-    EFSID=$(echo "$veeamVBAEFSUrl" | jq --raw-output ".results[$arrayEFS].id")
-    EFSName=$(echo "$veeamVBAEFSUrl" | jq --raw-output ".results[$arrayEFS].name" | awk '{gsub(/ /,"\\ ");print}')
-    EFSRegion=$(echo "$veeamVBAEFSUrl" | jq --raw-output ".results[$arrayEFS].region.name")    
-    EFSAWSID=$(echo "$veeamVBAEFSUrl" | jq --raw-output ".results[$arrayEFS].awsResourceId")
-    EFSAWSIDEncryption=$(echo "$veeamVBAEFSUrl" | jq --raw-output ".results[$arrayEFS].encrypted")
-        case $EFSAWSIDEncryption in
-        "false")
-            encryption="0"
-        ;;
-        "true")
-            encryption="1"
-        ;;
-        esac
-    EFSSize=$(echo "$veeamVBAEFSUrl" | jq --raw-output ".results[$arrayEFS].size")
-    EFSPerformance=$(echo "$veeamVBAEFSUrl" | jq --raw-output ".results[$arrayEFS].performanceMode")
-    EFSThroughput=$(echo "$veeamVBAEFSUrl" | jq --raw-output ".results[$arrayEFS].throughputMode")
-    
-    #echo "veeam_aws_RDS,RDSID=$RDSID,RDSName=$RDSName,RDSEngine=$RDSEngine,RDSEngineVersion=$RDSEngineVersion,RDSAWSID=$RDSAWSID,RDSClass=$RDSClass,RDSDNS=$RDSDNS,RDSRegion=$RDSRegion RDSSize=$RDSSize"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_efs,efsid=$EFSID,efsname=$EFSName,efsregion=$EFSRegion,efsawsid=$EFSAWSID,efsperformance=$EFSPerformance,efsthroughput=$EFSThroughput,efsencryption=$EFSAWSIDEncryption rdssize=$EFSSize"
-           
-    arrayEFS=$arrayEFS+1
-done
-
-##
 # Veeam Backup for AWS VPC. This part will check VBA and report all the Protected VPC
 ##
 veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/vpc/policy"
-veeamVBAVPCUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.2-rev0" -H  "accept: application/json" 2>&1 -k --silent)
+veeamVBAVPCUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.1-rev0" -H  "accept: application/json" 2>&1 -k --silent)
 
 declare -i arrayVPC=0
 for id in $(echo "$veeamVBAVPCUrl" | jq -r '.sourceOptions.selectedLocations[0].regions[].id'); do
@@ -246,68 +215,25 @@ for id in $(echo "$veeamVBAVPCUrl" | jq -r '.sourceOptions.selectedLocations[0].
 done
 
 ##
-# Veeam Backup for AWS Policies. This part will check VBA EC2 Policies
+# Veeam Backup for AWS Policies. This part will check VBA Policies
 ##
-veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/virtualMachines/policies"
-veeamVBAPoliciesUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.2-rev0" -H  "accept: application/json" 2>&1 -k --silent)
+veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/policies"
+veeamVBAPoliciesUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.1-rev0" -H  "accept: application/json" 2>&1 -k --silent)
 
 declare -i arraypolicies=0
 for id in $(echo "$veeamVBAPoliciesUrl" | jq -r '.results[].id'); do
     PolicyID=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arraypolicies].id")
+    PolicyType=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arraypolicies].type")
     PolicyStatus=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arraypolicies].isEnabled")
     PolicyName=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arraypolicies].name" | awk '{gsub(/ /,"\\ ");print}')
     PolicyDescription=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arraypolicies].description" | awk '{gsub(/ /,"\\ ");print}')
     PolicyBackupRepository=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arraypolicies].backupSettings.targetRepositoryId")
     PolicySnapshotCount=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arraypolicies].scheduleSettings.dailySchedule.snapshotOptions.retention.count")
 
-    #echo "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=EC2,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyBackupRepository=$PolicyBackupRepository PolicySnapshotCount=$PolicySnapshotCount"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=EC2,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyBackupRepository=$PolicyBackupRepository PolicySnapshotCount=$PolicySnapshotCount"
+    #echo "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=$PolicyType,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyBackupRepository=$PolicyBackupRepository PolicySnapshotCount=$PolicySnapshotCount"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=$PolicyType,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyBackupRepository=$PolicyBackupRepository PolicySnapshotCount=$PolicySnapshotCount"
     
     arraypolicies=$arraypolicies+1
-done
-
-##
-# Veeam Backup for AWS Policies. This part will check VBA RDS Policies
-##
-veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/rds/policies"
-veeamVBAPoliciesUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.2-rev0" -H  "accept: application/json" 2>&1 -k --silent)
-
-declare -i arrayrdspolicies=0
-for id in $(echo "$veeamVBAPoliciesUrl" | jq -r '.results[].id'); do
-    PolicyID=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrdspolicies].id")
-    PolicyStatus=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrdspolicies].isEnabled")
-    PolicyName=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrdspolicies].name" | awk '{gsub(/ /,"\\ ");print}')
-    PolicyDescription=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrdspolicies].description" | awk '{gsub(/ /,"\\ ");print}')
-    PolicyBackupRepository=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrdspolicies].backupSettings.targetRepositoryId")
-    PolicySnapshotCount=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrdspolicies].scheduleSettings.dailySchedule.snapshotOptions.retention.count")
-
-    #echo "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=RDS,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyBackupRepository=$PolicyBackupRepository PolicySnapshotCount=$PolicySnapshotCount"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=RDS,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyBackupRepository=$PolicyBackupRepository PolicySnapshotCount=$PolicySnapshotCount"
-    
-    arrayrdspolicies=$arrayrdspolicies+1
-done
-
-##
-# Veeam Backup for AWS Policies. This part will check VBA EFS Policies
-##
-veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/efs/policies"
-veeamVBAPoliciesUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.2-rev0" -H  "accept: application/json" 2>&1 -k --silent)
-
-declare -i arrayefspolicies=0
-for id in $(echo "$veeamVBAPoliciesUrl" | jq -r '.results[].id'); do
-    PolicyID=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayefspolicies].id")
-    PolicyStatus=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayefspolicies].isEnabled")
-    PolicyName=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayefspolicies].name" | awk '{gsub(/ /,"\\ ");print}')
-    PolicyDescription=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayefspolicies].description" | awk '{gsub(/ /,"\\ ");print}')
-    PolicySnapshotCount=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayefspolicies].scheduleSettings.dailySchedule.backupOptions.retention.count")
-    PolicyRegionID=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayefspolicies].regions[].regionId")    
-    PolicyBackupVaultID=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayefspolicies].regions[].backupVaultId")    
-    PolicySelectedEFSID=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayefspolicies].selectedItems.efsIds[]")
-
-    #echo "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=EFS,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyRegionID=$PolicyRegionID,PolicyBackupVaultID=$PolicyBackupVaultID,PolicySelectedEFSID=$PolicySelectedEFSID PolicySnapshotCount=$PolicySnapshotCount"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=EFS,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyRegionID=$PolicyRegionID,PolicyBackupVaultID=$PolicyBackupVaultID,PolicySelectedEFSID=$PolicySelectedEFSID PolicySnapshotCount=$PolicySnapshotCount"
-    
-    arrayefspolicies=$arrayefspolicies+1
 done
 
 
@@ -315,7 +241,7 @@ done
 # Veeam Backup for AWS Repositories. This part will check VBA Repositories
 ##
 veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/repositories"
-veeamVBAPoliciesUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.2-rev0" -H  "accept: application/json" 2>&1 -k --silent)
+veeamVBAPoliciesUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.1-rev0" -H  "accept: application/json" 2>&1 -k --silent)
 
 declare -i arrayrepositories=0
 for id in $(echo "$veeamVBAPoliciesUrl" | jq -r '.results[].id'); do
@@ -324,9 +250,8 @@ for id in $(echo "$veeamVBAPoliciesUrl" | jq -r '.results[].id'); do
     RepositoryDescription=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories].description" | awk '{gsub(/ /,"\\ ");print}')
     RepositoryBucketName=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories]._embedded.bucket" | awk '{gsub(/ /,"\\ ");print}')
     RepositoryRegion=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories]._embedded.region")
-    RepositoryStorageClass=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories].storageClass")
-    RepositoryFolderName=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories].amazonStorageFolder" | awk '{gsub(/ /,"\\ ");print}')
-    RepositoryEncryption=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories].enableEncryption")
+    RepositoryFolderName=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories].amazonStorageFolder" | awk '{gsub(/ /,"\\ ");print}')    
+    RepositoryEncryption=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories].enableEncryption") 
         case $RepositoryEncryption in
         "false")
             encryption="0"
@@ -335,10 +260,10 @@ for id in $(echo "$veeamVBAPoliciesUrl" | jq -r '.results[].id'); do
             encryption="1"
         ;;
         esac
-    RepositoryAWSID=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories].IAMRoleId")
+    RepositoryAWSID=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories].amazonAccountId")
 
-    #echo "veeam_aws_repositories,repoID=$RepositoryID,repoName=$RepositoryName,repoDescription=$RepositoryDescription,repoBucket=$RepositoryBucketName,repoFolderName=$RepositoryFolderName,repoRegion=$RepositoryRegion,repoclass=$RepositoryStorageClass,repoencryption=$RepositoryEncryption,repoAWSID=$RepositoryAWSID repoEncryption=$encryption"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_repositories,repoID=$RepositoryID,repoName=$RepositoryName,repoDescription=$RepositoryDescription,repoBucket=$RepositoryBucketName,repoFolderName=$RepositoryFolderName,repoRegion=$RepositoryRegion,repoclass=$RepositoryStorageClass,repoencryption=$RepositoryEncryption,repoAWSID=$RepositoryAWSID repoEncryption=$encryption"
+    #echo "veeam_aws_repositories,repoID=$RepositoryID,repoName=$RepositoryName,repoDescription=$RepositoryDescription,repoBucket=$RepositoryBucketName,repoFolderName=$RepositoryFolderName,repoRegion=$RepositoryRegion,repoAWSID=$RepositoryAWSID repoEncryption=$encryption"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_repositories,repoID=$RepositoryID,repoName=$RepositoryName,repoDescription=$RepositoryDescription,repoBucket=$RepositoryBucketName,repoFolderName=$RepositoryFolderName,repoRegion=$RepositoryRegion,repoAWSID=$RepositoryAWSID repoEncryption=$encryption"
     
     arrayrepositories=$arrayrepositories+1
 done
@@ -347,7 +272,7 @@ done
 # Veeam Backup for AWS EC2 Sessions. This part will check VBA Sessions for EC2 Backup Jobs
 ##
 veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/sessions?Limit=50&Types=Job"
-veeamVBASessionsBackupUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.2-rev0" -H  "accept: application/json" 2>&1 -k --silent)
+veeamVBASessionsBackupUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.1-rev0" -H  "accept: application/json" 2>&1 -k --silent)
 
 declare -i arraysessionsbackup=0
 for id in $(echo "$veeamVBASessionsBackupUrl" | jq -r '.results[].id'); do
@@ -371,13 +296,12 @@ for id in $(echo "$veeamVBASessionsBackupUrl" | jq -r '.results[].id'); do
     SessionTimeStamp=$(date -d "${SessionStopTime}" '+%s')
     SessionPolicyID=$(echo "$veeamVBASessionsBackupUrl" | jq --raw-output ".results[$arraysessionsbackup].id")
     SessionPolicyName=$(echo "$veeamVBASessionsBackupUrl" | jq --raw-output ".results[$arraysessionsbackup].reason" | awk '{gsub(/ /,"\\ ");print}')
-    SessionPolicyJobName=$(echo "$veeamVBASessionsBackupUrl" | jq --raw-output ".results[$arraysessionsbackup].reason" | awk '{gsub(/ /,"\\ ");print}')
     if [ "$veeamVBASessionPolicyName" == "" ];then
         declare -i veeamVBASessionPolicyName=0
     fi
 
-    #echo "veeam_aws_sessions,sessiontype="EC2",sessionID=$SessionID,sessionType=$SessionType,sessionDuration=$SessionDuration,sessionPolicyID=$SessionPolicyID,sessionPolicyName=$SessionPolicyName,sessionPolicyJobName=$SessionPolicyJobName sessionStatus=$jobStatus $SessionTimeStamp"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_sessions,sessiontype="EC2",sessionID=$SessionID,sessionType=$SessionType,sessionDuration=$SessionDuration,sessionPolicyID=$SessionPolicyID,sessionPolicyName=$SessionPolicyName,sessionPolicyJobName=$SessionPolicyJobName sessionStatus=$jobStatus $SessionTimeStamp"
+    #echo "veeam_aws_sessions,sessiontype="EC2",sessionID=$SessionID,sessionType=$SessionType,sessionDuration=$SessionDuration,sessionPolicyID=$SessionPolicyID,sessionPolicyName=$SessionPolicyName sessionStatus=$jobStatus $SessionTimeStamp"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_sessions,sessiontype="EC2",sessionID=$SessionID,sessionType=$SessionType,sessionPolicyID=$SessionPolicyID,sessionPolicyName=$SessionPolicyName sessionDuration=$SessionDuration,sessionStatus=$jobStatus $SessionTimeStamp"
     
     arraysessionsbackup=$arraysessionsbackup+1
 done
@@ -386,7 +310,7 @@ done
 # Veeam Backup for AWS Policies Sessions. This part will check VBA Sessions for RDS, VPC, and EC2 Snapshots (Hope it will be improved when API allows us to filter per type)
 ##
 veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/sessions?Limit=100&Types=Policy"
-veeamVBASessionsPolicyUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.2-rev0" -H  "accept: application/json" 2>&1 -k --silent)
+veeamVBASessionsPolicyUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.1-rev0" -H  "accept: application/json" 2>&1 -k --silent)
 
 declare -i arraysessionspolicy=0
 for id in $(echo "$veeamVBASessionsPolicyUrl" | jq -r '.results[].id'); do
@@ -424,10 +348,9 @@ for id in $(echo "$veeamVBASessionsPolicyUrl" | jq -r '.results[].id'); do
     SessionStopTime=$(echo "$veeamVBASessionsPolicyUrl" | jq --raw-output ".results[$arraysessionspolicy].executionStartTime")
     SessionTimeStamp=$(date -d "${SessionStopTime}" '+%s')
     SessionPolicyID=$(echo "$veeamVBASessionsPolicyUrl" | jq --raw-output ".results[$arraysessionspolicy].id")
-    SessionPolicyJobName=$(echo "$veeamVBASessionsPolicyUrl" | jq --raw-output ".results[$arraysessionspolicy].name" | awk '{gsub(/ /,"\\ ");print}')
 
-    #echo "veeam_aws_sessions,sessiontype=$extendedSessionType,sessionID=$SessionID,sessionType=$SessionType,sessionDuration=$SessionDuration,sessionPolicyID=$SessionPolicyID,sessionPolicyJobName=$SessionPolicyJobName sessionStatus=$jobStatus $SessionTimeStamp"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_sessions,sessiontype=$extendedSessionType,sessionID=$SessionID,sessionType=$SessionType,sessionDuration=$SessionDuration,sessionPolicyID=$SessionPolicyID,sessionPolicyJobName=$SessionPolicyJobName sessionStatus=$jobStatus $SessionTimeStamp"
+    #echo "veeam_aws_sessions,sessiontype=$extendedSessionType,sessionID=$SessionID,sessionType=$SessionType,sessionDuration=$SessionDuration,sessionPolicyID=$SessionPolicyID sessionStatus=$jobStatus $SessionTimeStamp"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_sessions,sessiontype=$extendedSessionType,sessionID=$SessionID,sessionType=$SessionType,sessionPolicyID=$SessionPolicyID sessionDuration=$SessionDuration,sessionStatus=$jobStatus $SessionTimeStamp"
     
     arraysessionspolicy=$arraysessionspolicy+1
 done
