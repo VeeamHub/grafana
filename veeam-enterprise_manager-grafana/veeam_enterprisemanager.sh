@@ -9,8 +9,8 @@
 ##      .Notes
 ##      NAME:  veeam_enterprisemanager.sh
 ##      ORIGINAL NAME: veeam_enterprisemanager.sh
-##      LASTEDIT: 09/03/2021
-##      VERSION: 1.4
+##      LASTEDIT: 30/10/2021
+##      VERSION: 11a
 ##      KEYWORDS: Veeam, InfluxDB, Grafana
    
 ##      .Link
@@ -145,6 +145,9 @@ for Name in $(echo "$veeamEMOBackupServersUrl" | jq -r '.BackupServers[].Name');
     veeamBackupServersPort=$(echo "$veeamEMOBackupServersUrl" | jq --raw-output ".BackupServers[$arraybackupservers].Port")
     veeamBackupServersVersion=$(echo "$veeamEMOBackupServersUrl" | jq --raw-output ".BackupServers[$arraybackupservers].Version" | awk '{gsub(/ /,"\\ ");print}')
        case $veeamBackupServersVersion in
+        "11.0.1.1261")
+            veeamBackupServersVersionM="11.0a\ GA"
+        ;;        
         "11.0.0.837")
             veeamBackupServersVersionM="11.0\ GA"
         ;;

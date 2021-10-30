@@ -145,6 +145,9 @@ for Name in $(echo "$veeamEMOBackupServersUrl" | jq -r '.BackupServers[].Name');
     veeamBackupServersPort=$(echo "$veeamEMOBackupServersUrl" | jq --raw-output ".BackupServers[$arraybackupservers].Port")
     veeamBackupServersVersion=$(echo "$veeamEMOBackupServersUrl" | jq --raw-output ".BackupServers[$arraybackupservers].Version" | awk '{gsub(/ /,"\\ ");print}')
        case $veeamBackupServersVersion in
+        "11.0.1.1261")
+            veeamBackupServersVersionM="11.0a\ GA"
+        ;; 
         "11.0.0.837")
             veeamBackupServersVersionM="11.0\ GA"
         ;;
