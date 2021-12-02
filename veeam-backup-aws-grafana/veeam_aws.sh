@@ -9,7 +9,7 @@
 ##      .Notes
 ##      NAME:  veeam_aws.sh
 ##      ORIGINAL NAME: veeam_aws.sh
-##      LASTEDIT: 16/10/2021
+##      LASTEDIT: 02/12/2021
 ##      VERSION: 4.0
 ##      KEYWORDS: Veeam, InfluxDB, Grafana
    
@@ -57,6 +57,7 @@ veeamVBAOverviewUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamB
     LicenseInstances=$(echo "$veeamVBAOverviewUrl" | jq --raw-output ".instancesUses")
     
     #echo "veeam_aws_overview,version=$version,LicenseType=$LicenseType VMs=$VMsCount,VMsProtected=$VMsProtected,Policies=$PoliciesCount,Repositories=$RepositoriesCount,InstancesUsed=$LicenseInstances"
+    echo "Writing veeam_aws_overview to InfluxDB"
     curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_overview,version=$version,LicenseType=$LicenseType VMs=$VMsCount,VMsProtected=$VMsProtected,Policies=$PoliciesCount,Repositories=$RepositoriesCount,InstancesUsed=$LicenseInstances"
     
 ##
@@ -79,6 +80,7 @@ for id in $(echo "$veeamVBAInstancesUrl" | jq -r '.results[].id'); do
     VMPolicy=$(echo "$veeamVBAInstancesPolicyUrl" | jq --raw-output ".results[0].name")   
     
     #echo "veeam_aws_vm,VMID=$VMID,VMName=$VMName,VMResourceId=$VMResourceID,VMType=$VMType,VMPolicy=$VMPolicy,VMRegion=$VMRegion VMSize=$VMSize"
+    echo "Writing veeam_aws_vm to InfluxDB"
     curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm,VMID=$VMID,VMName=$VMName,VMResourceId=$VMResourceID,VMType=$VMType,VMPolicy=$VMPolicy,VMRegion=$VMRegion VMSize=$VMSize"
     
     # Restore Points per Instance
@@ -95,12 +97,14 @@ for id in $(echo "$veeamVBAInstancesUrl" | jq -r '.results[].id'); do
       VMJobTime=$(echo "$veeamRestorePointsUrl" | jq --raw-output ".results[$arrayRestorePoint].pointInTime")
 
         #echo "veeam_aws_restorepoints,JobType=$VMJobType,Jobid=$VMJobid,JobBackupId=$VMJobBackupId,JobTime=$VMJobTime JobSize=$VMJobSize"
+        echo "Writing veeam_aws_restorepoints to InfluxDB"
         curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_restorepoints,JobType=$VMJobType,Jobid=$VMJobid,JobBackupId=$VMJobBackupId,JobTime=$VMJobTime JobSize=$VMJobSize"
         
         arrayRestorePoint=$arrayRestorePoint+1
     done   
     arrayinstances=$arrayinstances+1    
 done
+    echo "Writing veeam_aws_vm_protected to InfluxDB"
     curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_protected TotalVMs=$arrayinstances"
 
 ##
@@ -119,10 +123,12 @@ for id in $(echo "$veeamVBAUnprotectedUrl" | jq -r '.results[].id'); do
     VMRegion=$(echo "$veeamVBAUnprotectedUrl" | jq --raw-output ".results[$arrayUnprotected].region.name")
     
     #echo "veeam_aws_vm_unprotected,VMID=$VMID,VMName=$VMName,VMResourceId=$VMResourceID,VMType=$VMType,VMRegion=$VMRegion VMSize=$VMSize"
+    echo "Writing veeam_aws_vm_unprotected to InfluxDB"
     curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMID=$VMID,VMName=$VMName,VMResourceId=$VMResourceID,VMType=$VMType,VMRegion=$VMRegion VMSize=$VMSize"
            
     arrayUnprotected=$arrayUnprotected+1
 done
+    echo "Writing veeam_aws_vm_unprotected to InfluxDB"
     curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected TotalVMs=$arrayUnprotected"
 ##
 # Unprotected VMs per Region with geohash
@@ -192,6 +198,7 @@ for id in $(echo "$veeamVBARDSUrl" | jq -r '.results[].id'); do
     RDSRegion=$(echo "$veeamVBARDSUrl" | jq --raw-output ".results[$arrayRDS].location.name")
     
     #echo "veeam_aws_RDS,RDSID=$RDSID,RDSName=$RDSName,RDSEngine=$RDSEngine,RDSEngineVersion=$RDSEngineVersion,RDSAWSID=$RDSAWSID,RDSClass=$RDSClass,RDSDNS=$RDSDNS,RDSRegion=$RDSRegion RDSSize=$RDSSize"
+    echo "Writing veeam_aws_rds to InfluxDB"
     curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_rds,rdsid=$RDSID,rdsname=$RDSName,rdsengine=$RDSEngine,rdsengineversion=$RDSEngineVersion,rdsawsid=$RDSAWSID,rdsclass=$RDSClass,rdsdns=$RDSDNS,rdsregion=$RDSRegion rdssize=$RDSSize"
            
     arrayRDS=$arrayRDS+1
@@ -223,6 +230,7 @@ for id in $(echo "$veeamVBAEFSUrl" | jq -r '.results[].id'); do
     EFSThroughput=$(echo "$veeamVBAEFSUrl" | jq --raw-output ".results[$arrayEFS].throughputMode")
     
     #echo "veeam_aws_RDS,RDSID=$RDSID,RDSName=$RDSName,RDSEngine=$RDSEngine,RDSEngineVersion=$RDSEngineVersion,RDSAWSID=$RDSAWSID,RDSClass=$RDSClass,RDSDNS=$RDSDNS,RDSRegion=$RDSRegion RDSSize=$RDSSize"
+    echo "Writing veeam_aws_efs to InfluxDB"
     curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_efs,efsid=$EFSID,efsname=$EFSName,efsregion=$EFSRegion,efsawsid=$EFSAWSID,efsperformance=$EFSPerformance,efsthroughput=$EFSThroughput,efsencryption=$EFSAWSIDEncryption rdssize=$EFSSize"
            
     arrayEFS=$arrayEFS+1
@@ -240,6 +248,7 @@ for id in $(echo "$veeamVBAVPCUrl" | jq -r '.sourceOptions.selectedLocations[0].
     VPCRegion=$(echo "$veeamVBAVPCUrl" | jq --raw-output ".sourceOptions.selectedLocations[0].regions[$arrayVPC].displayName" | awk '{gsub(/ /,"\\ ");print}')    
     
     #echo "veeam_aws_VPC,VPCID=$VPCID,VPCRegion=$VPCRegion VPCProtected=1"
+    echo "Writing veeam_aws_vpc to InfluxDB"
     curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vpc,vpcid=$VPCID,vpcregion=$VPCRegion vpcprotected=1"
            
     arrayVPC=$arrayVPC+1
@@ -257,10 +266,14 @@ for id in $(echo "$veeamVBAPoliciesUrl" | jq -r '.results[].id'); do
     PolicyStatus=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arraypolicies].isEnabled")
     PolicyName=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arraypolicies].name" | awk '{gsub(/ /,"\\ ");print}')
     PolicyDescription=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arraypolicies].description" | awk '{gsub(/ /,"\\ ");print}')
+    if [ "$PolicyDescription" == "" ];then
+        declare -i PolicyDescription=0
+    fi
     PolicyBackupRepository=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arraypolicies].backupSettings.targetRepositoryId")
     PolicySnapshotCount=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arraypolicies].scheduleSettings.dailySchedule.snapshotOptions.retention.count")
 
     #echo "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=EC2,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyBackupRepository=$PolicyBackupRepository PolicySnapshotCount=$PolicySnapshotCount"
+    echo "Writing veeam_aws_policies EC2 to InfluxDB"
     curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=EC2,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyBackupRepository=$PolicyBackupRepository PolicySnapshotCount=$PolicySnapshotCount"
     
     arraypolicies=$arraypolicies+1
@@ -278,10 +291,14 @@ for id in $(echo "$veeamVBAPoliciesUrl" | jq -r '.results[].id'); do
     PolicyStatus=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrdspolicies].isEnabled")
     PolicyName=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrdspolicies].name" | awk '{gsub(/ /,"\\ ");print}')
     PolicyDescription=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrdspolicies].description" | awk '{gsub(/ /,"\\ ");print}')
+    if [ "$PolicyDescription" == "" ];then
+        declare -i PolicyDescription=0
+    fi
     PolicyBackupRepository=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrdspolicies].backupSettings.targetRepositoryId")
     PolicySnapshotCount=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrdspolicies].scheduleSettings.dailySchedule.snapshotOptions.retention.count")
 
     #echo "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=RDS,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyBackupRepository=$PolicyBackupRepository PolicySnapshotCount=$PolicySnapshotCount"
+    echo "Writing veeam_aws_policies RDS to InfluxDB"
     curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=RDS,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyBackupRepository=$PolicyBackupRepository PolicySnapshotCount=$PolicySnapshotCount"
     
     arrayrdspolicies=$arrayrdspolicies+1
@@ -299,12 +316,16 @@ for id in $(echo "$veeamVBAPoliciesUrl" | jq -r '.results[].id'); do
     PolicyStatus=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayefspolicies].isEnabled")
     PolicyName=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayefspolicies].name" | awk '{gsub(/ /,"\\ ");print}')
     PolicyDescription=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayefspolicies].description" | awk '{gsub(/ /,"\\ ");print}')
+    if [ "$PolicyDescription" == "" ];then
+        declare -i PolicyDescription=0
+    fi
     PolicySnapshotCount=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayefspolicies].scheduleSettings.dailySchedule.backupOptions.retention.count")
     PolicyRegionID=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayefspolicies].regions[].regionId")    
     PolicyBackupVaultID=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayefspolicies].regions[].backupVaultId")    
     PolicySelectedEFSID=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayefspolicies].selectedItems.efsIds[]")
 
     #echo "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=EFS,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyRegionID=$PolicyRegionID,PolicyBackupVaultID=$PolicyBackupVaultID,PolicySelectedEFSID=$PolicySelectedEFSID PolicySnapshotCount=$PolicySnapshotCount"
+    echo "Writing veeam_aws_policies EFS to InfluxDB"
     curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=EFS,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyRegionID=$PolicyRegionID,PolicyBackupVaultID=$PolicyBackupVaultID,PolicySelectedEFSID=$PolicySelectedEFSID PolicySnapshotCount=$PolicySnapshotCount"
     
     arrayefspolicies=$arrayefspolicies+1
@@ -322,6 +343,9 @@ for id in $(echo "$veeamVBAPoliciesUrl" | jq -r '.results[].id'); do
     RepositoryID=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories].id")
     RepositoryName=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories].name" | awk '{gsub(/ /,"\\ ");print}')
     RepositoryDescription=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories].description" | awk '{gsub(/ /,"\\ ");print}')
+    if [ "$RepositoryDescription" == "" ];then
+        declare -i RepositoryDescription=0
+    fi
     RepositoryBucketName=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories]._embedded.bucket" | awk '{gsub(/ /,"\\ ");print}')
     RepositoryRegion=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories]._embedded.region")
     RepositoryStorageClass=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories].storageClass")
@@ -338,6 +362,7 @@ for id in $(echo "$veeamVBAPoliciesUrl" | jq -r '.results[].id'); do
     RepositoryAWSID=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories].IAMRoleId")
 
     #echo "veeam_aws_repositories,repoID=$RepositoryID,repoName=$RepositoryName,repoDescription=$RepositoryDescription,repoBucket=$RepositoryBucketName,repoFolderName=$RepositoryFolderName,repoRegion=$RepositoryRegion,repoclass=$RepositoryStorageClass,repoencryption=$RepositoryEncryption,repoAWSID=$RepositoryAWSID repoEncryption=$encryption"
+    echo "Writing veeam_aws_repositories to InfluxDB"
     curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_repositories,repoID=$RepositoryID,repoName=$RepositoryName,repoDescription=$RepositoryDescription,repoBucket=$RepositoryBucketName,repoFolderName=$RepositoryFolderName,repoRegion=$RepositoryRegion,repoclass=$RepositoryStorageClass,repoencryption=$RepositoryEncryption,repoAWSID=$RepositoryAWSID repoEncryption=$encryption"
     
     arrayrepositories=$arrayrepositories+1
@@ -370,14 +395,14 @@ for id in $(echo "$veeamVBASessionsBackupUrl" | jq -r '.results[].id'); do
     SessionStopTime=$(echo "$veeamVBASessionsBackupUrl" | jq --raw-output ".results[$arraysessionsbackup].executionStartTime")
     SessionTimeStamp=$(date -d "${SessionStopTime}" '+%s')
     SessionPolicyID=$(echo "$veeamVBASessionsBackupUrl" | jq --raw-output ".results[$arraysessionsbackup].id")
-    SessionPolicyName=$(echo "$veeamVBASessionsBackupUrl" | jq --raw-output ".results[$arraysessionsbackup].reason" | awk '{gsub(/ /,"\\ ");print}')
     SessionPolicyJobName=$(echo "$veeamVBASessionsBackupUrl" | jq --raw-output ".results[$arraysessionsbackup].reason" | awk '{gsub(/ /,"\\ ");print}')
-    if [ "$veeamVBASessionPolicyName" == "" ];then
-        declare -i veeamVBASessionPolicyName=0
+    if [ "$SessionPolicyJobName" == "" ];then
+        declare -i SessionPolicyJobName=0
     fi
 
-    #echo "veeam_aws_sessions,sessiontype="EC2",sessionID=$SessionID,sessionType=$SessionType,sessionDuration=$SessionDuration,sessionPolicyID=$SessionPolicyID,sessionPolicyName=$SessionPolicyName,sessionPolicyJobName=$SessionPolicyJobName sessionStatus=$jobStatus $SessionTimeStamp"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_sessions,sessiontype="EC2",sessionID=$SessionID,sessionType=$SessionType,sessionDuration=$SessionDuration,sessionPolicyID=$SessionPolicyID,sessionPolicyName=$SessionPolicyName,sessionPolicyJobName=$SessionPolicyJobName sessionStatus=$jobStatus $SessionTimeStamp"
+    #echo "veeam_aws_sessions,sessiontype="EC2",sessionID=$SessionID,sessionType=$SessionType,sessionPolicyID=$SessionPolicyID,sessionPolicyJobName=$SessionPolicyJobName sessionDuration=$SessionDuration, sessionStatus=$jobStatus $SessionTimeStamp"
+    echo "Writing veeam_aws_sessions Job to InfluxDB"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_sessions,sessiontype="EC2",sessionID=$SessionID,sessionType=$SessionType,sessionPolicyID=$SessionPolicyID,sessionPolicyJobName=$SessionPolicyJobName sessionDuration=$SessionDuration,sessionStatus=$jobStatus $SessionTimeStamp"
     
     arraysessionsbackup=$arraysessionsbackup+1
 done
@@ -427,7 +452,8 @@ for id in $(echo "$veeamVBASessionsPolicyUrl" | jq -r '.results[].id'); do
     SessionPolicyJobName=$(echo "$veeamVBASessionsPolicyUrl" | jq --raw-output ".results[$arraysessionspolicy].name" | awk '{gsub(/ /,"\\ ");print}')
 
     #echo "veeam_aws_sessions,sessiontype=$extendedSessionType,sessionID=$SessionID,sessionType=$SessionType,sessionDuration=$SessionDuration,sessionPolicyID=$SessionPolicyID,sessionPolicyJobName=$SessionPolicyJobName sessionStatus=$jobStatus $SessionTimeStamp"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_sessions,sessiontype=$extendedSessionType,sessionID=$SessionID,sessionType=$SessionType,sessionDuration=$SessionDuration,sessionPolicyID=$SessionPolicyID,sessionPolicyJobName=$SessionPolicyJobName sessionStatus=$jobStatus $SessionTimeStamp"
+    echo "Writing veeam_aws_sessions Policy to InfluxDB"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_sessions,sessiontype=$extendedSessionType,sessionID=$SessionID,sessionType=$SessionType,sessionPolicyID=$SessionPolicyID,sessionPolicyJobName=$SessionPolicyJobName sessionDuration=$SessionDuration,sessionStatus=$jobStatus $SessionTimeStamp"
     
     arraysessionspolicy=$arraysessionspolicy+1
 done

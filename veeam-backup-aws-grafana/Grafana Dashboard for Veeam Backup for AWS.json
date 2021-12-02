@@ -9,36 +9,31 @@
       "pluginName": "InfluxDB"
     }
   ],
+  "__elements": [],
   "__requires": [
+    {
+      "type": "panel",
+      "id": "geomap",
+      "name": "Geomap",
+      "version": ""
+    },
     {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "8.1.7"
-    },
-    {
-      "type": "panel",
-      "id": "grafana-piechart-panel",
-      "name": "Pie Chart (old)",
-      "version": "1.6.1"
-    },
-    {
-      "type": "panel",
-      "id": "grafana-worldmap-panel",
-      "name": "Worldmap Panel",
-      "version": "0.3.2"
-    },
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph (old)",
-      "version": ""
+      "version": "8.3.0"
     },
     {
       "type": "datasource",
       "id": "influxdb",
       "name": "InfluxDB",
       "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "piechart",
+      "name": "Pie chart",
+      "version": ""
     },
     {
       "type": "panel",
@@ -56,6 +51,12 @@
       "type": "panel",
       "id": "text",
       "name": "Text",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
       "version": ""
     }
   ],
@@ -78,16 +79,21 @@
       }
     ]
   },
-  "description": "Grafana Dashboard for Veeam Backup for Azure",
+  "description": "Grafana Dashboard for Veeam Backup for AWS v4",
   "editable": true,
+  "fiscalYearStartMonth": 0,
   "gnetId": 12204,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1634389008959,
+  "iteration": 1638487273372,
   "links": [],
+  "liveNow": false,
   "panels": [
     {
-      "datasource": "${DS_INFLUXDB}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "gridPos": {
         "h": 2,
         "w": 1,
@@ -99,7 +105,7 @@
         "content": "<a href=\"https://www.veeam.com/backup-azure.html\" target=\"_blank\"><img src=\"https://www.jorgedelacruz.es/VCB_product_icon.svg\" alt=\"drawing\" width=\"50\"/></a>\n\n",
         "mode": "html"
       },
-      "pluginVersion": "8.1.7",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "groupBy": [
@@ -137,13 +143,10 @@
           "tags": []
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "transparent": true,
       "type": "text"
     },
     {
-      "datasource": "${DS_INFLUXDB}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -187,10 +190,14 @@
         "text": {},
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.1.7",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "Total Policies",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
           "groupBy": [
             {
               "params": [
@@ -228,6 +235,10 @@
         },
         {
           "alias": "Total Repositories",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
           "groupBy": [
             {
               "params": [
@@ -264,7 +275,11 @@
           "tags": []
         },
         {
-          "alias": "Total Instances",
+          "alias": "Protected Instances",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
           "groupBy": [
             {
               "params": [
@@ -299,53 +314,16 @@
             ]
           ],
           "tags": []
-        },
-        {
-          "alias": "Total Protected VMs",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "veeam_aws_overview",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "D",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "VMsProtected"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              }
-            ]
-          ],
-          "tags": []
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "transparent": true,
       "type": "stat"
     },
     {
-      "cacheTimeout": null,
-      "datasource": "${DS_INFLUXDB}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -380,7 +358,6 @@
         "y": 0
       },
       "id": 22,
-      "interval": null,
       "links": [],
       "maxDataPoints": 100,
       "options": {
@@ -400,7 +377,7 @@
         },
         "textMode": "name"
       },
-      "pluginVersion": "8.1.7",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "Version $tag_version",
@@ -446,13 +423,13 @@
           "tags": []
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "type": "stat"
     },
     {
-      "cacheTimeout": null,
-      "datasource": "${DS_INFLUXDB}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "mappings": [
@@ -486,7 +463,6 @@
         "y": 0
       },
       "id": 21,
-      "interval": null,
       "links": [],
       "maxDataPoints": 100,
       "options": {
@@ -506,7 +482,7 @@
         },
         "textMode": "name"
       },
-      "pluginVersion": "8.1.7",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "License: $tag_LicenseType",
@@ -552,52 +528,114 @@
           "tags": []
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "type": "stat"
     },
     {
-      "circleMaxSize": "10",
-      "circleMinSize": "10",
-      "colors": [
-        "#C4162A",
-        "#C4162A"
-      ],
-      "datasource": "${DS_INFLUXDB}",
-      "decimals": 0,
       "description": "On this Map, you can quickly know which VMs are not Protected by Veeam Backup for AWS. \nWith a simple, yet powerful view, you can understand and try to mitigate the red spots.",
-      "esGeoPoint": "geohash",
-      "esLocationName": "",
-      "esMetric": "metric",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#C4162A",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 16,
         "w": 11,
         "x": 0,
         "y": 2
       },
-      "hideEmpty": true,
-      "hideZero": true,
       "id": 8,
-      "initialZoom": "2",
-      "locationData": "table",
-      "mapCenter": "custom",
-      "mapCenterLatitude": "45",
-      "mapCenterLongitude": "8",
       "maxDataPoints": 1,
-      "mouseWheelZoom": false,
-      "showLegend": false,
-      "stickyLabels": false,
-      "tableQueryOptions": {
-        "geohashField": "geohash",
-        "labelField": "VMRegion",
-        "latitudeField": "latitude",
-        "longitudeField": "longitude",
-        "metricField": "metric",
-        "queryType": "geohash"
+      "options": {
+        "basemap": {
+          "config": {},
+          "name": "Basemap",
+          "type": "default"
+        },
+        "controls": {
+          "mouseWheelZoom": false,
+          "showAttribution": false,
+          "showDebug": false,
+          "showScale": false,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "showLegend": true,
+              "style": {
+                "color": {
+                  "fixed": "dark-red"
+                },
+                "opacity": 0.6,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "field": "Unprotected VMs",
+                  "fixed": 5,
+                  "max": 10,
+                  "min": 4
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "text": {
+                  "field": "VMRegion",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "textConfig": {
+                  "fontSize": 10,
+                  "offsetX": -15,
+                  "offsetY": 0,
+                  "textAlign": "right",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "location": {
+              "geohash": "geohash",
+              "latitude": "Unprotected VMs",
+              "longitude": "Unprotected VMs",
+              "mode": "auto"
+            },
+            "name": "Layer 1",
+            "type": "markers"
+          }
+        ],
+        "view": {
+          "id": "coords",
+          "lat": 39.943392,
+          "lon": -39.543707,
+          "shared": false,
+          "zoom": 3
+        }
       },
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "$tag_geohash",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
           "groupBy": [
             {
               "params": [
@@ -628,6 +666,8 @@
           "measurement": "veeam_aws_vm_unprotected",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "SELECT last(\"UPVM\") AS \"Unprotected VMs\" FROM \"veeam_aws_vm_unprotected\" WHERE (\"UPVM\" >=1) AND $timeFilter GROUP BY time($__interval), \"geohash\", \"VMRegion\" fill(none)",
+          "rawQuery": true,
           "refId": "A",
           "resultFormat": "table",
           "select": [
@@ -644,7 +684,7 @@
               },
               {
                 "params": [
-                  "metric"
+                  "Unprotected VMs"
                 ],
                 "type": "alias"
               }
@@ -653,32 +693,64 @@
           "tags": []
         }
       ],
-      "thresholds": "0",
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Unprotected VMs",
       "transformations": [],
-      "type": "grafana-worldmap-panel",
-      "unitPlural": "Unprotected VMs",
-      "unitSingle": "",
-      "unitSingular": "Unprotected VM",
-      "valueName": "current"
+      "type": "geomap"
     },
     {
-      "aliasColors": {
-        "Protected VMs": "#37872D",
-        "Unprotected VMs": "#C4162A"
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
       },
-      "breakPoint": "50%",
-      "cacheTimeout": null,
-      "combine": {
-        "label": "Others",
-        "threshold": 0
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Protected VMs"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#37872D",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Unprotected VMs"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#C4162A",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
-      "datasource": "${DS_INFLUXDB}",
-      "decimals": null,
-      "fontSize": "100%",
-      "format": "none",
       "gridPos": {
         "h": 9,
         "w": 5,
@@ -686,19 +758,30 @@
         "y": 2
       },
       "id": 30,
-      "interval": null,
-      "legend": {
-        "header": "",
-        "percentage": false,
-        "show": true,
-        "values": true
-      },
-      "legendType": "On graph",
       "links": [],
       "maxDataPoints": 3,
-      "nullPointMode": "connected",
-      "pieType": "pie",
-      "strokeWidth": "0",
+      "options": {
+        "displayLabels": [
+          "value",
+          "name"
+        ],
+        "legend": {
+          "displayMode": "hidden",
+          "placement": "right",
+          "values": []
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
       "targets": [
         {
           "alias": "Protected VMs",
@@ -775,107 +858,92 @@
           "tags": []
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Protected VMs Overview",
-      "type": "grafana-piechart-panel",
-      "valueName": "max"
+      "type": "piechart"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_INFLUXDB}",
       "description": "On this Panel, you can quickly know how much time did a Backup, or Snapshot Policy take. You can quickly filter by Policy Name on the top menu.",
       "fieldConfig": {
         "defaults": {
-          "links": [],
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "Job Duration",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "points",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 8,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "always",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
           "unit": "ms"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": " - 1"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "PolicySnapshot"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": " - 2"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "PolicyRdsSnapshot"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": " - 3"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "VpcBackup"
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 9,
         "w": 8,
         "x": 16,
         "y": 2
       },
-      "hiddenSeries": false,
       "hideTimeOverride": false,
       "id": 19,
       "interval": "",
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "hideEmpty": true,
-        "hideZero": true,
-        "max": true,
-        "min": true,
-        "rightSide": false,
-        "show": false,
-        "total": false,
-        "values": true
-      },
-      "lines": false,
-      "linewidth": 1,
       "links": [],
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "hidden",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "8.1.7",
-      "pointradius": 3,
-      "points": true,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "8.3.0",
       "targets": [
         {
-          "alias": "$tag_sessionPolicyName - $tag_sessionType",
+          "alias": "$tag_sessionPolicyJobName - $tag_sessionType",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
           "groupBy": [
             {
               "params": [
@@ -885,7 +953,7 @@
             },
             {
               "params": [
-                "sessionPolicyName"
+                "sessionPolicyJobName"
               ],
               "type": "tag"
             },
@@ -929,14 +997,18 @@
             },
             {
               "condition": "AND",
-              "key": "sessionPolicyName",
+              "key": "sessionPolicyJobName",
               "operator": "=~",
               "value": "/^$PolicyName$/"
             }
           ]
         },
         {
-          "alias": "$tag_sessionPolicyName - $tag_sessiontype",
+          "alias": "$tag_sessionPolicyJobName - $tag_sessiontype",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
           "groupBy": [
             {
               "params": [
@@ -946,7 +1018,7 @@
             },
             {
               "params": [
-                "sessionPolicyName"
+                "sessionPolicyJobName"
               ],
               "type": "tag"
             },
@@ -963,6 +1035,7 @@
               "type": "fill"
             }
           ],
+          "hide": true,
           "measurement": "veeam_aws_sessions",
           "orderByTime": "ASC",
           "policy": "default",
@@ -991,52 +1064,14 @@
           ]
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "Job and Policies Duration",
-      "tooltip": {
-        "shared": false,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:426",
-          "decimals": 0,
-          "format": "ms",
-          "label": "Job Duration",
-          "logBase": 1,
-          "max": null,
-          "min": "0",
-          "show": true
-        },
-        {
-          "$$hashKey": "object:427",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
-      "datasource": "${DS_INFLUXDB}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1129,9 +1164,16 @@
       "id": 17,
       "links": [],
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true
       },
-      "pluginVersion": "8.1.7",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "$tag_sessionPolicyName",
@@ -1189,8 +1231,6 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Job Historical Information",
       "transformations": [
         {
@@ -1211,11 +1251,6 @@
     },
     {
       "collapsed": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1228,8 +1263,10 @@
       "type": "row"
     },
     {
-      "cacheTimeout": null,
-      "datasource": "${DS_INFLUXDB}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "On this Panel, you can quickly list all your protected VPC on the different Regions",
       "fieldConfig": {
         "defaults": {
@@ -1279,10 +1316,17 @@
       "interval": "",
       "links": [],
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "8.1.7",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "",
@@ -1332,12 +1376,14 @@
           "tz": ""
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Protected Amazon VPC",
       "transformations": [
         {
           "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "merge",
           "options": {}
         },
         {
@@ -1372,8 +1418,10 @@
       "type": "table"
     },
     {
-      "cacheTimeout": null,
-      "datasource": "${DS_INFLUXDB}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "On this Panel, you can quickly list all your Protected EC2 Instances",
       "fieldConfig": {
         "defaults": {
@@ -1423,10 +1471,17 @@
       "interval": "",
       "links": [],
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "8.1.7",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "",
@@ -1482,12 +1537,14 @@
           "tz": ""
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Protected VMs",
       "transformations": [
         {
           "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "merge",
           "options": {}
         },
         {
@@ -1510,8 +1567,10 @@
       "type": "table"
     },
     {
-      "cacheTimeout": null,
-      "datasource": "${DS_INFLUXDB}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "On this Panel, you can quickly list all your unprotected EC2 Instances",
       "fieldConfig": {
         "defaults": {
@@ -1573,11 +1632,18 @@
       "interval": "",
       "links": [],
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "frameIndex": 0,
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.1.7",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "",
@@ -1633,12 +1699,14 @@
           "tz": ""
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Unprotected VMs",
       "transformations": [
         {
           "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "merge",
           "options": {}
         },
         {
@@ -1661,8 +1729,10 @@
       "type": "table"
     },
     {
-      "cacheTimeout": null,
-      "datasource": "${DS_INFLUXDB}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "On this Panel, you can quickly list all your protected RDS Instances",
       "fieldConfig": {
         "defaults": {
@@ -1724,10 +1794,17 @@
       "interval": "",
       "links": [],
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "8.1.7",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "",
@@ -1801,12 +1878,14 @@
           "tz": ""
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Protected Amazon RDS",
       "transformations": [
         {
           "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "merge",
           "options": {}
         },
         {
@@ -1842,8 +1921,10 @@
       "type": "table"
     },
     {
-      "cacheTimeout": null,
-      "datasource": "${DS_INFLUXDB}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "On this Panel, you can quickly list all your protected EFS Instances",
       "fieldConfig": {
         "defaults": {
@@ -1893,10 +1974,17 @@
       "interval": "",
       "links": [],
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "8.1.7",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "",
@@ -1958,12 +2046,14 @@
           "tz": ""
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Protected Amazon EFS",
       "transformations": [
         {
           "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "merge",
           "options": {}
         },
         {
@@ -2001,8 +2091,10 @@
       "type": "table"
     },
     {
-      "cacheTimeout": null,
-      "datasource": "${DS_INFLUXDB}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "On this Panel, you can quickly list all your repositories, with their bucket location, folder, region, and if the Encryption is enabled or not.",
       "fieldConfig": {
         "defaults": {
@@ -2076,10 +2168,17 @@
       "interval": "",
       "links": [],
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "8.1.7",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "",
@@ -2147,12 +2246,14 @@
           "tz": ""
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Veeam Backup for AWS Repositories",
       "transformations": [
         {
           "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "merge",
           "options": {}
         },
         {
@@ -2196,8 +2297,10 @@
       "type": "table"
     },
     {
-      "cacheTimeout": null,
-      "datasource": "${DS_INFLUXDB}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "On this Panel, you can quickly list all your Policies.",
       "fieldConfig": {
         "defaults": {
@@ -2210,7 +2313,17 @@
             "displayMode": "color-background",
             "filterable": true
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "index": 0,
+                  "text": "Empty"
+                }
+              },
+              "type": "value"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -2259,10 +2372,17 @@
       "interval": "",
       "links": [],
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "8.1.7",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "",
@@ -2324,12 +2444,14 @@
           "tz": ""
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Veeam Backup for AWS Policies",
       "transformations": [
         {
           "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "merge",
           "options": {}
         },
         {
@@ -2377,7 +2499,10 @@
       "type": "table"
     },
     {
-      "datasource": "${DS_INFLUXDB}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "gridPos": {
         "h": 3,
         "w": 5,
@@ -2389,7 +2514,7 @@
         "content": "<a href=\"https://www.jorgedelacruz.es\"><img src=\"https://www.jorgedelacruz.es/wp-content/uploads/2019/04/jorgedelacruz-banner_2efede4ef704c939e63a3763231f5961.png\"></a>\n\n\n\n",
         "mode": "html"
       },
-      "pluginVersion": "8.1.7",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "groupBy": [
@@ -2427,14 +2552,12 @@
           "tags": []
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "transparent": true,
       "type": "text"
     }
   ],
   "refresh": false,
-  "schemaVersion": 30,
+  "schemaVersion": 33,
   "style": "dark",
   "tags": [
     "veeam",
@@ -2444,19 +2567,19 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
         "current": {},
-        "datasource": "${DS_INFLUXDB}",
-        "definition": "",
-        "description": null,
-        "error": null,
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "select DISTINCT(\"sessionPolicyJobName\") from (select \"sessionStatus\",\"sessionPolicyJobName\" from \"veeam_aws_sessions\" WHERE $timeFilter)",
         "hide": 0,
         "includeAll": true,
         "label": "Policy Name",
         "multi": true,
         "name": "PolicyName",
         "options": [],
-        "query": "SHOW TAG VALUES FROM veeam_aws_sessions WITH KEY=sessionPolicyName",
+        "query": "select DISTINCT(\"sessionPolicyJobName\") from (select \"sessionStatus\",\"sessionPolicyJobName\" from \"veeam_aws_sessions\" WHERE $timeFilter)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -2467,19 +2590,19 @@
         "useTags": false
       },
       {
-        "allValue": null,
         "current": {},
-        "datasource": "${DS_INFLUXDB}",
-        "definition": "",
-        "description": null,
-        "error": null,
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "select DISTINCT(\"VMName\") from (select \"VMSize\",\"VMName\" from \"veeam_aws_vm_unprotected\" WHERE $timeFilter)",
         "hide": 0,
         "includeAll": true,
         "label": "Unprotected VM",
         "multi": true,
         "name": "VMName",
         "options": [],
-        "query": "SHOW TAG VALUES FROM veeam_aws_vm_unprotected WITH KEY=VMName",
+        "query": "select DISTINCT(\"VMName\") from (select \"VMSize\",\"VMName\" from \"veeam_aws_vm_unprotected\" WHERE $timeFilter)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -2490,19 +2613,19 @@
         "useTags": false
       },
       {
-        "allValue": null,
         "current": {},
-        "datasource": "${DS_INFLUXDB}",
-        "definition": "",
-        "description": null,
-        "error": null,
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "select DISTINCT(\"repoName\") from (select \"repoEncryption\",\"repoName\" from \"veeam_aws_repositories\" WHERE $timeFilter)",
         "hide": 0,
         "includeAll": true,
         "label": "Blob Repository",
         "multi": true,
         "name": "Repository",
         "options": [],
-        "query": "SHOW TAG VALUES FROM veeam_aws_repositories WITH KEY=repoName",
+        "query": "select DISTINCT(\"repoName\") from (select \"repoEncryption\",\"repoName\" from \"veeam_aws_repositories\" WHERE $timeFilter)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -2513,19 +2636,19 @@
         "useTags": false
       },
       {
-        "allValue": null,
         "current": {},
-        "datasource": "${DS_INFLUXDB}",
-        "definition": "",
-        "description": null,
-        "error": null,
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "select DISTINCT(\"sessionType\") from (select \"sessionStatus\",\"sessionType\" from \"veeam_aws_sessions\" WHERE $timeFilter)",
         "hide": 0,
         "includeAll": true,
         "label": "Policy Type",
         "multi": true,
         "name": "PolicyType",
         "options": [],
-        "query": "SHOW TAG VALUES FROM veeam_aws_sessions WITH KEY=sessionType",
+        "query": "select DISTINCT(\"sessionType\") from (select \"sessionStatus\",\"sessionType\" from \"veeam_aws_sessions\" WHERE $timeFilter)",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -2558,5 +2681,6 @@
   "timezone": "",
   "title": "Grafana Dashboard for Veeam Backup for AWS",
   "uid": "mnwmhVbGk",
-  "version": 15
+  "version": 19,
+  "weekStart": ""
 }
