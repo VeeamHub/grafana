@@ -1,7 +1,7 @@
 Grafana Dashboard for Veeam Backup for AWS
 ===================
 
-![alt tag](https://www.jorgedelacruz.es/wp-content/uploads/2021/10/veeam-aws-grafana-v4.jpg)
+![alt tag](https://www.jorgedelacruz.es/wp-content/uploads/2021/12/veeam-aws-v4-grafana.jpg)
 
 This project consists in a Bash Shell script to retrieve the Veeam Backup for AWS information, directly from the RESTfulAPI, about last jobs, VMs and much more. The information is being saved it into InfluxDB output directly into the InfluxDB database using curl, then in Grafana: a Dashboard is created to present all the information.
 
