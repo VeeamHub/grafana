@@ -1,18 +1,18 @@
 #!/bin/bash
 ##      .SYNOPSIS
 ##      Grafana Dashboard for Veeam Enterprise Manager v10a - Using RestAPI to InfluxDB Script
-##
+## 
 ##      .DESCRIPTION
 ##      This Script will query the Veeam Enterprise Manager RestAPI and send the data directly to InfluxDB, which can be used to present it to Grafana. 
 ##      The Script and the Grafana Dashboard it is provided as it is, and bear in mind you can not open support Tickets regarding this project. It is a Community Project
-##
+##	
 ##      .Notes
-##      NAME:  veeam_enterprisemanager_influx2.sh
-##      ORIGINAL NAME: veeam_enterprisemanager_influx2.sh
-##      LASTEDIT: 20/04/2021
-##      VERSION: 1.0
+##      NAME:  veeam_enterprisemanager.sh
+##      ORIGINAL NAME: veeam_enterprisemanager.sh
+##      LASTEDIT: 30/10/2021
+##      VERSION: 11a
 ##      KEYWORDS: Veeam, InfluxDB, Grafana
-##
+   
 ##      .Link
 ##      https://jorgedelacruz.es/
 ##      https://jorgedelacruz.uk/
@@ -21,19 +21,19 @@
 # Configurations
 ##
 # Endpoint URL for InfluxDB
-veeamInfluxDBURL="http://YOURINFLUXSERVERIP" # Your InfluxDB Server, http://FQDN or https://FQDN if using SSL
-veeamInfluxDBPort="8086" # Default Port
-veeamInfluxDBBucket="veeam" # InfluxDB bucket name (not ID)
-veeamInfluxDBToken='TOKEN' # InfluxDB access token with read/write privileges for the bucket
-veeamInfluxDBOrg='ORG NAME' # InfluxDB organisation name (not ID)
+veeamInfluxDBURL="http://YOURINFLUXSERVERIP" #Your InfluxDB Server, http://FQDN or https://FQDN if using SSL
+veeamInfluxDBPort="8086" #Default Port
+veeamInfluxDB="telegraf" #Default Database
+veeamInfluxDBUser="USER" #User for Database
+veeamInfluxDBPassword='PASSWORD' #Password for Database
 
 # Endpoint URL for login action
-veeamUsername="YOUREMUSER" # Your username, if using domain based account, please add it like user@domain.com (if you use domain\account it is not going to work!)
+veeamUsername="YOUREMUSER" #Your username, if using domain based account, please add it like user@domain.com (if you use domain\account it is not going to work!)
 veeamPassword='YOUREMPASSWORD'
-veeamRestServer="YOUREMSERVER" # IP or FQDN
-veeamRestPort="9398" # Default Port
 veeamJobSessions="100"
 veeamAuth=$(echo -ne "$veeamUsername:$veeamPassword" | base64);
+veeamRestServer="YOUREMSERVERIP"
+veeamRestPort="9398" #Default Port
 veeamSessionId=$(curl -X POST "https://$veeamRestServer:$veeamRestPort/api/sessionMngr/?v=latest" -H "Authorization:Basic $veeamAuth" -H "Content-Length: 0" -H "Accept: application/json" -k --silent | awk 'NR==1{sub(/^\xef\xbb\xbf/,"")}1' | jq --raw-output ".SessionId")
 veeamXRestSvcSessionId=$(echo -ne "$veeamSessionId" | base64);
 
@@ -59,7 +59,7 @@ veeamEMOUrl=$(curl -X GET "$veeamEMUrl" -H "Accept:application/json" -H "X-RestS
     
     ##Comment the Curl while debugging
     echo "Writing veeam_em_overview to InfluxDB"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_em_overview,host=$veeamRestServer veeamBackupServers=$veeamBackupServers,veeamProxyServers=$veeamProxyServers,veeamRepositoryServers=$veeamRepositoryServers,veeamRunningJobs=$veeamRunningJobs,veeamScheduledJobs=$veeamScheduledJobs,veeamSuccessfulVmLastestStates=$veeamSuccessfulVmLastestStates,veeamWarningVmLastestStates=$veeamWarningVmLastestStates,veeamFailedVmLastestStates=$veeamFailedVmLastestStates"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_overview,host=$veeamRestServer veeamBackupServers=$veeamBackupServers,veeamProxyServers=$veeamProxyServers,veeamRepositoryServers=$veeamRepositoryServers,veeamRunningJobs=$veeamRunningJobs,veeamScheduledJobs=$veeamScheduledJobs,veeamSuccessfulVmLastestStates=$veeamSuccessfulVmLastestStates,veeamWarningVmLastestStates=$veeamWarningVmLastestStates,veeamFailedVmLastestStates=$veeamFailedVmLastestStates"
 
 ##
 # Veeam Enterprise Manager Overview. Overview of Virtual Machines
@@ -81,7 +81,7 @@ veeamEMOVMUrl=$(curl -X GET "$veeamEMUrl" -H "Accept:application/json" -H "X-Res
     
     ##Comment the Curl while debugging
     echo "Writing veeam_em_overview_vms to InfluxDB"    
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_em_overview_vms,host=$veeamRestServer veeamProtectedVms=$veeamProtectedVms,veeamBackedUpVms=$veeamBackedUpVms,veeamReplicatedVms=$veeamReplicatedVms,veeamRestorePoints=$veeamRestorePoints,veeamFullBackupPointsSize=$veeamFullBackupPointsSize,veeamIncrementalBackupPointsSize=$veeamIncrementalBackupPointsSize,veeamReplicaRestorePointsSize=$veeamReplicaRestorePointsSize,veeamSourceVmsSize=$veeamSourceVmsSize,veeamSuccessBackupPercents=$veeamSuccessBackupPercents"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_overview_vms,host=$veeamRestServer veeamProtectedVms=$veeamProtectedVms,veeamBackedUpVms=$veeamBackedUpVms,veeamReplicatedVms=$veeamReplicatedVms,veeamRestorePoints=$veeamRestorePoints,veeamFullBackupPointsSize=$veeamFullBackupPointsSize,veeamIncrementalBackupPointsSize=$veeamIncrementalBackupPointsSize,veeamReplicaRestorePointsSize=$veeamReplicaRestorePointsSize,veeamSourceVmsSize=$veeamSourceVmsSize,veeamSuccessBackupPercents=$veeamSuccessBackupPercents"
 
 ##
 # Veeam Enterprise Manager Overview. Overview of Job Statistics
@@ -109,7 +109,7 @@ veeamEMOJobUrl=$(curl -X GET "$veeamEMUrl" -H "Accept:application/json" -H "X-Re
     
     ##Comment the Curl while debugging
     echo "Writing veeam_em_overview_jobs to InfluxDB"     
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_em_overview_jobs,host=$veeamRestServer,veeamMaxDurationBackupJobName=$veeamMaxDurationBackupJobName,veeamMaxDurationReplicaJobName=$veeamMaxDurationReplicaJobName veeamRunningJobs=$veeamRunningJobs,veeamScheduledJobs=$veeamScheduledJobs,veeamScheduledBackupJobs=$veeamScheduledBackupJobs,veeamScheduledReplicaJobs=$veeamScheduledReplicaJobs,veeamTotalJobRuns=$veeamTotalJobRuns,veeamSuccessfulJobRuns=$veeamSuccessfulJobRuns,veeamWarningsJobRuns=$veeamWarningsJobRuns,veeamFailedJobRuns=$veeamFailedJobRuns,veeamMaxJobDuration=$veeamMaxJobDuration,veeamMaxBackupJobDuration=$veeamMaxBackupJobDuration,veeamMaxReplicaJobDuration=$veeamMaxReplicaJobDuration"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_overview_jobs,host=$veeamRestServer,veeamMaxDurationBackupJobName=$veeamMaxDurationBackupJobName,veeamMaxDurationReplicaJobName=$veeamMaxDurationReplicaJobName veeamRunningJobs=$veeamRunningJobs,veeamScheduledJobs=$veeamScheduledJobs,veeamScheduledBackupJobs=$veeamScheduledBackupJobs,veeamScheduledReplicaJobs=$veeamScheduledReplicaJobs,veeamTotalJobRuns=$veeamTotalJobRuns,veeamSuccessfulJobRuns=$veeamSuccessfulJobRuns,veeamWarningsJobRuns=$veeamWarningsJobRuns,veeamFailedJobRuns=$veeamFailedJobRuns,veeamMaxJobDuration=$veeamMaxJobDuration,veeamMaxBackupJobDuration=$veeamMaxBackupJobDuration,veeamMaxReplicaJobDuration=$veeamMaxReplicaJobDuration"
 
 ##
 # Veeam Enterprise Manager Repositories. Overview of Repositories
@@ -129,7 +129,7 @@ for Kind in $(echo "$veeamEMORepoUrl" | jq -r '.Repositories[].Kind'); do
     
     ##Comment the Curl while debugging
     echo "Writing veeam_em_overview_repositories to InfluxDB"      
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_em_overview_repositories,veeamVBR=$veeamVBR,veeamRepositoryName=$veeamRepositoryName,veeamRepositoryKind=$veeamRepositoryKind veeamRepositoryCapacity=$veeamRepositoryCapacity,veeamRepositoryFreeSpace=$veeamRepositoryFreeSpace"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_overview_repositories,veeamVBR=$veeamVBR,veeamRepositoryName=$veeamRepositoryName,veeamRepositoryKind=$veeamRepositoryKind veeamRepositoryCapacity=$veeamRepositoryCapacity,veeamRepositoryFreeSpace=$veeamRepositoryFreeSpace"
   arrayrepo=$arrayrepo+1
 done
 
@@ -147,7 +147,7 @@ for Name in $(echo "$veeamEMOBackupServersUrl" | jq -r '.BackupServers[].Name');
        case $veeamBackupServersVersion in
         "11.0.1.1261")
             veeamBackupServersVersionM="11.0a\ GA"
-        ;; 
+        ;;        
         "11.0.0.837")
             veeamBackupServersVersionM="11.0\ GA"
         ;;
@@ -240,7 +240,7 @@ for Name in $(echo "$veeamEMOBackupServersUrl" | jq -r '.BackupServers[].Name');
         #echo "veeam_em_backup_servers,veeamVBR=$veeamVBR,veeamBackupServersVersion=$veeamBackupServersVersion,veeamBackupServersVersionM=$veeamBackupServersVersionM veeamBackupServersPort=$veeamBackupServersPort"
         ##Comment the Curl while debugging
         echo "Writing veeam_em_backup_servers to InfluxDB"          
-        curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_em_backup_servers,veeamVBR=$veeamVBR,veeamBackupServersVersion=$veeamBackupServersVersion,veeamBackupServersVersionM=$veeamBackupServersVersionM veeamBackupServersPort=$veeamBackupServersPort"
+        curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_backup_servers,veeamVBR=$veeamVBR,veeamBackupServersVersion=$veeamBackupServersVersion,veeamBackupServersVersionM=$veeamBackupServersVersionM veeamBackupServersPort=$veeamBackupServersPort"
   arraybackupservers=$arraybackupservers+1
 done
 
@@ -281,7 +281,7 @@ else
 
         ##Comment the Curl while debugging
         echo "Writing veeam_em_job_sessions to InfluxDB"      
-        curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_em_job_sessions,veeamBackupSessionsName=$veeamBackupSessionsName,veeamVBR=$veeamVBR,veeamBackupSessionsJobType=$veeamBackupSessionsJobType,veeamBackupSessionsJobState=$veeamBackupSessionsJobState veeamBackupSessionsJobResult=$jobStatus,veeamBackupSessionsTimeDuration=$veeamBackupSessionsTimeDuration $creationTimeUnix"
+        curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_job_sessions,veeamBackupSessionsName=$veeamBackupSessionsName,veeamVBR=$veeamVBR,veeamBackupSessionsJobType=$veeamBackupSessionsJobType,veeamBackupSessionsJobState=$veeamBackupSessionsJobState veeamBackupSessionsJobResult=$jobStatus,veeamBackupSessionsTimeDuration=$veeamBackupSessionsTimeDuration $creationTimeUnix"
         if [[ $arrayjobsessions = $veeamJobSessions ]]; then
             break
             else
@@ -327,7 +327,7 @@ else
 
         ##Comment the Curl while debugging
         echo "Writing veeam_em_job_sessionsvm to InfluxDB"     
-        curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_em_job_sessionsvm,veeamBackupSessionsVmDisplayName=$veeamBackupSessionsVmDisplayName,veeamVBR=$veeamVBR,veeamBackupSessionsJobVMState=$veeamBackupSessionsJobVMState veeamBackupSessionsTotalSize=$veeamBackupSessionsTotalSize,veeamBackupSessionsJobVMResult=$jobStatus,veeamBackupSessionsVMDuration=$veeamBackupSessionsVMDuration $creationTimeUnix"
+        curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_job_sessionsvm,veeamBackupSessionsVmDisplayName=$veeamBackupSessionsVmDisplayName,veeamVBR=$veeamVBR,veeamBackupSessionsJobVMState=$veeamBackupSessionsJobVMState veeamBackupSessionsTotalSize=$veeamBackupSessionsTotalSize,veeamBackupSessionsJobVMResult=$jobStatus,veeamBackupSessionsVMDuration=$veeamBackupSessionsVMDuration $creationTimeUnix"
       arrayjobsessionsvm=$arrayjobsessionsvm+1
     done
 fi
@@ -369,7 +369,7 @@ else
 
         ##Comment the Curl while debugging
         echo "Writing veeam_em_job_sessions Replica to InfluxDB"     
-        curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_em_job_sessions,veeamReplicaSessionsName=$veeamReplicaSessionsName,veeamVBR=$veeamVBR,veeamReplicaSessionsJobType=$veeamReplicaSessionsJobType,veeamReplicaSessionsJobState=$veeamReplicaSessionsJobState veeamReplicaSessionsJobResult=$jobStatus,veeamReplicaSessionsDuration=$veeamReplicaSessionsDuration $creationTimeUnix"
+        curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_job_sessions,veeamReplicaSessionsName=$veeamReplicaSessionsName,veeamVBR=$veeamVBR,veeamReplicaSessionsJobType=$veeamReplicaSessionsJobType,veeamReplicaSessionsJobState=$veeamReplicaSessionsJobState veeamReplicaSessionsJobResult=$jobStatus,veeamReplicaSessionsDuration=$veeamReplicaSessionsDuration $creationTimeUnix"
       arrayjobrepsessions=$arrayjobrepsessions+1
     done
 fi
@@ -411,7 +411,7 @@ else
 
         ##Comment the Curl while debugging
         echo "Writing veeam_em_job_sessionsvm Replica to InfluxDB"     
-        curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_em_job_sessionsvm,veeamReplicaSessionsVmDisplayName=$veeamReplicaSessionsVmDisplayName,veeamVBR=$veeamVBR,veeamReplicaSessionsJobVMState=$veeamReplicaSessionsJobVMState veeamReplicaSessionsTotalSize=$veeamReplicaSessionsTotalSize,veeamReplicaSessionsJobVMResult=$jobStatus,veeamReplicaSessionsVMDuration=$veeamReplicaSessionsVMDuration $creationTimeUnix"
+        curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_job_sessionsvm,veeamReplicaSessionsVmDisplayName=$veeamReplicaSessionsVmDisplayName,veeamVBR=$veeamVBR,veeamReplicaSessionsJobVMState=$veeamReplicaSessionsJobVMState veeamReplicaSessionsTotalSize=$veeamReplicaSessionsTotalSize,veeamReplicaSessionsJobVMResult=$jobStatus,veeamReplicaSessionsVMDuration=$veeamReplicaSessionsVMDuration $creationTimeUnix"
       arrayjobrepsessionsvm=$arrayjobrepsessionsvm+1
     done
 fi
@@ -457,7 +457,7 @@ for JobSessionUid in $(echo "$veeamEMAgentUrl" | jq -r '.DiscoveredComputers[].U
     
     ##Comment the Curl while debugging
     echo "Writing veeam_em_agents to InfluxDB"      
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_em_agents,veeamAgentName=$veeamAgentName,veeamAgentOsVersion=$veeamAgentOsVersion,veeamVBR=$veeamVBR,veeamAgentVersion=$veeamAgentVersion veeamAgentStatus=$veeamAgentStatus,veeamAgentHostStatus=$veeamAgentHostStatus"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_agents,veeamAgentName=$veeamAgentName,veeamAgentOsVersion=$veeamAgentOsVersion,veeamVBR=$veeamVBR,veeamAgentVersion=$veeamAgentVersion veeamAgentStatus=$veeamAgentStatus,veeamAgentHostStatus=$veeamAgentHostStatus"
   arrayagent=$arrayagent+1
 done
 
@@ -481,7 +481,7 @@ for JobSessionUid in $(echo "$veeamEMNASJobsUrl" | jq -r '.NASJobs[].UID'); do
     
     ##Comment the Curl while debugging
     echo "Writing veeam_em_nas_jobs to InfluxDB"       
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_em_nas_jobs,veeamNASJobName=$veeamNASJobName,veeamVBR=$veeamVBR,veeamNASJobPath=$veeamNASJobPath,veeamNASJobExclusions=$veeamNASJobExclusions,veeamNASJobShortTermType=$veeamNASJobShortTermType veeamNASJobShortTerm=$veeamNASJobShortTerm"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_nas_jobs,veeamNASJobName=$veeamNASJobName,veeamVBR=$veeamVBR,veeamNASJobPath=$veeamNASJobPath,veeamNASJobExclusions=$veeamNASJobExclusions,veeamNASJobShortTermType=$veeamNASJobShortTermType veeamNASJobShortTerm=$veeamNASJobShortTerm"
   arrayNASJobs=$arrayNASJobs+1
 done
 
@@ -521,7 +521,7 @@ else
 
         ##Comment the Curl while debugging
         echo "Writing veeam_em_nas_sessions to InfluxDB"    
-        curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_em_nas_sessions,veeamNASJobName=$veeamNASJobName,veeamVBR=$veeamVBR veeamNASJobResult=$jobStatus,veeamNASJobDuration=$veeamNASJobDuration $creationTimeUnix"
+        curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_em_nas_sessions,veeamNASJobName=$veeamNASJobName,veeamVBR=$veeamVBR veeamNASJobResult=$jobStatus,veeamNASJobDuration=$veeamNASJobDuration $creationTimeUnix"
       arrayNASJobsSessions=$arrayNASJobsSessions+1
     done
 fi
