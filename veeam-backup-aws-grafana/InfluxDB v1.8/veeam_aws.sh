@@ -1,6 +1,6 @@
 #!/bin/bash
 ##      .SYNOPSIS
-##      Grafana Dashboard for Veeam Backup AWS v4.0 - Using API to InfluxDB v2 Script
+##      Grafana Dashboard for Veeam Backup AWS v4.0 - Using API to InfluxDB Script
 ## 
 ##      .DESCRIPTION
 ##      This Script will query the Veeam Backup for AWS API and send the data directly to InfluxDB, which can be used to present it to Grafana. 
@@ -9,7 +9,7 @@
 ##      .Notes
 ##      NAME:  veeam_aws.sh
 ##      ORIGINAL NAME: veeam_aws.sh
-##      LASTEDIT: 10/12/2021
+##      LASTEDIT: 02/12/2021
 ##      VERSION: 4.0
 ##      KEYWORDS: Veeam, InfluxDB, Grafana
    
@@ -20,12 +20,11 @@
 # Configurations
 ##
 # Endpoint URL for InfluxDB
-##
-veeamInfluxDBURL="http://YOURINFLUXSERVERIP" #Your InfluxDB Server, http://FQDN or https://FQDN if using SSL
+veeamInfluxDBURL="YOURINFLUXSERVER" ##Use https://fqdn or https://IP in case you use SSL
 veeamInfluxDBPort="8086" #Default Port
-veeamInfluxDBBucket="veeam" # InfluxDB bucket name (not ID)
-veeamInfluxDBToken="TOKEN" # InfluxDB access token with read/write privileges for the bucket
-veeamInfluxDBOrg="ORG NAME" # InfluxDB organisation name (not ID)
+veeamInfluxDB="YOURINFLUXDB" #Default Database
+veeamInfluxDBUser="YOURINFLUXUSER" #User for Database
+veeamInfluxDBPassword="YOURINFLUXPASS" #Password for Database
 
 # Endpoint URL for login action
 veeamUsername="YOURVEEAMBACKUPUSER"
@@ -59,7 +58,7 @@ veeamVBAOverviewUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamB
     
     #echo "veeam_aws_overview,version=$version,LicenseType=$LicenseType VMs=$VMsCount,VMsProtected=$VMsProtected,Policies=$PoliciesCount,Repositories=$RepositoriesCount,InstancesUsed=$LicenseInstances"
     echo "Writing veeam_aws_overview to InfluxDB"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_overview,version=$version,LicenseType=$LicenseType VMs=$VMsCount,VMsProtected=$VMsProtected,Policies=$PoliciesCount,Repositories=$RepositoriesCount,InstancesUsed=$LicenseInstances"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_overview,version=$version,LicenseType=$LicenseType VMs=$VMsCount,VMsProtected=$VMsProtected,Policies=$PoliciesCount,Repositories=$RepositoriesCount,InstancesUsed=$LicenseInstances"
     
 ##
 # Veeam Backup for AWS Instances. This part will check VBA and report all the protected Instances
@@ -82,7 +81,7 @@ for id in $(echo "$veeamVBAInstancesUrl" | jq -r '.results[].id'); do
     
     #echo "veeam_aws_vm,VMID=$VMID,VMName=$VMName,VMResourceId=$VMResourceID,VMType=$VMType,VMPolicy=$VMPolicy,VMRegion=$VMRegion VMSize=$VMSize"
     echo "Writing veeam_aws_vm to InfluxDB"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm,VMID=$VMID,VMName=$VMName,VMResourceId=$VMResourceID,VMType=$VMType,VMPolicy=$VMPolicy,VMRegion=$VMRegion VMSize=$VMSize"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm,VMID=$VMID,VMName=$VMName,VMResourceId=$VMResourceID,VMType=$VMType,VMPolicy=$VMPolicy,VMRegion=$VMRegion VMSize=$VMSize"
     
     # Restore Points per Instance
     veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/virtualMachines/restorePoints?VirtualMachineId=$VMID&onlyLatest=False"
@@ -99,14 +98,14 @@ for id in $(echo "$veeamVBAInstancesUrl" | jq -r '.results[].id'); do
 
         #echo "veeam_aws_restorepoints,JobType=$VMJobType,Jobid=$VMJobid,JobBackupId=$VMJobBackupId,JobTime=$VMJobTime JobSize=$VMJobSize"
         echo "Writing veeam_aws_restorepoints to InfluxDB"
-        curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_restorepoints,JobType=$VMJobType,Jobid=$VMJobid,JobBackupId=$VMJobBackupId,JobTime=$VMJobTime JobSize=$VMJobSize"
+        curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_restorepoints,JobType=$VMJobType,Jobid=$VMJobid,JobBackupId=$VMJobBackupId,JobTime=$VMJobTime JobSize=$VMJobSize"
         
         arrayRestorePoint=$arrayRestorePoint+1
     done   
     arrayinstances=$arrayinstances+1    
 done
     echo "Writing veeam_aws_vm_protected to InfluxDB"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_protected TotalVMs=$arrayinstances"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_protected TotalVMs=$arrayinstances"
 
 ##
 # Veeam Backup for AWS Instances. This part will check VBA and report all the unprotected Instances
@@ -125,12 +124,12 @@ for id in $(echo "$veeamVBAUnprotectedUrl" | jq -r '.results[].id'); do
     
     #echo "veeam_aws_vm_unprotected,VMID=$VMID,VMName=$VMName,VMResourceId=$VMResourceID,VMType=$VMType,VMRegion=$VMRegion VMSize=$VMSize"
     echo "Writing veeam_aws_vm_unprotected to InfluxDB"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMID=$VMID,VMName=$VMName,VMResourceId=$VMResourceID,VMType=$VMType,VMRegion=$VMRegion VMSize=$VMSize"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMID=$VMID,VMName=$VMName,VMResourceId=$VMResourceID,VMType=$VMType,VMRegion=$VMRegion VMSize=$VMSize"
            
     arrayUnprotected=$arrayUnprotected+1
 done
     echo "Writing veeam_aws_vm_unprotected to InfluxDB"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected TotalVMs=$arrayUnprotected"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected TotalVMs=$arrayUnprotected"
 ##
 # Unprotected VMs per Region with geohash
 #
@@ -157,27 +156,27 @@ done
     saeast1=$(echo "$veeamVBAUnprotectedUrl" | jq --raw-output '.results | map(select(.region.name=="sa-east-1")) | length')
 
 
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMRegion="us-east-2",geohash="dpjhy6u3dw" UPVM=$useast2"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMRegion="us-east-1",geohash="dq85jy563y" UPVM=$useast1"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMRegion="us-west-1",geohash="9qe8c9k988" UPVM=$uswest1"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMRegion="us-west-2",geohash="9rf4hw1vf5" UPVM=$uswest2"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMRegion="af-south-1",geohash="k3vngp7jk3" UPVM=$afsouth1"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMRegion="ap-east-1",geohash="wecpnkfcv6" UPVM=$apeast1"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMRegion="ap-south-1",geohash="te7ud2etwq" UPVM=$apsouth1"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMRegion="ap-northeast-3",geohash="xn0m7m2fuj" UPVM=$apnortheast3"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMRegion="ap-northeast-2",geohash="wydm9qycb8" UPVM=$apnortheast2"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMRegion="ap-southeast-1",geohash="w21zdrp19x" UPVM=$apsoutheast1"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMRegion="ap-southeast-2",geohash="r3gx3hbmqu" UPVM=$apsoutheast2"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMRegion="ap-northeast-1",geohash="xn76urcex7" UPVM=$apnortheast1"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMRegion="ca-central-1",geohash="cdg5qsfg6b" UPVM=$cacentral1"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMRegion="eu-central-1",geohash="u0yjjd65em" UPVM=$eucentral1"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMRegion="eu-west-1",geohash="gc6kdrvd14" UPVM=$euwest1"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMRegion="eu-west-2",geohash="gcpvj0e5cs" UPVM=$euwest2"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMRegion="eu-south-1",geohash="u0nd9hur61" UPVM=$eusouth1"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMRegion="eu-west-3",geohash="u09tvw06ch" UPVM=$euwest3"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMRegion="eu-north-1",geohash="u6sc7pycyg" UPVM=$eunorth1"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMRegion="me-south-1",geohash="theuvcqhdk" UPVM=$mesouth1"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm_unprotected,VMRegion="sa-east-1",geohash="6gyf4bdxe2" UPVM=$saeast1"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMRegion="us-east-2",geohash="dpjhy6u3dw" UPVM=$useast2"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMRegion="us-east-1",geohash="dq85jy563y" UPVM=$useast1"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMRegion="us-west-1",geohash="9qe8c9k988" UPVM=$uswest1"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMRegion="us-west-2",geohash="9rf4hw1vf5" UPVM=$uswest2"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMRegion="af-south-1",geohash="k3vngp7jk3" UPVM=$afsouth1"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMRegion="ap-east-1",geohash="wecpnkfcv6" UPVM=$apeast1"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMRegion="ap-south-1",geohash="te7ud2etwq" UPVM=$apsouth1"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMRegion="ap-northeast-3",geohash="xn0m7m2fuj" UPVM=$apnortheast3"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMRegion="ap-northeast-2",geohash="wydm9qycb8" UPVM=$apnortheast2"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMRegion="ap-southeast-1",geohash="w21zdrp19x" UPVM=$apsoutheast1"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMRegion="ap-southeast-2",geohash="r3gx3hbmqu" UPVM=$apsoutheast2"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMRegion="ap-northeast-1",geohash="xn76urcex7" UPVM=$apnortheast1"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMRegion="ca-central-1",geohash="cdg5qsfg6b" UPVM=$cacentral1"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMRegion="eu-central-1",geohash="u0yjjd65em" UPVM=$eucentral1"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMRegion="eu-west-1",geohash="gc6kdrvd14" UPVM=$euwest1"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMRegion="eu-west-2",geohash="gcpvj0e5cs" UPVM=$euwest2"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMRegion="eu-south-1",geohash="u0nd9hur61" UPVM=$eusouth1"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMRegion="eu-west-3",geohash="u09tvw06ch" UPVM=$euwest3"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMRegion="eu-north-1",geohash="u6sc7pycyg" UPVM=$eunorth1"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMRegion="me-south-1",geohash="theuvcqhdk" UPVM=$mesouth1"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vm_unprotected,VMRegion="sa-east-1",geohash="6gyf4bdxe2" UPVM=$saeast1"
 
 
 ##
@@ -200,7 +199,7 @@ for id in $(echo "$veeamVBARDSUrl" | jq -r '.results[].id'); do
     
     #echo "veeam_aws_RDS,RDSID=$RDSID,RDSName=$RDSName,RDSEngine=$RDSEngine,RDSEngineVersion=$RDSEngineVersion,RDSAWSID=$RDSAWSID,RDSClass=$RDSClass,RDSDNS=$RDSDNS,RDSRegion=$RDSRegion RDSSize=$RDSSize"
     echo "Writing veeam_aws_rds to InfluxDB"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_rds,rdsid=$RDSID,rdsname=$RDSName,rdsengine=$RDSEngine,rdsengineversion=$RDSEngineVersion,rdsawsid=$RDSAWSID,rdsclass=$RDSClass,rdsdns=$RDSDNS,rdsregion=$RDSRegion rdssize=$RDSSize"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_rds,rdsid=$RDSID,rdsname=$RDSName,rdsengine=$RDSEngine,rdsengineversion=$RDSEngineVersion,rdsawsid=$RDSAWSID,rdsclass=$RDSClass,rdsdns=$RDSDNS,rdsregion=$RDSRegion rdssize=$RDSSize"
            
     arrayRDS=$arrayRDS+1
 done
@@ -232,7 +231,7 @@ for id in $(echo "$veeamVBAEFSUrl" | jq -r '.results[].id'); do
     
     #echo "veeam_aws_RDS,RDSID=$RDSID,RDSName=$RDSName,RDSEngine=$RDSEngine,RDSEngineVersion=$RDSEngineVersion,RDSAWSID=$RDSAWSID,RDSClass=$RDSClass,RDSDNS=$RDSDNS,RDSRegion=$RDSRegion RDSSize=$RDSSize"
     echo "Writing veeam_aws_efs to InfluxDB"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_efs,efsid=$EFSID,efsname=$EFSName,efsregion=$EFSRegion,efsawsid=$EFSAWSID,efsperformance=$EFSPerformance,efsthroughput=$EFSThroughput,efsencryption=$EFSAWSIDEncryption rdssize=$EFSSize"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_efs,efsid=$EFSID,efsname=$EFSName,efsregion=$EFSRegion,efsawsid=$EFSAWSID,efsperformance=$EFSPerformance,efsthroughput=$EFSThroughput,efsencryption=$EFSAWSIDEncryption rdssize=$EFSSize"
            
     arrayEFS=$arrayEFS+1
 done
@@ -250,7 +249,7 @@ for id in $(echo "$veeamVBAVPCUrl" | jq -r '.sourceOptions.selectedLocations[0].
     
     #echo "veeam_aws_VPC,VPCID=$VPCID,VPCRegion=$VPCRegion VPCProtected=1"
     echo "Writing veeam_aws_vpc to InfluxDB"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vpc,vpcid=$VPCID,vpcregion=$VPCRegion vpcprotected=1"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_vpc,vpcid=$VPCID,vpcregion=$VPCRegion vpcprotected=1"
            
     arrayVPC=$arrayVPC+1
 done
@@ -275,7 +274,7 @@ for id in $(echo "$veeamVBAPoliciesUrl" | jq -r '.results[].id'); do
 
     #echo "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=EC2,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyBackupRepository=$PolicyBackupRepository PolicySnapshotCount=$PolicySnapshotCount"
     echo "Writing veeam_aws_policies EC2 to InfluxDB"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=EC2,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyBackupRepository=$PolicyBackupRepository PolicySnapshotCount=$PolicySnapshotCount"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=EC2,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyBackupRepository=$PolicyBackupRepository PolicySnapshotCount=$PolicySnapshotCount"
     
     arraypolicies=$arraypolicies+1
 done
@@ -300,7 +299,7 @@ for id in $(echo "$veeamVBAPoliciesUrl" | jq -r '.results[].id'); do
 
     #echo "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=RDS,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyBackupRepository=$PolicyBackupRepository PolicySnapshotCount=$PolicySnapshotCount"
     echo "Writing veeam_aws_policies RDS to InfluxDB"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=RDS,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyBackupRepository=$PolicyBackupRepository PolicySnapshotCount=$PolicySnapshotCount"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=RDS,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyBackupRepository=$PolicyBackupRepository PolicySnapshotCount=$PolicySnapshotCount"
     
     arrayrdspolicies=$arrayrdspolicies+1
 done
@@ -327,7 +326,7 @@ for id in $(echo "$veeamVBAPoliciesUrl" | jq -r '.results[].id'); do
 
     #echo "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=EFS,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyRegionID=$PolicyRegionID,PolicyBackupVaultID=$PolicyBackupVaultID,PolicySelectedEFSID=$PolicySelectedEFSID PolicySnapshotCount=$PolicySnapshotCount"
     echo "Writing veeam_aws_policies EFS to InfluxDB"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=EFS,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyRegionID=$PolicyRegionID,PolicyBackupVaultID=$PolicyBackupVaultID,PolicySelectedEFSID=$PolicySelectedEFSID PolicySnapshotCount=$PolicySnapshotCount"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=EFS,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyRegionID=$PolicyRegionID,PolicyBackupVaultID=$PolicyBackupVaultID,PolicySelectedEFSID=$PolicySelectedEFSID PolicySnapshotCount=$PolicySnapshotCount"
     
     arrayefspolicies=$arrayefspolicies+1
 done
@@ -364,7 +363,7 @@ for id in $(echo "$veeamVBAPoliciesUrl" | jq -r '.results[].id'); do
 
     #echo "veeam_aws_repositories,repoID=$RepositoryID,repoName=$RepositoryName,repoDescription=$RepositoryDescription,repoBucket=$RepositoryBucketName,repoFolderName=$RepositoryFolderName,repoRegion=$RepositoryRegion,repoclass=$RepositoryStorageClass,repoencryption=$RepositoryEncryption,repoAWSID=$RepositoryAWSID repoEncryption=$encryption"
     echo "Writing veeam_aws_repositories to InfluxDB"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_repositories,repoID=$RepositoryID,repoName=$RepositoryName,repoDescription=$RepositoryDescription,repoBucket=$RepositoryBucketName,repoFolderName=$RepositoryFolderName,repoRegion=$RepositoryRegion,repoclass=$RepositoryStorageClass,repoencryption=$RepositoryEncryption,repoAWSID=$RepositoryAWSID repoEncryption=$encryption"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_repositories,repoID=$RepositoryID,repoName=$RepositoryName,repoDescription=$RepositoryDescription,repoBucket=$RepositoryBucketName,repoFolderName=$RepositoryFolderName,repoRegion=$RepositoryRegion,repoclass=$RepositoryStorageClass,repoencryption=$RepositoryEncryption,repoAWSID=$RepositoryAWSID repoEncryption=$encryption"
     
     arrayrepositories=$arrayrepositories+1
 done
@@ -403,7 +402,7 @@ for id in $(echo "$veeamVBASessionsBackupUrl" | jq -r '.results[].id'); do
 
     #echo "veeam_aws_sessions,sessiontype="EC2",sessionID=$SessionID,sessionType=$SessionType,sessionPolicyID=$SessionPolicyID,sessionPolicyJobName=$SessionPolicyJobName sessionDuration=$SessionDuration, sessionStatus=$jobStatus $SessionTimeStamp"
     echo "Writing veeam_aws_sessions Job to InfluxDB"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_sessions,sessiontype="EC2",sessionID=$SessionID,sessionType=$SessionType,sessionPolicyID=$SessionPolicyID,sessionPolicyJobName=$SessionPolicyJobName sessionDuration=$SessionDuration,sessionStatus=$jobStatus $SessionTimeStamp"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_sessions,sessiontype="EC2",sessionID=$SessionID,sessionType=$SessionType,sessionPolicyID=$SessionPolicyID,sessionPolicyJobName=$SessionPolicyJobName sessionDuration=$SessionDuration,sessionStatus=$jobStatus $SessionTimeStamp"
     
     arraysessionsbackup=$arraysessionsbackup+1
 done
@@ -454,7 +453,7 @@ for id in $(echo "$veeamVBASessionsPolicyUrl" | jq -r '.results[].id'); do
 
     #echo "veeam_aws_sessions,sessiontype=$extendedSessionType,sessionID=$SessionID,sessionType=$SessionType,sessionDuration=$SessionDuration,sessionPolicyID=$SessionPolicyID,sessionPolicyJobName=$SessionPolicyJobName sessionStatus=$jobStatus $SessionTimeStamp"
     echo "Writing veeam_aws_sessions Policy to InfluxDB"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_sessions,sessiontype=$extendedSessionType,sessionID=$SessionID,sessionType=$SessionType,sessionPolicyID=$SessionPolicyID,sessionPolicyJobName=$SessionPolicyJobName sessionDuration=$SessionDuration,sessionStatus=$jobStatus $SessionTimeStamp"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/write?precision=s&db=$veeamInfluxDB" -u "$veeamInfluxDBUser:$veeamInfluxDBPassword" --data-binary "veeam_aws_sessions,sessiontype=$extendedSessionType,sessionID=$SessionID,sessionType=$SessionType,sessionPolicyID=$SessionPolicyID,sessionPolicyJobName=$SessionPolicyJobName sessionDuration=$SessionDuration,sessionStatus=$jobStatus $SessionTimeStamp"
     
     arraysessionspolicy=$arraysessionspolicy+1
 done

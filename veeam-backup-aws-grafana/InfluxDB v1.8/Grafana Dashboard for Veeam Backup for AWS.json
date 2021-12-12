@@ -21,7 +21,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "8.3.1"
+      "version": "8.3.0"
     },
     {
       "type": "datasource",
@@ -79,13 +79,13 @@
       }
     ]
   },
-  "description": "Grafana Dashboard for Veeam Backup for AWS v4 (Grafana 8.x / InfluxDB v2.x)",
+  "description": "Grafana Dashboard for Veeam Backup for AWS v4",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "gnetId": 12204,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1639131811427,
+  "iteration": 1638487273372,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -105,7 +105,7 @@
         "content": "<a href=\"https://www.veeam.com/backup-azure.html\" target=\"_blank\"><img src=\"https://www.jorgedelacruz.es/VCB_product_icon.svg\" alt=\"drawing\" width=\"50\"/></a>\n\n",
         "mode": "html"
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "groupBy": [
@@ -166,44 +166,7 @@
           },
           "unit": "locale"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byFrameRefID",
-              "options": "A"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Total Policies"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byFrameRefID",
-              "options": "B"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Total Repositories"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byFrameRefID",
-              "options": "C"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Protected Instances"
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 2,
@@ -227,7 +190,7 @@
         "text": {},
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "Total Policies",
@@ -252,8 +215,6 @@
           "measurement": "veeam_aws_overview",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "  from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"Policies\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
-          "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -292,12 +253,9 @@
               "type": "fill"
             }
           ],
-          "hide": false,
           "measurement": "veeam_aws_overview",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "  from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"Repositories\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
-          "rawQuery": true,
           "refId": "B",
           "resultFormat": "time_series",
           "select": [
@@ -336,12 +294,9 @@
               "type": "fill"
             }
           ],
-          "hide": false,
           "measurement": "veeam_aws_overview",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "  from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"VMs\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
-          "rawQuery": true,
           "refId": "C",
           "resultFormat": "time_series",
           "select": [
@@ -365,10 +320,13 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "displayName": "Version: ${__field.labels.version}",
           "mappings": [
             {
               "options": {
@@ -419,14 +377,10 @@
         },
         "textMode": "name"
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "Version $tag_version",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          },
           "groupBy": [
             {
               "params": [
@@ -450,8 +404,6 @@
           "measurement": "veeam_aws_overview",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "  from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_overview\")\n  |> filter(fn: (r) => r[\"_field\"] == \"InstancesUsed\")\n  |> group(columns: [\"version\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
-          "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -474,9 +426,12 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
-          "displayName": "License: ${__field.labels.LicenseType}",
           "mappings": [
             {
               "options": {
@@ -527,14 +482,10 @@
         },
         "textMode": "name"
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "License: $tag_LicenseType",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          },
           "groupBy": [
             {
               "params": [
@@ -558,8 +509,6 @@
           "measurement": "veeam_aws_overview",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "  from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"InstancesUsed\")\r\n  |> group(columns: [\"LicenseType\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
-          "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -679,7 +628,7 @@
           "zoom": 3
         }
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "$tag_geohash",
@@ -717,7 +666,7 @@
           "measurement": "veeam_aws_vm_unprotected",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_vm_unprotected\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"UPVM\" and r._value >=1)\r\n  |> group(columns: [\"geohash\",\"VMRegion\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+          "query": "SELECT last(\"UPVM\") AS \"Unprotected VMs\" FROM \"veeam_aws_vm_unprotected\" WHERE (\"UPVM\" >=1) AND $timeFilter GROUP BY time($__interval), \"geohash\", \"VMRegion\" fill(none)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "table",
@@ -745,44 +694,14 @@
         }
       ],
       "title": "Unprotected VMs",
-      "transformations": [
-        {
-          "id": "labelsToFields",
-          "options": {
-            "keepLabels": [
-              "VMRegion",
-              "geohash"
-            ],
-            "mode": "columns"
-          }
-        },
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "_field": true,
-              "_measurement": true,
-              "_time": true,
-              "_value": false,
-              "geohash": false
-            },
-            "indexByName": {},
-            "renameByName": {
-              "VMRegion": "",
-              "_field": "",
-              "_value": "Unprotected VMs",
-              "geohash": "geohash"
-            }
-          }
-        }
-      ],
+      "transformations": [],
       "type": "geomap"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -803,7 +722,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "veeam_aws_vm_protected TotalVMs"
+              "options": "Protected VMs"
             },
             "properties": [
               {
@@ -812,17 +731,13 @@
                   "fixedColor": "#37872D",
                   "mode": "fixed"
                 }
-              },
-              {
-                "id": "displayName",
-                "value": "Protected Workloads"
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "veeam_aws_vm_unprotected TotalVMs"
+              "options": "Unprotected VMs"
             },
             "properties": [
               {
@@ -831,10 +746,6 @@
                   "fixedColor": "#C4162A",
                   "mode": "fixed"
                 }
-              },
-              {
-                "id": "displayName",
-                "value": "Unprotected Workloads"
               }
             ]
           }
@@ -874,10 +785,6 @@
       "targets": [
         {
           "alias": "Protected VMs",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          },
           "groupBy": [
             {
               "params": [
@@ -895,8 +802,6 @@
           "measurement": "veeam_aws_vm_protected",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_vm_protected\")\n  |> filter(fn: (r) => r[\"_field\"] == \"TotalVMs\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")\n",
-          "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -917,10 +822,6 @@
         },
         {
           "alias": "Unprotected VMs",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          },
           "groupBy": [
             {
               "params": [
@@ -935,12 +836,9 @@
               "type": "fill"
             }
           ],
-          "hide": false,
           "measurement": "veeam_aws_vm_unprotected",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_vm_unprotected\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"TotalVMs\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")\r\n",
-          "rawQuery": true,
           "refId": "B",
           "resultFormat": "time_series",
           "select": [
@@ -999,7 +897,6 @@
             }
           },
           "decimals": 0,
-          "displayName": "${__field.labels.sessionPolicyJobName} (${__field.labels.sessionType})",
           "mappings": [],
           "min": 0,
           "thresholds": {
@@ -1076,8 +973,6 @@
           "measurement": "veeam_aws_sessions",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_sessions\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"sessionDuration\")\r\n  |> filter(fn: (r) => r[\"sessionType\"] =~ /${PolicyType:regex}/)\r\n  |> filter(fn: (r) => r[\"sessionPolicyJobName\"] =~ /${PolicyName:regex}/)\r\n  |> group(columns: [\"sessionPolicyJobName\",\"sessionType\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\n",
-          "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -1144,8 +1039,6 @@
           "measurement": "veeam_aws_sessions",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT last(\"sessionDuration\") FROM \"veeam_aws_sessions\" WHERE (\"sessiontype\" != '4') AND $timeFilter GROUP BY time($__interval), \"sessionPolicyJobName\", \"sessiontype\" fill(none)",
-          "rawQuery": true,
           "refId": "B",
           "resultFormat": "time_series",
           "select": [
@@ -1175,6 +1068,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1276,14 +1173,10 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "$tag_sessionPolicyName",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          },
           "groupBy": [
             {
               "params": [
@@ -1313,8 +1206,6 @@
           "measurement": "veeam_aws_sessions",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_sessions\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"sessionStatus\")\r\n  |> filter(fn: (r) => r[\"sessionPolicyJobName\"] =~ /${PolicyName:regex}/)\r\n  |> group(columns: [\"sessionPolicyJobName\",\"sessionType\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")\r\n",
-          "rawQuery": true,
           "refId": "A",
           "resultFormat": "table",
           "select": [
@@ -1343,28 +1234,14 @@
       "title": "Job Historical Information",
       "transformations": [
         {
-          "id": "labelsToFields",
-          "options": {
-            "mode": "columns"
-          }
-        },
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
           "id": "organize",
           "options": {
             "excludeByName": {},
-            "indexByName": {
-              "Time": 0,
-              "Value": 3,
-              "sessionPolicyJobName": 1,
-              "sessionType": 2
-            },
+            "indexByName": {},
             "renameByName": {
-              "Value": "Last Result",
-              "sessionPolicyJobName": "Policy Name",
+              "Time": "",
+              "last": "Last Result",
+              "sessionPolicyName": "Policy Name",
               "sessionType": "Policy Type"
             }
           }
@@ -1386,6 +1263,10 @@
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "On this Panel, you can quickly list all your protected VPC on the different Regions",
       "fieldConfig": {
         "defaults": {
@@ -1445,14 +1326,10 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          },
           "groupBy": [
             {
               "params": [
@@ -1471,8 +1348,8 @@
           "measurement": "veeam_aws_vpc",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_vpc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"vpcprotected\")\r\n  |> group(columns: [\"vpcid\",\"vpcregion\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")\r\n",
-          "rawQuery": true,
+          "query": "SELECT last(\"VMSize\") AS \"VM  Size\" FROM \"veeam_azure_vm_unprotected\" WHERE (\"VMName\" =~ /^$VMName$/) AND $timeFilter GROUP BY \"VMName\", \"VMRegion\" ",
+          "rawQuery": false,
           "refId": "A",
           "resultFormat": "table",
           "select": [
@@ -1541,6 +1418,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "On this Panel, you can quickly list all your Protected EC2 Instances",
       "fieldConfig": {
         "defaults": {
@@ -1600,14 +1481,10 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          },
           "groupBy": [
             {
               "params": [
@@ -1632,8 +1509,8 @@
           "measurement": "veeam_aws_vm",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_vm\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"VMSize\")\r\n  |> group(columns: [\"VMName\",\"VMRegion\",\"VMType\"])\r\n  |> last()",
-          "rawQuery": true,
+          "query": "SELECT last(\"VMSize\") AS \"VM  Size\" FROM \"veeam_azure_vm_unprotected\" WHERE (\"VMName\" =~ /^$VMName$/) AND $timeFilter GROUP BY \"VMName\", \"VMRegion\" ",
+          "rawQuery": false,
           "refId": "A",
           "resultFormat": "table",
           "select": [
@@ -1675,39 +1552,14 @@
           "options": {
             "excludeByName": {
               "Time": true,
-              "Unprotected": false,
-              "VMID": true,
-              "VMPolicy": true,
-              "VMResourceId": true,
-              "_field": true,
-              "_measurement": true,
-              "_start": true,
-              "_stop": true,
-              "_time": true,
-              "_value": false
+              "Unprotected": false
             },
-            "indexByName": {
-              "VMID": 1,
-              "VMName": 8,
-              "VMPolicy": 2,
-              "VMRegion": 9,
-              "VMResourceId": 3,
-              "VMType": 10,
-              "_field": 4,
-              "_measurement": 5,
-              "_start": 6,
-              "_stop": 7,
-              "_time": 0,
-              "_value": 11
-            },
+            "indexByName": {},
             "renameByName": {
               "VM  Size": "EC2 Size",
-              "VMID": "",
               "VMName": "EC2 Name",
               "VMRegion": "EC2 Region",
-              "VMType": "EC2 Type",
-              "Value": "EC2 Size",
-              "_value": "EC2 Size"
+              "VMType": "EC2 Type"
             }
           }
         }
@@ -1715,6 +1567,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "On this Panel, you can quickly list all your unprotected EC2 Instances",
       "fieldConfig": {
         "defaults": {
@@ -1787,14 +1643,10 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          },
           "groupBy": [
             {
               "params": [
@@ -1819,8 +1671,8 @@
           "measurement": "veeam_aws_vm_unprotected",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_vm_unprotected\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"VMSize\")\r\n  |> group(columns: [\"VMName\",\"VMRegion\",\"VMType\"])\r\n  |> last()",
-          "rawQuery": true,
+          "query": "SELECT last(\"VMSize\") AS \"VM  Size\" FROM \"veeam_azure_vm_unprotected\" WHERE (\"VMName\" =~ /^$VMName$/) AND $timeFilter GROUP BY \"VMName\", \"VMRegion\" ",
+          "rawQuery": false,
           "refId": "A",
           "resultFormat": "table",
           "select": [
@@ -1851,13 +1703,7 @@
       "transformations": [
         {
           "id": "labelsToFields",
-          "options": {
-            "keepLabels": [
-              "VMName",
-              "VMRegion",
-              "VMType"
-            ]
-          }
+          "options": {}
         },
         {
           "id": "merge",
@@ -1868,32 +1714,14 @@
           "options": {
             "excludeByName": {
               "Time": true,
-              "Unprotected": false,
-              "VMID": true,
-              "VMResourceId": true,
-              "_field": true,
-              "_measurement": true,
-              "_time": true
+              "Unprotected": false
             },
-            "indexByName": {
-              "VMID": 1,
-              "VMName": 5,
-              "VMRegion": 6,
-              "VMResourceId": 4,
-              "VMType": 7,
-              "_field": 2,
-              "_measurement": 3,
-              "_time": 0,
-              "_value": 8
-            },
+            "indexByName": {},
             "renameByName": {
               "VM  Size": "EC2 Size",
               "VMName": "EC2 Name",
               "VMRegion": "EC2 Region",
-              "VMResourceId": "EC2 ID",
-              "VMType": "EC2 Type",
-              "Value": "EC2 Size",
-              "_value": "EC2 Size"
+              "VMType": "EC2 Type"
             }
           }
         }
@@ -1901,6 +1729,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "On this Panel, you can quickly list all your protected RDS Instances",
       "fieldConfig": {
         "defaults": {
@@ -1972,14 +1804,10 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          },
           "groupBy": [
             {
               "params": [
@@ -2022,8 +1850,8 @@
           "measurement": "veeam_aws_rds",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_rds\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"rdssize\")\r\n  |> group(columns: [\"rdsname\",\"rdsclass\",\"rdsengine\",\"rdsengineversion\",\"rdsregion\",\"rdsdns\"])\r\n  |> last()",
-          "rawQuery": true,
+          "query": "SELECT last(\"VMSize\") AS \"VM  Size\" FROM \"veeam_azure_vm_unprotected\" WHERE (\"VMName\" =~ /^$VMName$/) AND $timeFilter GROUP BY \"VMName\", \"VMRegion\" ",
+          "rawQuery": false,
           "refId": "A",
           "resultFormat": "table",
           "select": [
@@ -2065,14 +1893,7 @@
           "options": {
             "excludeByName": {
               "Time": true,
-              "Unprotected": false,
-              "_field": true,
-              "_measurement": true,
-              "_start": true,
-              "_stop": true,
-              "_time": true,
-              "rdsawsid": true,
-              "rdsid": true
+              "Unprotected": false
             },
             "indexByName": {
               "RDS  Size": 7,
@@ -2087,8 +1908,6 @@
             "renameByName": {
               "RDS  Size": "Size",
               "Time": "",
-              "_field": "",
-              "_value": "Size",
               "rdsclass": "Type",
               "rdsdns": "DNS",
               "rdsengine": "Engine",
@@ -2102,6 +1921,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "On this Panel, you can quickly list all your protected EFS Instances",
       "fieldConfig": {
         "defaults": {
@@ -2161,14 +1984,10 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          },
           "groupBy": [
             {
               "params": [
@@ -2199,8 +2018,8 @@
           "measurement": "veeam_aws_efs",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_efs\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"rdssize\")\r\n  |> group(columns: [\"efsname\",\"efsperformance\",\"efsregion\",\"efsawsid\"])\r\n  |> last()",
-          "rawQuery": true,
+          "query": "SELECT last(\"VMSize\") AS \"VM  Size\" FROM \"veeam_azure_vm_unprotected\" WHERE (\"VMName\" =~ /^$VMName$/) AND $timeFilter GROUP BY \"VMName\", \"VMRegion\" ",
+          "rawQuery": false,
           "refId": "A",
           "resultFormat": "table",
           "select": [
@@ -2234,19 +2053,15 @@
           "options": {}
         },
         {
+          "id": "merge",
+          "options": {}
+        },
+        {
           "id": "organize",
           "options": {
             "excludeByName": {
               "Time": true,
-              "Unprotected": false,
-              "_field": true,
-              "_measurement": true,
-              "_start": true,
-              "_stop": true,
-              "_time": true,
-              "efsencryption": true,
-              "efsid": true,
-              "efsthroughput": true
+              "Unprotected": false
             },
             "indexByName": {
               "RDS  Size": 5,
@@ -2259,9 +2074,6 @@
             "renameByName": {
               "RDS  Size": "EFS Size",
               "Time": "",
-              "_field": "",
-              "_time": "",
-              "_value": "EFS Size",
               "efsawsid": "EFS AWS ID",
               "efsname": "EFS Name",
               "efsperformance": "EFS Performance",
@@ -2279,6 +2091,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "On this Panel, you can quickly list all your repositories, with their bucket location, folder, region, and if the Encryption is enabled or not.",
       "fieldConfig": {
         "defaults": {
@@ -2327,6 +2143,18 @@
                 ]
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Description"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 300
+              }
+            ]
           }
         ]
       },
@@ -2350,14 +2178,10 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          },
           "groupBy": [
             {
               "params": [
@@ -2394,8 +2218,8 @@
           "measurement": "veeam_aws_repositories",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_repositories\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"repoEncryption\")\r\n  |> group(columns: [\"repoBucket\",\"repoDescription\",\"repoFolderName\",\"repoName\",\"repoRegion\"])\r\n  |> last()",
-          "rawQuery": true,
+          "query": "SELECT last(\"VMSize\") AS \"VM  Size\" FROM \"veeam_azure_vm_unprotected\" WHERE (\"VMName\" =~ /^$VMName$/) AND $timeFilter GROUP BY \"VMName\", \"VMRegion\" ",
+          "rawQuery": false,
           "refId": "A",
           "resultFormat": "table",
           "select": [
@@ -2429,20 +2253,15 @@
           "options": {}
         },
         {
+          "id": "merge",
+          "options": {}
+        },
+        {
           "id": "organize",
           "options": {
             "excludeByName": {
               "Time": true,
-              "Unprotected": false,
-              "_field": true,
-              "_measurement": true,
-              "_start": true,
-              "_stop": true,
-              "_time": true,
-              "repoAWSID": true,
-              "repoID": true,
-              "repoclass": false,
-              "repoencryption": true
+              "Unprotected": false
             },
             "indexByName": {
               "Encryption": 7,
@@ -2458,8 +2277,6 @@
               "Encryption": "",
               "RDS  Size": "Size",
               "Time": "",
-              "_field": "",
-              "_value": "Encryption",
               "rdsclass": "Type",
               "rdsdns": "DNS",
               "rdsengine": "Engine",
@@ -2472,8 +2289,7 @@
               "repoFolderName": "S3 Folder",
               "repoID": "",
               "repoName": "Name",
-              "repoRegion": "S3 Region",
-              "repoclass": "S3 Class"
+              "repoRegion": "S3 Region"
             }
           }
         }
@@ -2481,6 +2297,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "On this Panel, you can quickly list all your Policies.",
       "fieldConfig": {
         "defaults": {
@@ -2562,14 +2382,10 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "alias": "",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          },
           "groupBy": [
             {
               "params": [
@@ -2600,8 +2416,8 @@
           "measurement": "veeam_aws_policies",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_policies\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"PolicySnapshotCount\")\r\n  |> group(columns: [\"PolicyDescription\",\"PolicyName\",\"PolicyStatus\",\"PolicyType\"])\r\n  |> last()",
-          "rawQuery": true,
+          "query": "SELECT last(\"VMSize\") AS \"VM  Size\" FROM \"veeam_azure_vm_unprotected\" WHERE (\"VMName\" =~ /^$VMName$/) AND $timeFilter GROUP BY \"VMName\", \"VMRegion\" ",
+          "rawQuery": false,
           "refId": "A",
           "resultFormat": "table",
           "select": [
@@ -2642,15 +2458,8 @@
           "id": "organize",
           "options": {
             "excludeByName": {
-              "PolicyBackupRepository": true,
-              "PolicyID": true,
               "Time": true,
-              "Unprotected": false,
-              "_field": true,
-              "_measurement": true,
-              "_start": true,
-              "_stop": true,
-              "_time": true
+              "Unprotected": false
             },
             "indexByName": {
               "PolicyDescription": 2,
@@ -2662,7 +2471,6 @@
             },
             "renameByName": {
               "Encryption": "",
-              "PolicyBackupRepository": "",
               "PolicyDescription": "Policy Description",
               "PolicyID": "",
               "PolicyName": "Policy Name",
@@ -2671,7 +2479,6 @@
               "RDS  Size": "Size",
               "Restore Points": "",
               "Time": "",
-              "_value": "Restore Points",
               "rdsclass": "Type",
               "rdsdns": "DNS",
               "rdsengine": "Engine",
@@ -2707,7 +2514,7 @@
         "content": "<a href=\"https://www.jorgedelacruz.es\"><img src=\"https://www.jorgedelacruz.es/wp-content/uploads/2019/04/jorgedelacruz-banner_2efede4ef704c939e63a3763231f5961.png\"></a>\n\n\n\n",
         "mode": "html"
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.3.0",
       "targets": [
         {
           "groupBy": [
@@ -2765,14 +2572,14 @@
           "type": "influxdb",
           "uid": "${DS_INFLUXDB}"
         },
-        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_sessions\")\r\n  |> keep(columns: [\"sessionPolicyJobName\"])\r\n  |> distinct(column: \"sessionPolicyJobName\")\r\n  |> group()",
+        "definition": "select DISTINCT(\"sessionPolicyJobName\") from (select \"sessionStatus\",\"sessionPolicyJobName\" from \"veeam_aws_sessions\" WHERE $timeFilter)",
         "hide": 0,
         "includeAll": true,
         "label": "Policy Name",
         "multi": true,
         "name": "PolicyName",
         "options": [],
-        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_sessions\")\r\n  |> keep(columns: [\"sessionPolicyJobName\"])\r\n  |> distinct(column: \"sessionPolicyJobName\")\r\n  |> group()",
+        "query": "select DISTINCT(\"sessionPolicyJobName\") from (select \"sessionStatus\",\"sessionPolicyJobName\" from \"veeam_aws_sessions\" WHERE $timeFilter)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -2788,14 +2595,14 @@
           "type": "influxdb",
           "uid": "${DS_INFLUXDB}"
         },
-        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_vm_unprotected\")\r\n  |> filter(fn: (r) => r[\"VMName\"] != \"\")\r\n  |> keep(columns: [\"VMName\"])\r\n  |> distinct(column: \"VMName\")\r\n  |> group()",
+        "definition": "select DISTINCT(\"VMName\") from (select \"VMSize\",\"VMName\" from \"veeam_aws_vm_unprotected\" WHERE $timeFilter)",
         "hide": 0,
         "includeAll": true,
         "label": "Unprotected VM",
         "multi": true,
         "name": "VMName",
         "options": [],
-        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_vm_unprotected\")\r\n  |> filter(fn: (r) => r[\"VMName\"] != \"\")\r\n  |> keep(columns: [\"VMName\"])\r\n  |> distinct(column: \"VMName\")\r\n  |> group()",
+        "query": "select DISTINCT(\"VMName\") from (select \"VMSize\",\"VMName\" from \"veeam_aws_vm_unprotected\" WHERE $timeFilter)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -2811,14 +2618,14 @@
           "type": "influxdb",
           "uid": "${DS_INFLUXDB}"
         },
-        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_repositories\")\r\n  |> filter(fn: (r) => r[\"repoName\"] != \"\")\r\n  |> keep(columns: [\"repoName\"])\r\n  |> distinct(column: \"repoName\")\r\n  |> group()",
+        "definition": "select DISTINCT(\"repoName\") from (select \"repoEncryption\",\"repoName\" from \"veeam_aws_repositories\" WHERE $timeFilter)",
         "hide": 0,
         "includeAll": true,
         "label": "Blob Repository",
         "multi": true,
         "name": "Repository",
         "options": [],
-        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_repositories\")\r\n  |> filter(fn: (r) => r[\"repoName\"] != \"\")\r\n  |> keep(columns: [\"repoName\"])\r\n  |> distinct(column: \"repoName\")\r\n  |> group()",
+        "query": "select DISTINCT(\"repoName\") from (select \"repoEncryption\",\"repoName\" from \"veeam_aws_repositories\" WHERE $timeFilter)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -2834,14 +2641,14 @@
           "type": "influxdb",
           "uid": "${DS_INFLUXDB}"
         },
-        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_sessions\")\r\n  |> filter(fn: (r) => r[\"sessionType\"] != \"\")\r\n  |> keep(columns: [\"sessionType\"])\r\n  |> distinct(column: \"sessionType\")\r\n  |> group()",
+        "definition": "select DISTINCT(\"sessionType\") from (select \"sessionStatus\",\"sessionType\" from \"veeam_aws_sessions\" WHERE $timeFilter)",
         "hide": 0,
         "includeAll": true,
         "label": "Policy Type",
         "multi": true,
         "name": "PolicyType",
         "options": [],
-        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_sessions\")\r\n  |> filter(fn: (r) => r[\"sessionType\"] != \"\")\r\n  |> keep(columns: [\"sessionType\"])\r\n  |> distinct(column: \"sessionType\")\r\n  |> group()",
+        "query": "select DISTINCT(\"sessionType\") from (select \"sessionStatus\",\"sessionType\" from \"veeam_aws_sessions\" WHERE $timeFilter)",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -2874,6 +2681,6 @@
   "timezone": "",
   "title": "Grafana Dashboard for Veeam Backup for AWS",
   "uid": "mnwmhVbGk",
-  "version": 22,
+  "version": 19,
   "weekStart": ""
 }
