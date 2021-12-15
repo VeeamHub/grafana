@@ -9,7 +9,7 @@
 ##      .Notes
 ##      NAME:  veeam_aws.sh
 ##      ORIGINAL NAME: veeam_aws.sh
-##      LASTEDIT: 10/12/2021
+##      LASTEDIT: 15/12/2021
 ##      VERSION: 4.0
 ##      KEYWORDS: Veeam, InfluxDB, Grafana
    
@@ -332,6 +332,32 @@ for id in $(echo "$veeamVBAPoliciesUrl" | jq -r '.results[].id'); do
     arrayefspolicies=$arrayefspolicies+1
 done
 
+##
+# Veeam Backup for AWS Policies. This part will check VBA VPC Policies
+##
+veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/vpc/policy"
+veeamVBAPoliciesUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.2-rev0" -H  "accept: application/json" 2>&1 -k --silent)
+
+    PolicyStatus=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".backupOptionsEnabled")
+    if [ "$PolicyStatus" == "true" ];then
+        PolicyName="VPC\\ Configuration\\ Backup"
+        PolicyVPCRetentionTypeLT=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".scheduleOptions.dailySchedule.retention.type")
+        PolicyVPCRetentionCountLT=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".scheduleOptions.dailySchedule.retention.count")
+        PolicyVPCRetentionTypeST=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".scheduleOptions.dailySchedule.schedule.type")
+        PolicyVPCRetentionCountST=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".scheduleOptions.dailySchedule.schedule.count")
+        PolicyDescription="Collect\\ data\\ every\\ $PolicyVPCRetentionCountST\\ $PolicyVPCRetentionTypeST\\ and\\ keep\\ copies\\ for\\ $PolicyVPCRetentionCountLT\\ $PolicyVPCRetentionTypeLT"
+    else
+        PolicyName=""
+        PolicyVPCRetentionTypeLT=""
+        PolicyVPCRetentionCountLT="0"
+        PolicyVPCRetentionTypeST=""
+        PolicyVPCRetentionCountST="0"
+        PolicyDescription=""
+    fi
+
+    #echo "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=EFS,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyRegionID=$PolicyRegionID,PolicyBackupVaultID=$PolicyBackupVaultID,PolicySelectedEFSID=$PolicySelectedEFSID PolicySnapshotCount=$PolicySnapshotCount"
+    echo "Writing veeam_aws_policies VPC to InfluxDB"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_policies,PolicyID=001,PolicyType=VPC,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyVPCRetentionTypeLT=$PolicyVPCRetentionTypeLT,PolicyVPCRetentionTypeST=$PolicyVPCRetentionTypeST PolicyVPCRetentionCountLT=$PolicyVPCRetentionCountLT,PolicyVPCRetentionCountST=$PolicyVPCRetentionCountST,PolicySnapshotCount=999"
 
 ##
 # Veeam Backup for AWS Repositories. This part will check VBA Repositories
