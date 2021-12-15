@@ -71,6 +71,7 @@ declare -i arrayinstances=0
 for id in $(echo "$veeamVBAInstancesUrl" | jq -r '.results[].id'); do
     VMID=$(echo "$veeamVBAInstancesUrl" | jq --raw-output ".results[$arrayinstances].id")
     VMName=$(echo "$veeamVBAInstancesUrl" | jq --raw-output ".results[$arrayinstances].name" | awk '{gsub(/ /,"\\ ");print}')
+    if [ "$VMName" == "" ]; then declare -i VMName="Empty"; fi
     VMResourceID=$(echo "$veeamVBAInstancesUrl" | jq --raw-output ".results[$arrayinstances].awsResourceId")
     VMSize=$(echo "$veeamVBAInstancesUrl" | jq --raw-output ".results[$arrayinstances].instanceSizeGigabytes")
     VMType=$(echo "$veeamVBAInstancesUrl" | jq --raw-output ".results[$arrayinstances].instanceType")    
@@ -118,6 +119,7 @@ declare -i arrayUnprotected=0
 for id in $(echo "$veeamVBAUnprotectedUrl" | jq -r '.results[].id'); do
     VMID=$(echo "$veeamVBAUnprotectedUrl" | jq --raw-output ".results[$arrayUnprotected].id")
     VMName=$(echo "$veeamVBAUnprotectedUrl" | jq --raw-output ".results[$arrayUnprotected].name" | awk '{gsub(/ /,"\\ ");print}')
+    if [ "$VMName" == "" ]; then declare -i VMName="Empty"; fi
     VMResourceID=$(echo "$veeamVBAUnprotectedUrl" | jq --raw-output ".results[$arrayUnprotected].awsResourceId")
     VMSize=$(echo "$veeamVBAUnprotectedUrl" | jq --raw-output ".results[$arrayUnprotected].instanceSizeGigabytes")
     VMType=$(echo "$veeamVBAUnprotectedUrl" | jq --raw-output ".results[$arrayUnprotected].instanceType")    
@@ -336,28 +338,28 @@ done
 # Veeam Backup for AWS Policies. This part will check VBA VPC Policies
 ##
 veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/vpc/policy"
-veeamVBAPoliciesUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.2-rev0" -H  "accept: application/json" 2>&1 -k --silent)
+veeamVBAPoliciesVPCUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.2-rev0" -H  "accept: application/json" 2>&1 -k --silent)
 
-    PolicyStatus=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".backupOptionsEnabled")
-    if [ "$PolicyStatus" == "true" ];then
-        PolicyName="VPC\\ Configuration\\ Backup"
-        PolicyVPCRetentionTypeLT=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".scheduleOptions.dailySchedule.retention.type")
-        PolicyVPCRetentionCountLT=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".scheduleOptions.dailySchedule.retention.count")
-        PolicyVPCRetentionTypeST=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".scheduleOptions.dailySchedule.schedule.type")
-        PolicyVPCRetentionCountST=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".scheduleOptions.dailySchedule.schedule.count")
-        PolicyDescription="Collect\\ data\\ every\\ $PolicyVPCRetentionCountST\\ $PolicyVPCRetentionTypeST\\ and\\ keep\\ copies\\ for\\ $PolicyVPCRetentionCountLT\\ $PolicyVPCRetentionTypeLT"
-    else
-        PolicyName=""
+    PolicyVPCStatus=$(echo "$veeamVBAPoliciesVPCUrl" | jq --raw-output ".backupOptionsEnabled")
+    if [ "$PolicyVPCStatus" == "true" ];then
+        PolicyVPCName="VPC\\ Configuration\\ Backup"
+        PolicyVPCRetentionTypeLT=$(echo "$veeamVBAPoliciesVPCUrl" | jq --raw-output ".scheduleOptions.dailySchedule.retention.type")
+        PolicyVPCRetentionCountLT=$(echo "$veeamVBAPoliciesVPCUrl" | jq --raw-output ".scheduleOptions.dailySchedule.retention.count")
+        PolicyVPCRetentionTypeST=$(echo "$veeamVBAPoliciesVPCUrl" | jq --raw-output ".scheduleOptions.dailySchedule.schedule.type")
+        PolicyVPCRetentionCountST=$(echo "$veeamVBAPoliciesVPCUrl" | jq --raw-output ".scheduleOptions.dailySchedule.schedule.count")
+        PolicyVPCDescription="Collect\\ data\\ every\\ $PolicyVPCRetentionCountST\\ $PolicyVPCRetentionTypeST\\ and\\ keep\\ copies\\ for\\ $PolicyVPCRetentionCountLT\\ $PolicyVPCRetentionTypeLT"
+    elif [ "$PolicyVPCStatus" == "false" ];then
+        PolicyVPCName=""
         PolicyVPCRetentionTypeLT=""
         PolicyVPCRetentionCountLT="0"
         PolicyVPCRetentionTypeST=""
         PolicyVPCRetentionCountST="0"
-        PolicyDescription=""
+        PolicyVPCDescription=""
     fi
 
-    #echo "veeam_aws_policies,PolicyID=$PolicyID,PolicyType=EFS,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyRegionID=$PolicyRegionID,PolicyBackupVaultID=$PolicyBackupVaultID,PolicySelectedEFSID=$PolicySelectedEFSID PolicySnapshotCount=$PolicySnapshotCount"
+    #echo "veeam_aws_policies,PolicyID=001,PolicyType=VPC,PolicyStatus=$PolicyStatus,PolicyVPCName=$PolicyVPCName,PolicyVPCDescription=$PolicyVPCDescription,PolicyVPCRetentionTypeLT=$PolicyVPCRetentionTypeLT,PolicyVPCRetentionTypeST=$PolicyVPCRetentionTypeST PolicyVPCRetentionCountLT=$PolicyVPCRetentionCountLT,PolicyVPCRetentionCountST=$PolicyVPCRetentionCountST,PolicySnapshotCount=999
     echo "Writing veeam_aws_policies VPC to InfluxDB"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_policies,PolicyID=001,PolicyType=VPC,PolicyStatus=$PolicyStatus,PolicyName=$PolicyName,PolicyDescription=$PolicyDescription,PolicyVPCRetentionTypeLT=$PolicyVPCRetentionTypeLT,PolicyVPCRetentionTypeST=$PolicyVPCRetentionTypeST PolicyVPCRetentionCountLT=$PolicyVPCRetentionCountLT,PolicyVPCRetentionCountST=$PolicyVPCRetentionCountST,PolicySnapshotCount=999"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_policies,PolicyID=001,PolicyType=VPC,PolicyStatus=$PolicyStatus,PolicyName=$PolicyVPCName,PolicyDescription=$PolicyVPCDescription,PolicyVPCRetentionTypeLT=$PolicyVPCRetentionTypeLT,PolicyVPCRetentionTypeST=$PolicyVPCRetentionTypeST PolicyVPCRetentionCountLT=$PolicyVPCRetentionCountLT,PolicyVPCRetentionCountST=$PolicyVPCRetentionCountST,PolicySnapshotCount=999"
 
 ##
 # Veeam Backup for AWS Repositories. This part will check VBA Repositories
@@ -437,7 +439,7 @@ done
 ##
 # Veeam Backup for AWS Policies Sessions. This part will check VBA Sessions for RDS, VPC, and EC2 Snapshots (Hope it will be improved when API allows us to filter per type)
 ##
-veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/sessions?Limit=100&Types=Policy"
+veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/sessions?Limit=50&Types=Policy"
 veeamVBASessionsPolicyUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.2-rev0" -H  "accept: application/json" 2>&1 -k --silent)
 
 declare -i arraysessionspolicy=0

@@ -85,7 +85,7 @@
   "gnetId": 12204,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1639131811430,
+  "iteration": 1639131811443,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -895,7 +895,7 @@
           "measurement": "veeam_aws_vm_protected",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_vm_protected\")\n  |> filter(fn: (r) => r[\"_field\"] == \"TotalVMs\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")\n",
+          "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_vm_protected\")\n  |> filter(fn: (r) => r[\"_field\"] == \"TotalVMs\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")\n",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -939,7 +939,7 @@
           "measurement": "veeam_aws_vm_unprotected",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_vm_unprotected\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"TotalVMs\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")\r\n",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_vm_unprotected\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"TotalVMs\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")\r\n",
           "rawQuery": true,
           "refId": "B",
           "resultFormat": "time_series",
@@ -1553,7 +1553,17 @@
             "displayMode": "color-background",
             "filterable": true
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "index": 0,
+                  "text": "Empty"
+                }
+              },
+              "type": "value"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1678,7 +1688,7 @@
               "Unprotected": false,
               "VMID": true,
               "VMPolicy": true,
-              "VMResourceId": true,
+              "VMResourceId": false,
               "_field": true,
               "_measurement": true,
               "_start": true,
@@ -1688,15 +1698,15 @@
             },
             "indexByName": {
               "VMID": 1,
-              "VMName": 8,
+              "VMName": 7,
               "VMPolicy": 2,
               "VMRegion": 9,
-              "VMResourceId": 3,
+              "VMResourceId": 8,
               "VMType": 10,
-              "_field": 4,
-              "_measurement": 5,
-              "_start": 6,
-              "_stop": 7,
+              "_field": 3,
+              "_measurement": 4,
+              "_start": 5,
+              "_stop": 6,
               "_time": 0,
               "_value": 11
             },
@@ -1705,6 +1715,7 @@
               "VMID": "",
               "VMName": "EC2 Name",
               "VMRegion": "EC2 Region",
+              "VMResourceId": "EC2 ID",
               "VMType": "EC2 Type",
               "Value": "EC2 Size",
               "_value": "EC2 Size"
@@ -2539,6 +2550,28 @@
                 ]
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Policy Description"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "0": {
+                        "index": 0,
+                        "text": "Empty"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -2883,6 +2916,6 @@
   "timezone": "",
   "title": "Grafana Dashboard for Veeam Backup for AWS",
   "uid": "mnwmhVbGk",
-  "version": 23,
+  "version": 24,
   "weekStart": ""
 }
