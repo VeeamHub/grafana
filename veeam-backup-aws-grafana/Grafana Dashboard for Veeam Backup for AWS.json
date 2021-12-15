@@ -85,7 +85,7 @@
   "gnetId": 12204,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1639131811427,
+  "iteration": 1639131811430,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -2496,9 +2496,9 @@
           "mappings": [
             {
               "options": {
-                "0": {
+                "999": {
                   "index": 0,
-                  "text": "Empty"
+                  "text": "See Description"
                 }
               },
               "type": "value"
@@ -2632,7 +2632,14 @@
       "transformations": [
         {
           "id": "labelsToFields",
-          "options": {}
+          "options": {
+            "keepLabels": [
+              "PolicyDescription",
+              "PolicyName",
+              "PolicyStatus",
+              "PolicyType"
+            ]
+          }
         },
         {
           "id": "merge",
@@ -2644,6 +2651,8 @@
             "excludeByName": {
               "PolicyBackupRepository": true,
               "PolicyID": true,
+              "PolicyVPCRetentionTypeLT": true,
+              "PolicyVPCRetentionTypeST": true,
               "Time": true,
               "Unprotected": false,
               "_field": true,
@@ -2842,7 +2851,7 @@
         "name": "PolicyType",
         "options": [],
         "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_sessions\")\r\n  |> filter(fn: (r) => r[\"sessionType\"] != \"\")\r\n  |> keep(columns: [\"sessionType\"])\r\n  |> distinct(column: \"sessionType\")\r\n  |> group()",
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
@@ -2854,7 +2863,7 @@
     ]
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {
@@ -2874,6 +2883,6 @@
   "timezone": "",
   "title": "Grafana Dashboard for Veeam Backup for AWS",
   "uid": "mnwmhVbGk",
-  "version": 22,
+  "version": 23,
   "weekStart": ""
 }
