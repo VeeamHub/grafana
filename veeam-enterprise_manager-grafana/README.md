@@ -20,7 +20,7 @@ Or try with this simple steps:
 * Download the Veeam Enterprise Manager JSON Dashboard file and import it into your Grafana
 * Enjoy :)
 
-**InfluxDB 2.0 Note:** If you're using InfluxDB 2.0, use the `veeam_enterprisemanager_influx2.sh` file instead.
+**InfluxDB 1.8 Note:** If you're using InfluxDB 1.8, use the `veeam_enterprisemanager.sh` file from the InfluxDB v1.8 folder.
 
 **Important:** For the section called Veeam Backup Performance, you will need to [install the Telegraf Agent for Windows](https://github.com/influxdata/telegraf/blob/master/docs/WINDOWS_SERVICE.md) on the Veeam Backup & Replication Server. Additionally, you will need to edit the hostname on the telegraf.conf for this VBR Server, and use the proper FQDN, like this:
 
