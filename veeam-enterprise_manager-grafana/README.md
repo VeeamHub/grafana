@@ -1,6 +1,6 @@
 How to monitor a Veeam Environment using Veeam Enterprise Manager, Telegraf, InfluxDB and Grafana
 ===================
-![Veeam Grafana Dashboard for Enterprise Manager](https://www.jorgedelacruz.es/wp-content/uploads/2020/01/veeam-grafana-em-001.png)
+![Veeam Grafana Dashboard for Enterprise Manager](https://jorgedelacruz.uk/wp-content/uploads/2020/01/2020-05-26_16-40-49.jpg)
 
 Thanks for the interest on this project. 
 
