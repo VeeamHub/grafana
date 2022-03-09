@@ -13,9 +13,9 @@ We use Veeam Backup for Microsoft 365 RESTfulAPI to reduce the workload and incr
 You can follow the steps on the next Blog Post - https://jorgedelacruz.uk/2018/12/17/looking-for-the-perfect-dashboard-influxdb-telegraf-and-grafana-part-xiii-veeam-backup-for-microsoft-office-365/
 
 Or try with this simple steps:
-* Download the veeam-office365.sh file and change the parameters under Configuration, like username/password, etc. with your real data
-* Make the script executable with the command chmod +x veeam-office365.sh
-* Run the veeam-office365.sh and check on Chronograf that you can retrieve the information properly
+* Download the veeam_microsoft365.sh file and change the parameters under Configuration, like username/password, etc. with your real data
+* Make the script executable with the command chmod +x veeam_microsoft365.sh
+* Run the veeam_microsoft365.sh and check on Chronograf that you can retrieve the information properly
 * Schedule the script execution, for example every 30 minutes using crontab
 * Download the Veeam Backup for Microsoft 365 JSON file and import it into your Grafana
 * Enjoy :)
