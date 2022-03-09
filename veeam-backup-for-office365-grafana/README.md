@@ -1,11 +1,11 @@
-Grafana Dashboard for Veeam Backup for Microsoft Office 365
+Grafana Dashboard for Veeam Backup for Microsoft 365
 ===================
 
-![alt tag](https://jorgedelacruz.uk/wp-content/uploads/2019/11/veeam-office-365-v4-grafana-1.png)
+![alt tag](https://jorgedelacruz.uk/wp-content/uploads/2022/03/veeam-office365-grafana-2022.jpg)
 
-This project consists in a Bash Shell script to retrieve the Veeam Backup for Microsoft Office 365 information, directly from the RESTfulAPI, about last jobs, users and much more. The information is being saved it into InfluxDB output directly into the InfluxDB database using curl, then in Grafana: a Dashboard is created to present all the information.
+This project consists in a Bash Shell script to retrieve the Veeam Backup for Microsoft 365 information, directly from the RESTfulAPI, about last jobs, users and much more. The information is being saved it into InfluxDB output directly into the InfluxDB database using curl, then in Grafana: a Dashboard is created to present all the information.
 
-We use Veeam Backup for Microsoft Office 365 RESTfulAPI to reduce the workload and increase the speed of script execution. Object Storage information it is pulled as well as a new funcionality 
+We use Veeam Backup for Microsoft 365 RESTfulAPI to reduce the workload and increase the speed of script execution. Object Storage information it is pulled as well as a new funcionality 
 
 ----------
 
@@ -17,7 +17,7 @@ Or try with this simple steps:
 * Make the script executable with the command chmod +x veeam-office365.sh
 * Run the veeam-office365.sh and check on Chronograf that you can retrieve the information properly
 * Schedule the script execution, for example every 30 minutes using crontab
-* Download the Veeam Backup for Microsoft Office 365 JSON file and import it into your Grafana
+* Download the Veeam Backup for Microsoft 365 JSON file and import it into your Grafana
 * Enjoy :)
 
 ----------
