@@ -79,13 +79,13 @@
       }
     ]
   },
-  "description": "Grafana Dashboard for Veeam Backup for Microsoft 365 Dashboard / VBO v5 + Influx v2",
+  "description": "Grafana Dashboard for Veeam Backup for Microsoft 365 Dashboard / VBO v6 + Influx v2",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "gnetId": 11286,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1646841599424,
+  "iteration": 1647037429761,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -121,7 +121,7 @@
       "id": 164,
       "links": [],
       "options": {
-        "content": "![Veeam Backup for Microsoft 365 - Dashboard](https://jorgedelacruz.uk/wp-content/uploads/2022/03/Microsoft-Office-365-Logo3.png)",
+        "content": "<span style=\"color:#fff; font-family: 'Lato'; font-size: 2.1em;\">Veeam Backup for Microsoft 365</span><br/>\r\n<span style=\"color:#fff; font-family: 'Lato'; font-size: 2em;\">Installed version: $version</span>",
         "mode": "markdown"
       },
       "pluginVersion": "8.3.3",
@@ -158,7 +158,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
+        "w": 3,
         "x": 6,
         "y": 1
       },
@@ -181,6 +181,9 @@
           ],
           "fields": "",
           "values": false
+        },
+        "text": {
+          "valueSize": 65
         },
         "textMode": "auto"
       },
@@ -270,7 +273,7 @@
       "gridPos": {
         "h": 4,
         "w": 3,
-        "x": 10,
+        "x": 9,
         "y": 1
       },
       "id": 98,
@@ -292,6 +295,9 @@
           ],
           "fields": "",
           "values": false
+        },
+        "text": {
+          "valueSize": 65
         },
         "textMode": "auto"
       },
@@ -380,7 +386,7 @@
       "gridPos": {
         "h": 4,
         "w": 3,
-        "x": 13,
+        "x": 12,
         "y": 1
       },
       "id": 28,
@@ -402,6 +408,9 @@
           ],
           "fields": "",
           "values": false
+        },
+        "text": {
+          "valueSize": 65
         },
         "textMode": "auto"
       },
@@ -484,8 +493,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
-        "x": 16,
+        "w": 3,
+        "x": 15,
         "y": 1
       },
       "id": 110,
@@ -508,6 +517,7 @@
           "fields": "",
           "values": false
         },
+        "text": {},
         "textMode": "auto"
       },
       "pluginVersion": "8.3.3",
@@ -588,8 +598,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
-        "x": 20,
+        "w": 3,
+        "x": 18,
         "y": 1
       },
       "id": 176,
@@ -611,6 +621,9 @@
           ],
           "fields": "",
           "values": false
+        },
+        "text": {
+          "valueSize": 45
         },
         "textMode": "auto"
       },
@@ -669,6 +682,550 @@
       "type": "stat"
     },
     {
+      "description": "Veeam Backup for Microsoft 365 provides users with the ability to explore and restore data from backups by themselves or delegate this task to restore operators.\n",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "mappings": [
+            {
+              "options": {
+                "1": {
+                  "color": "dark-red",
+                  "index": 1,
+                  "text": "Down or Disabled"
+                },
+                "2": {
+                  "color": "dark-green",
+                  "index": 2,
+                  "text": "Up and Running"
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "index": 0,
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 21,
+        "y": 1
+      },
+      "id": 225,
+      "links": [],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "background",
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            }
+          ],
+          "measurement": "veeam_office365_proxies",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_restoreportal\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"restorePortalEnabled\")\r\n  |> aggregateWindow(every: ${inter}, fn: last, createEmpty: false)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "threadsNumber"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "proxies",
+              "operator": "=~",
+              "value": "/^$proxies$/"
+            }
+          ]
+        }
+      ],
+      "title": "Restore Portal Status",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "id": 227,
+      "panels": [],
+      "title": "Self-Service Portal, and Restore Operators Security",
+      "type": "row"
+    },
+    {
+      "description": "In the operator restore scenario, Veeam Backup for Microsoft 365 administrators must add restore operator roles. Inside the Roles, we have the Restore Operators, this is a list with all the Restore Operators, use the variable on the top to change between the different Roles.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "transparent",
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "color-background",
+            "filterable": true
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgba(50, 172, 45, 0.97)",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Id"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 50
+              },
+              {
+                "id": "custom.align",
+                "value": "center"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 6
+      },
+      "hideTimeOverride": false,
+      "id": 236,
+      "links": [],
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "alias": "$tag_veeamjobname",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "veeamjobname"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_office365_jobs",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_rbac_operators\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"rbacRoleAdminId\")\r\n  |> filter(fn: (r) => r[\"organization\"] =~ /${organization:regex}/)\r\n  |> filter(fn: (r) => r[\"rbacRoleName\"] =~ /${rbacrole:regex}/)\r\n  |> group(columns: [\"rbacRoleName\",\"rbacROName\",\"rbacRO365Name\"])\r\n  |> last()",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "status"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "veeamjobname",
+              "operator": "=~",
+              "value": "/^$job$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_veeamjobname",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "veeamjobname"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": true,
+          "measurement": "veeam_office365_jobs",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_rbac_scope\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"rbacRoleScopeId\")\r\n  |> filter(fn: (r) => r[\"organization\"] =~ /${organization:regex}/)\r\n  |> filter(fn: (r) => r[\"rbacRoleName\"] =~ /${rbacrole:regex}/)\r\n  |> group(columns: [\"rbacRoleScopeName\"])\r\n  |> last()",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "status"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "veeamjobname",
+              "operator": "=~",
+              "value": "/^$job$/"
+            }
+          ]
+        }
+      ],
+      "title": "Restore Operators",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "keepLabels": [
+              "organization",
+              "rbacRO365Name",
+              "rbacROName"
+            ],
+            "mode": "columns"
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "_field": true,
+              "_measurement": true,
+              "_time": true,
+              "_value": false,
+              "bottleneck": true,
+              "organization": true,
+              "rbacRoleDescription": true,
+              "rbacRoleId": true,
+              "rbacRoleType": true
+            },
+            "indexByName": {
+              "_field": 0,
+              "_measurement": 1,
+              "_time": 2,
+              "_value": 4,
+              "organization": 3,
+              "rbacRO365Name": 6,
+              "rbacROName": 5,
+              "type": 7
+            },
+            "renameByName": {
+              "_time": "",
+              "_value": "Id",
+              "rbacRO365Name": "Microsoft 365 Name",
+              "rbacROName": "Friendly Name",
+              "rbacRoleName": "",
+              "type": "Microsoft 365 Type",
+              "veeamjobname": "Job Name"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "description": "Restore operators will be able to explore and restore backed-up data of the objects listed on this table using Restore Portal.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "transparent",
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "color-background",
+            "filterable": true
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgba(50, 172, 45, 0.97)",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Id"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 50
+              },
+              {
+                "id": "custom.align",
+                "value": "center"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 16,
+        "x": 8,
+        "y": 6
+      },
+      "hideTimeOverride": false,
+      "id": 245,
+      "links": [],
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "alias": "$tag_veeamjobname",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "veeamjobname"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_office365_jobs",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_rbac_scope\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"rbacRoleScopeId\")\r\n  |> filter(fn: (r) => r[\"organization\"] =~ /${organization:regex}/)\r\n  |> filter(fn: (r) => r[\"rbacRoleName\"] =~ /${rbacrole:regex}/)\r\n  |> group(columns: [\"rbacRoleScopeName\",\"rbacRoleName\",\"rbacRoleScope365Name\"])\r\n  |> last()",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "status"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "veeamjobname",
+              "operator": "=~",
+              "value": "/^$job$/"
+            }
+          ]
+        }
+      ],
+      "title": "Restore Operator Scope",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "keepLabels": [
+              "rbacRoleName",
+              "rbacRoleScope365Name"
+            ],
+            "mode": "columns"
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "_field": true,
+              "_measurement": true,
+              "_time": true,
+              "_value": true,
+              "bottleneck": true,
+              "organization": true,
+              "rbacRoleDescription": true,
+              "rbacRoleId": true,
+              "rbacRoleType": true
+            },
+            "indexByName": {
+              "_field": 0,
+              "_measurement": 1,
+              "_time": 2,
+              "_value": 4,
+              "organization": 3,
+              "rbacRoleName": 7,
+              "rbacRoleScope365Name": 5,
+              "type": 6
+            },
+            "renameByName": {
+              "_time": "",
+              "_value": "Id",
+              "rbacRO365Name": "Microsoft 365 Name",
+              "rbacROName": "Friendly Name",
+              "rbacRoleName": "Restore Operator Role",
+              "rbacRoleScope365Name": "Restore Operator Scope",
+              "type": "Microsoft 365 Type",
+              "veeamjobname": "Job Name"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
       "collapsed": false,
       "datasource": {
         "type": "influxdb",
@@ -678,7 +1235,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 5
+        "y": 13
       },
       "id": 151,
       "panels": [],
@@ -730,7 +1287,7 @@
         "h": 3,
         "w": 3,
         "x": 0,
-        "y": 6
+        "y": 14
       },
       "id": 109,
       "links": [],
@@ -823,7 +1380,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 17
       },
       "id": 216,
       "panels": [
@@ -1089,7 +1646,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 13
+        "y": 18
       },
       "id": 120,
       "panels": [],
@@ -1208,7 +1765,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 14
+        "y": 19
       },
       "id": 104,
       "links": [],
@@ -1446,7 +2003,7 @@
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 14
+        "y": 19
       },
       "id": 105,
       "links": [],
@@ -1636,7 +2193,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 14
+        "y": 19
       },
       "id": 106,
       "links": [],
@@ -1778,7 +2335,7 @@
         "h": 8,
         "w": 11,
         "x": 0,
-        "y": 21
+        "y": 26
       },
       "hideTimeOverride": false,
       "id": 113,
@@ -1957,7 +2514,7 @@
         "h": 8,
         "w": 13,
         "x": 11,
-        "y": 21
+        "y": 26
       },
       "id": 46,
       "links": [],
@@ -1978,7 +2535,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
+            "uid": "gK_s8WTMk"
           },
           "hide": false,
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_repository\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"capacity\" or r[\"_field\"] == \"freeSpace\")\r\n  |> filter(fn: (r) => r[\"repository\"] =~ /${repository:regex}/)\r\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> map(fn: (r) => ({ r with  _value: (float(v: r.capacity) - float(v: r.freeSpace))  }))\r\n  |> group(columns: [\"repository\",\"_field\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
@@ -2040,7 +2597,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 29
+        "y": 34
       },
       "id": 198,
       "panels": [],
@@ -2107,7 +2664,7 @@
         "h": 6,
         "w": 14,
         "x": 0,
-        "y": 30
+        "y": 35
       },
       "id": 209,
       "links": [],
@@ -2206,7 +2763,7 @@
         "h": 6,
         "w": 4,
         "x": 14,
-        "y": 30
+        "y": 35
       },
       "id": 208,
       "links": [],
@@ -2313,7 +2870,7 @@
         "h": 2,
         "w": 6,
         "x": 18,
-        "y": 30
+        "y": 35
       },
       "id": 213,
       "links": [],
@@ -2420,7 +2977,7 @@
         "h": 2,
         "w": 4,
         "x": 18,
-        "y": 32
+        "y": 37
       },
       "id": 187,
       "links": [],
@@ -2527,7 +3084,7 @@
         "h": 2,
         "w": 2,
         "x": 22,
-        "y": 32
+        "y": 37
       },
       "id": 214,
       "links": [],
@@ -2634,7 +3191,7 @@
         "h": 2,
         "w": 4,
         "x": 18,
-        "y": 34
+        "y": 39
       },
       "id": 210,
       "links": [],
@@ -2741,7 +3298,7 @@
         "h": 2,
         "w": 2,
         "x": 22,
-        "y": 34
+        "y": 39
       },
       "id": 211,
       "links": [],
@@ -2830,7 +3387,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 36
+        "y": 41
       },
       "id": 25,
       "panels": [],
@@ -2882,7 +3439,7 @@
         "h": 6,
         "w": 12,
         "x": 0,
-        "y": 37
+        "y": 42
       },
       "id": 34,
       "links": [],
@@ -3043,7 +3600,31 @@
         "type": "interval"
       },
       {
-        "current": {},
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_version\")\r\n  |> keep(columns: [\"veeamVersion\"])\r\n  |> distinct(column: \"veeamVersion\")\r\n  |> group()\r\n",
+        "hide": 2,
+        "includeAll": true,
+        "label": "Veeam Office 365 Version",
+        "multi": true,
+        "name": "version",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_version\")\r\n  |> keep(columns: [\"veeamVersion\"])\r\n  |> distinct(column: \"veeamVersion\")\r\n  |> group()\r\n",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
         "datasource": {
           "type": "influxdb",
           "uid": "${DS_INFLUXDB}"
@@ -3066,7 +3647,11 @@
         "useTags": false
       },
       {
-        "current": {},
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
         "datasource": {
           "type": "influxdb",
           "uid": "${DS_INFLUXDB}"
@@ -3089,7 +3674,11 @@
         "useTags": false
       },
       {
-        "current": {},
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
         "datasource": {
           "type": "influxdb",
           "uid": "${DS_INFLUXDB}"
@@ -3112,7 +3701,38 @@
         "useTags": false
       },
       {
-        "current": {},
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_objectstorage\")\r\n  |> keep(columns: [\"objectname\"])\r\n  |> distinct(column: \"objectname\")\r\n  |> group()\r\n",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Object Storage",
+        "multi": true,
+        "name": "objectstorage",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_objectstorage\")\r\n  |> keep(columns: [\"objectname\"])\r\n  |> distinct(column: \"objectname\")\r\n  |> group()\r\n",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
         "datasource": {
           "type": "influxdb",
           "uid": "${DS_INFLUXDB}"
@@ -3135,32 +3755,33 @@
         "useTags": false
       },
       {
-        "current": {},
-        "datasource": {
-          "type": "influxdb",
-          "uid": "${DS_INFLUXDB}"
+        "current": {
+          "selected": true,
+          "text": [
+            "Delegated Admin Role"
+          ],
+          "value": [
+            "Delegated Admin Role"
+          ]
         },
-        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_objectstorage\")\r\n  |> keep(columns: [\"objectname\"])\r\n  |> distinct(column: \"objectname\")\r\n  |> group()\r\n",
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_rbac_roles\")\r\n  |> filter(fn: (r) => r[\"organization\"] =~ /${organization:regex}/)\r\n  |> keep(columns: [\"rbacRoleName\"])\r\n  |> distinct(column: \"rbacRoleName\")\r\n  |> group()\r\n",
         "hide": 0,
         "includeAll": true,
-        "label": "Object Storage",
+        "label": "RBAC Role",
         "multi": true,
-        "name": "objectstorage",
+        "name": "rbacrole",
         "options": [],
-        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_objectstorage\")\r\n  |> keep(columns: [\"objectname\"])\r\n  |> distinct(column: \"objectname\")\r\n  |> group()\r\n",
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_rbac_roles\")\r\n  |> filter(fn: (r) => r[\"organization\"] =~ /${organization:regex}/)\r\n  |> keep(columns: [\"rbacRoleName\"])\r\n  |> distinct(column: \"rbacRoleName\")\r\n  |> group()\r\n",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
-        "tagValuesQuery": "",
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "type": "query"
       }
     ]
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {
@@ -3191,6 +3812,6 @@
   "timezone": "browser",
   "title": "Grafana Dashboard for Veeam Backup for Microsoft 365",
   "uid": "AGZEYsbZk",
-  "version": 2,
+  "version": 6,
   "weekStart": ""
 }

@@ -1,6 +1,6 @@
 #!/bin/bash
 ##      .SYNOPSIS
-##      Grafana Dashboard for Veeam Backup for Microsoft 365 v5.0 - Using RestAPI to InfluxDB Script
+##      Grafana Dashboard for Veeam Backup for Microsoft 365 v6.0 - Using RestAPI to InfluxDB Script
 ## 
 ##      .DESCRIPTION
 ##      This Script will query the Veeam Backup for Microsoft 365 RestAPI and send the data directly to InfluxDB, which can be used to present it to Grafana. 
@@ -9,8 +9,8 @@
 ##      .Notes
 ##      NAME:  veeam_microsoft365.sh
 ##      ORIGINAL veeam_microsoft365.sh
-##      LASTEDIT: 09/03/2022
-##      VERSION: 5.0
+##      LASTEDIT: 11/03/2022
+##      VERSION: 6.0
 ##      KEYWORDS: Veeam, InfluxDB, Grafana
    
 ##      .Link
@@ -32,12 +32,24 @@ veeamUsername="YOURVBOUSER"
 veeamPassword="YOURVBOPASSWORD"
 veeamRestServer="https://YOURVBOSERVERIP"
 veeamRestPort="4443" #Default Port
-veeamBearer=$(curl -X POST --header "Content-Type: application/x-www-form-urlencoded" --header "Accept: application/json" -d "grant_type=password&username=$veeamUsername&password=$veeamPassword&refresh_token=%27%27" "$veeamRestServer:$veeamRestPort/v5/token" -k --silent | jq -r '.access_token')
+veeamBearer=$(curl -X POST --header "Content-Type: application/x-www-form-urlencoded" --header "Accept: application/json" -d "grant_type=password&username=$veeamUsername&password=$veeamPassword&refresh_token=%27%27" "$veeamRestServer:$veeamRestPort/v6/token" -k --silent | jq -r '.access_token')
+
+
+##
+# Veeam Backup for Microsoft 365 Version. This part will check the Veeam Backup for Microsoft 365 version
+##
+veeamVBOUrl="$veeamRestServer:$veeamRestPort/v6/ServiceInstance"
+veeamVersionUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
+    
+    veeamVersion=$(echo "$veeamVersionUrl" | jq --raw-output ".version")
+    #echo "veeam_office365_version,veeamVersion=$veeamVersion,veeamServer=$veeamRestServer v=1"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_office365_version,veeamVersion=$veeamVersion,veeamServer=$veeamRestServer v=1"
+
 
 ##
 # Veeam Backup for Microsoft 365 Organization. This part will check on our Organization and retrieve Licensing Information
 ##
-veeamVBOUrl="$veeamRestServer:$veeamRestPort/v5/Organizations"
+veeamVBOUrl="$veeamRestServer:$veeamRestPort/v6/Organizations"
 veeamOrgUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
 
 declare -i arrayorg=0
@@ -46,7 +58,7 @@ for id in $(echo "$veeamOrgUrl" | jq -r '.[].id'); do
     veeamOrgName=$(echo "$veeamOrgUrl" | jq --raw-output ".[$arrayorg].name" | awk '{gsub(/ /,"\\ ");print}')
 
     ## Licensing
-    veeamVBOUrl="$veeamRestServer:$veeamRestPort/v5/Organizations/$veeamOrgId/LicensingInformation"
+    veeamVBOUrl="$veeamRestServer:$veeamRestPort/v6/Organizations/$veeamOrgId/LicensingInformation"
     veeamLicenseUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
     licensedUsers=$(echo "$veeamLicenseUrl" | jq --raw-output '.licensedUsers')
     newUsers=$(echo "$veeamLicenseUrl" | jq --raw-output '.newUsers')
@@ -57,7 +69,7 @@ for id in $(echo "$veeamOrgUrl" | jq -r '.[].id'); do
     ##
     # Veeam Backup for Microsoft 365 Users. This part will check the total Users and if they are protected or not
     ##
-    veeamVBOUrl="$veeamRestServer:$veeamRestPort/v5/LicensedUsers"
+    veeamVBOUrl="$veeamRestServer:$veeamRestPort/v6/LicensedUsers"
     veeamUsersUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
     declare -i arrayLicensed=0
     for id in $(echo "$veeamUsersUrl" | jq -r '.results[].id'); do
@@ -94,7 +106,7 @@ done
 ##
 # Veeam Backup for Microsoft 365 Backup Repositories. This part will check the capacity and used space of the Backup Repositories
 ##
-veeamVBOUrl="$veeamRestServer:$veeamRestPort/v5/BackupRepositories"
+veeamVBOUrl="$veeamRestServer:$veeamRestPort/v6/BackupRepositories"
 veeamRepoUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
 
 declare -i arrayrepo=0
@@ -113,7 +125,7 @@ for id in $(echo "$veeamRepoUrl" | jq -r '.[].id'); do
   ##
   # Veeam Backup for Microsoft 365 Object Storage Repositories. This part will check the capacity and used space of the Object Storage Repositories
   ##
-  veeamVBOUrl="$veeamRestServer:$veeamRestPort/v5/objectstoragerepositories/$objectStorageId"
+  veeamVBOUrl="$veeamRestServer:$veeamRestPort/v6/objectstoragerepositories/$objectStorageId"
   veeamObjectUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
 
         objectName=$(echo "$veeamObjectUrl" | jq --raw-output ".name" | awk '{gsub(/ /,"\\ ");print}')
@@ -135,7 +147,7 @@ done
 ##
 # Veeam Backup for Microsoft 365 Backup Proxies. This part will check the Name and Threads Number of the Backup Proxies
 ##
-veeamVBOUrl="$veeamRestServer:$veeamRestPort/v5/Proxies"
+veeamVBOUrl="$veeamRestServer:$veeamRestPort/v6/Proxies"
 veeamProxyUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
 
 declare -i arrayprox=0
@@ -152,7 +164,7 @@ done
 ##
 # Veeam Backup for Microsoft 365 Backup Jobs. This part will check the different Jobs, and the Job Sessions per every Job
 ##
-veeamVBOUrl="$veeamRestServer:$veeamRestPort/v5/Jobs"
+veeamVBOUrl="$veeamRestServer:$veeamRestPort/v6/Jobs"
 veeamJobsUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
 
 declare -i arrayJobs=0
@@ -161,7 +173,7 @@ for id in $(echo "$veeamJobsUrl" | jq -r '.[].id'); do
     idJob=$(echo "$veeamJobsUrl" | jq --raw-output ".[$arrayJobs].id")
     
     # Backup Job Sessions
-    veeamVBOUrl="$veeamRestServer:$veeamRestPort/v5/Jobs/$idJob/JobSessions"
+    veeamVBOUrl="$veeamRestServer:$veeamRestPort/v6/Jobs/$idJob/JobSessions"
     veeamJobSessionsUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
     declare -i arrayJobsSessions=0
     for id in $(echo "$veeamJobSessionsUrl" | jq -r '.results[].id'); do
@@ -203,7 +215,7 @@ done
 ##
 # Veeam Backup for Microsoft 365 Restore Sessions. This part will check the Number of Restore Sessions
 ##
-veeamVBOUrl="$veeamRestServer:$veeamRestPort/v5/RestoreSessions"
+veeamVBOUrl="$veeamRestServer:$veeamRestPort/v6/RestoreSessions"
 veeamRestoreSessionsUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
 
 declare -i arrayRestoreSessions=0
@@ -226,4 +238,98 @@ for id in $(echo "$veeamRestoreSessionsUrl" | jq -r '.results[].id'); do
     #echo "veeam_office365_restoresession,organization=$organization,veeamjobname=$nameJob,type=$type,result=$result,initiatedBy=$initiatedBy itemsProcessed=$itemsProcessed,itemsSuccess=$itemsSuccess $endTimeUnix"
     curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_office365_restoresession,organization=$organization,veeamjobname=$nameJob,type=$type,result=$result,initiatedBy=$initiatedBy itemsProcessed=$itemsProcessed,itemsSuccess=$itemsSuccess $endTimeUnix"
     arrayRestoreSessions=$arrayRestoreSessions+1
+done
+
+##
+# Veeam Backup for Microsoft 365 Restore Portal. This part will check the if Restore Portal is enabled
+##
+veeamVBOUrl="$veeamRestServer:$veeamRestPort/v6/RestorePortalSettings"
+veeamRestorePortalUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
+
+    restorePortalAppId=$(echo "$veeamRestorePortalUrl" | jq --raw-output ".applicationId")
+    restorePortalEnabled=$(echo "$veeamRestorePortalUrl" | jq --raw-output ".isEnabled")
+    case $restorePortalEnabled in
+        false)
+            restorePortal="1"
+        ;;
+        true)
+            restorePortal="2"
+        ;;
+    esac
+
+    #echo "veeam_office365_restoreportal,organization=$organization,restorePortalAppId=$restorePortalAppId restorePortalEnabled=$restorePortal"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_office365_restoreportal,organization=$organization,restorePortalAppId=$restorePortalAppId restorePortalEnabled=$restorePortal"
+
+##
+# Veeam Backup for Microsoft 365 RBAC Roles. This part will check the the RBAC Roles, and what privileges they have
+##
+veeamVBOUrl="$veeamRestServer:$veeamRestPort/v6/RbacRoles"
+veeamRbacRoleUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
+
+declare -i arrayRbacRoles=0
+for id in $(echo "$veeamRbacRoleUrl" | jq -r '.[].id'); do
+    rbacRoleId=$(echo "$veeamRbacRoleUrl" | jq --raw-output ".[$arrayRbacRoles].id")
+    rbacRoleName=$(echo "$veeamRbacRoleUrl" | jq --raw-output ".[$arrayRbacRoles].name" | awk '{gsub(/ /,"\\ ");print}')
+    rbacRoleDescription=$(echo "$veeamRbacRoleUrl" | jq --raw-output ".[$arrayRbacRoles].description" | awk '{gsub(/ /,"\\ ");print}')
+    rbacRoleType=$(echo "$veeamRbacRoleUrl" | jq --raw-output ".[$arrayRbacRoles].roleType" | awk '{gsub(/ /,"\\ ");print}')
+
+    ## Check the RBAC Restore Operators
+    veeamVBOUrl="$veeamRestServer:$veeamRestPort/v6/RbacRoles/$rbacRoleId/operators"
+    veeamRbacRoleOperatorUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
+
+    declare -i arrayRbacRolesOperators=0
+    for id in $(echo "$veeamRbacRoleOperatorUrl" | jq -r '.[].type'); do
+        rbacRoleScopeType=$(echo "$veeamRbacRoleOperatorUrl" | jq --raw-output ".[$arrayRbacRolesOperators].type")
+
+        case $rbacRoleScopeType in
+        User)
+            rbacROName=$(echo "$veeamRbacRoleOperatorUrl" | jq --raw-output ".[$arrayRbacRolesOperators].user.displayName" | awk '{gsub(/ /,"\\ ");print}')
+            rbacRO365Name=$(echo "$veeamRbacRoleOperatorUrl" | jq --raw-output ".[$arrayRbacRolesOperators].user.name" | awk '{gsub(/ /,"\\ ");print}')
+            #echo "veeam_office365_rbac_operators,organization=$organization,rbacRoleName=$rbacRoleName,type=User,rbacROName=$rbacROName,rbacRO365Name=$rbacRO365Name rbacRoleAdminId=$arrayRbacRolesOperators"
+            curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_office365_rbac_operators,organization=$organization,rbacRoleName=$rbacRoleName,type=User,rbacROName=$rbacROName,rbacRO365Name=$rbacRO365Name rbacRoleAdminId=$arrayRbacRolesOperators"
+        ;;
+        Group)
+            rbacROName=$(echo "$veeamRbacRoleOperatorUrl" | jq --raw-output ".[$arrayRbacRolesOperators].group.displayName" | awk '{gsub(/ /,"\\ ");print}')
+            rbacRO365Name=$(echo "$veeamRbacRoleOperatorUrl" | jq --raw-output ".[$arrayRbacRolesOperators].group.name" | awk '{gsub(/ /,"\\ ");print}')
+            rbacRO365Type=$(echo "$veeamRbacRoleOperatorUrl" | jq --raw-output ".[$arrayRbacRolesOperators].group.type")
+            #echo "veeam_office365_rbac_operators,organization=$organization,rbacRoleName=$rbacRoleName,type=$rbacRoleScope365Type,rbacROName=$rbacROName,rbacRO365Name=$rbacRO365Name rbacRoleAdminId=$arrayRbacRolesOperators"
+            curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_office365_rbac_operators,organization=$organization,rbacRoleName=$rbacRoleName,type=$rbacRO365Type,rbacROName=$rbacROName,rbacRO365Name=$rbacRO365Name rbacRoleAdminId=$arrayRbacRolesOperators"
+        ;;
+        esac
+        arrayRbacRolesOperators=$arrayRbacRolesOperators+1
+    done
+
+    ## Check the RBAC Selected Items per Role
+    veeamVBOUrl="$veeamRestServer:$veeamRestPort/v6/RbacRoles/$rbacRoleId/selectedItems"
+    veeamRbacRoleUrlScope=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
+    
+    declare -i arrayRbacRolesScope=0
+    for id in $(echo "$veeamRbacRoleUrlScope" | jq -r '.[].type'); do
+        rbacRoleScopeType=$(echo "$veeamRbacRoleUrlScope" | jq --raw-output ".[$arrayRbacRolesScope].type")
+
+        case $rbacRoleScopeType in
+        User)
+            rbacRoleScopeName=$(echo "$veeamRbacRoleUrlScope" | jq --raw-output ".[$arrayRbacRolesScope].user.displayName" | awk '{gsub(/ /,"\\ ");print}')
+            rbacRoleScope365Name=$(echo "$veeamRbacRoleUrlScope" | jq --raw-output ".[$arrayRbacRolesScope].user.name" | awk '{gsub(/ /,"\\ ");print}')
+            #echo "veeam_office365_rbac_scope,organization=$organization,rbacRoleName=$rbacRoleName,type=User,rbacRoleScopeName=$rbacRoleScopeName,rbacRoleScope365Name=$rbacRoleScope365Name rbacRoleScopeId=$arrayRbacRoles"
+            curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_office365_rbac_scope,organization=$organization,rbacRoleName=$rbacRoleName,type=User,rbacRoleScopeName=$rbacRoleScopeName,rbacRoleScope365Name=$rbacRoleScope365Name rbacRoleScopeId=$arrayRbacRoles"
+        ;;
+        Group)
+            rbacRoleScopeName=$(echo "$veeamRbacRoleUrlScope" | jq --raw-output ".[$arrayRbacRolesScope].group.displayName" | awk '{gsub(/ /,"\\ ");print}')
+            rbacRoleScope365Name=$(echo "$veeamRbacRoleUrlScope" | jq --raw-output ".[$arrayRbacRolesScope].group.name" | awk '{gsub(/ /,"\\ ");print}')
+            rbacRoleScope365Type=$(echo "$veeamRbacRoleUrlScope" | jq --raw-output ".[$arrayRbacRolesScope].group.type")
+            #echo "veeam_office365_rbac_scope,organization=$organization,rbacRoleName=$rbacRoleName,type=$rbacRoleScope365Type,rbacRoleScopeName=$rbacRoleScopeName,rbacRoleScope365Name=$rbacRoleScope365Name rbacRoleScopeId=$arrayRbacRoles"
+            curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_office365_rbac_scope,organization=$organization,rbacRoleName=$rbacRoleName,type=$rbacRoleScope365Type,rbacRoleScopeName=$rbacRoleScopeName,rbacRoleScope365Name=$rbacRoleScope365Name rbacRoleScopeId=$arrayRbacRoles"
+        ;;
+        Site)
+            rbacRoleScopeName=$(echo "$veeamRbacRoleUrlScope" | jq --raw-output ".[$arrayRbacRolesScope].site.title" | awk '{gsub(/ /,"\\ ");print}')
+            #echo "veeam_office365_rbac_scope,organization=$organization,rbacRoleName=$rbacRoleName,type=Site,rbacRoleScopeName=$rbacRoleScopeName,rbacRoleScope365Name=$rbacRoleScopeName rbacRoleScopeId=$arrayRbacRoles"
+            curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_office365_rbac_scope,organization=$organization,rbacRoleName=$rbacRoleName,type=Site,rbacRoleScopeName=$rbacRoleScopeName,rbacRoleScope365Name=$rbacRoleScopeName rbacRoleScopeId=$arrayRbacRoles"
+        ;;
+        esac
+        arrayRbacRolesScope=$arrayRbacRolesScope+1
+    done
+    #echo "veeam_office365_rbac_roles,organization=$organization,rbacRoleId=$rbacRoleId,rbacRoleName=$rbacRoleName,rbacRoleDescription=$rbacRoleDescription,rbacRoleType=$rbacRoleType rbacRoleAdminId=$arrayRbacRoles"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_office365_rbac_roles,organization=$organization,rbacRoleId=$rbacRoleId,rbacRoleName=$rbacRoleName,rbacRoleDescription=$rbacRoleDescription,rbacRoleType=$rbacRoleType rbacRoleAdminId=$arrayRbacRoles"
+    arrayRbacRoles=$arrayRbacRoles+1
 done
