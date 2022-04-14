@@ -21,7 +21,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "8.3.1"
+      "version": "8.4.4"
     },
     {
       "type": "datasource",
@@ -85,7 +85,7 @@
   "gnetId": 12204,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1639131811443,
+  "iteration": 1649343635888,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -105,7 +105,7 @@
         "content": "<a href=\"https://www.veeam.com/backup-azure.html\" target=\"_blank\"><img src=\"https://www.jorgedelacruz.es/VCB_product_icon.svg\" alt=\"drawing\" width=\"50\"/></a>\n\n",
         "mode": "html"
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "groupBy": [
@@ -227,7 +227,7 @@
         "text": {},
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "alias": "Total Policies",
@@ -419,7 +419,7 @@
         },
         "textMode": "name"
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "alias": "Version $tag_version",
@@ -527,7 +527,7 @@
         },
         "textMode": "name"
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "alias": "License: $tag_LicenseType",
@@ -588,6 +588,13 @@
           "color": {
             "mode": "palette-classic"
           },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -630,7 +637,7 @@
                 "color": {
                   "fixed": "dark-red"
                 },
-                "opacity": 0.6,
+                "opacity": 0.5,
                 "rotation": {
                   "fixed": 0,
                   "max": 360,
@@ -640,34 +647,26 @@
                 "size": {
                   "field": "Unprotected VMs",
                   "fixed": 5,
-                  "max": 10,
-                  "min": 4
+                  "max": 8,
+                  "min": 5
                 },
                 "symbol": {
                   "fixed": "img/icons/marker/circle.svg",
                   "mode": "fixed"
                 },
-                "text": {
-                  "field": "VMRegion",
-                  "fixed": "",
-                  "mode": "field"
-                },
                 "textConfig": {
-                  "fontSize": 10,
-                  "offsetX": -15,
+                  "fontSize": 12,
+                  "offsetX": 0,
                   "offsetY": 0,
-                  "textAlign": "right",
+                  "textAlign": "center",
                   "textBaseline": "middle"
                 }
               }
             },
             "location": {
-              "geohash": "geohash",
-              "latitude": "Unprotected VMs",
-              "longitude": "Unprotected VMs",
-              "mode": "auto"
+              "mode": "geohash"
             },
-            "name": "Layer 1",
+            "name": "Unprotected VMs",
             "type": "markers"
           }
         ],
@@ -679,7 +678,7 @@
           "zoom": 3
         }
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "alias": "$tag_geohash",
@@ -868,7 +867,8 @@
           "values": false
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
@@ -1036,7 +1036,8 @@
           "placement": "right"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.3.0",
@@ -1276,7 +1277,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "alias": "$tag_sessionPolicyName",
@@ -1445,7 +1446,7 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "alias": "",
@@ -1610,7 +1611,7 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "alias": "",
@@ -1798,7 +1799,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "alias": "",
@@ -1983,7 +1984,7 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "alias": "",
@@ -2169,10 +2170,10 @@
           ],
           "show": false
         },
-        "frameIndex": 0,
+        "frameIndex": 1,
         "showHeader": true
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "alias": "",
@@ -2242,6 +2243,10 @@
       "transformations": [
         {
           "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "merge",
           "options": {}
         },
         {
@@ -2361,7 +2366,7 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "alias": "",
@@ -2437,6 +2442,10 @@
       "transformations": [
         {
           "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "merge",
           "options": {}
         },
         {
@@ -2595,7 +2604,7 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "alias": "",
@@ -2749,7 +2758,7 @@
         "content": "<a href=\"https://www.jorgedelacruz.es\"><img src=\"https://www.jorgedelacruz.es/wp-content/uploads/2019/04/jorgedelacruz-banner_2efede4ef704c939e63a3763231f5961.png\"></a>\n\n\n\n",
         "mode": "html"
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "groupBy": [
@@ -2792,7 +2801,7 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 33,
+  "schemaVersion": 35,
   "style": "dark",
   "tags": [
     "veeam",
@@ -2896,7 +2905,7 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {
@@ -2916,6 +2925,6 @@
   "timezone": "",
   "title": "Grafana Dashboard for Veeam Backup for AWS",
   "uid": "mnwmhVbGk",
-  "version": 24,
+  "version": 29,
   "weekStart": ""
 }

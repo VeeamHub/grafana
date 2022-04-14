@@ -9,7 +9,7 @@
 ##      .Notes
 ##      NAME:  veeam_aws.sh
 ##      ORIGINAL NAME: veeam_aws.sh
-##      LASTEDIT: 15/12/2021
+##      LASTEDIT: 14/04/2022
 ##      VERSION: 4.0
 ##      KEYWORDS: Veeam, InfluxDB, Grafana
    
@@ -64,7 +64,7 @@ veeamVBAOverviewUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamB
 ##
 # Veeam Backup for AWS Instances. This part will check VBA and report all the protected Instances
 ##
-veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/virtualMachines?ProtectionStatus=Protected"
+veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/virtualMachines?ProtectedByPolicy=Protected"
 veeamVBAInstancesUrl=$(curl -X GET $veeamVBAURL -H "Authorization: Bearer $veeamBearer" -H "x-api-version: 1.2-rev0" -H  "accept: application/json" 2>&1 -k --silent)
 
 declare -i arrayinstances=0
@@ -76,14 +76,17 @@ for id in $(echo "$veeamVBAInstancesUrl" | jq -r '.results[].id'); do
     VMSize=$(echo "$veeamVBAInstancesUrl" | jq --raw-output ".results[$arrayinstances].instanceSizeGigabytes")
     VMType=$(echo "$veeamVBAInstancesUrl" | jq --raw-output ".results[$arrayinstances].instanceType")    
     VMRegion=$(echo "$veeamVBAInstancesUrl" | jq --raw-output ".results[$arrayinstances].region.name")
+    VMBackup=$(echo "$veeamVBAInstancesUrl" | jq --raw-output ".results[$arrayinstances].backupState")
+    if [ "$VMBackup" == "Protected" ]; then declare -i VMBackup="1"; 
+    elif [ "$VMBackup" == "Unprotected" ]; then declare -i VMBackup="2"; fi
         
     veeamVBAVMURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/policies?virtualMachineId=$veeamVBAInstanceId&usn=0&offset=0&limit=30"
     veeamVBAInstancesPolicyUrl=$(curl -X GET $veeamVBAVMURL -H "Authorization: Bearer $veeamBearer" -H  "accept: application/json" 2>&1 -k --silent)
     VMPolicy=$(echo "$veeamVBAInstancesPolicyUrl" | jq --raw-output ".results[0].name")   
     
-    #echo "veeam_aws_vm,VMID=$VMID,VMName=$VMName,VMResourceId=$VMResourceID,VMType=$VMType,VMPolicy=$VMPolicy,VMRegion=$VMRegion VMSize=$VMSize"
+    #echo "veeam_aws_vm,VMID=$VMID,VMName=$VMName,VMResourceId=$VMResourceID,VMType=$VMType,VMPolicy=$VMPolicy,VMRegion=$VMRegion VMSize=$VMSize,VMBackup=$VMBackup"
     echo "Writing veeam_aws_vm to InfluxDB"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm,VMID=$VMID,VMName=$VMName,VMResourceId=$VMResourceID,VMType=$VMType,VMPolicy=$VMPolicy,VMRegion=$VMRegion VMSize=$VMSize"
+    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_aws_vm,VMID=$VMID,VMName=$VMName,VMResourceId=$VMResourceID,VMType=$VMType,VMPolicy=$VMPolicy,VMRegion=$VMRegion VMSize=$VMSize,VMBackup=$VMBackup"
     
     # Restore Points per Instance
     veeamVBAURL="$veeamBackupAWSServer:$veeamBackupAWSPort/api/v1/virtualMachines/restorePoints?VirtualMachineId=$VMID&onlyLatest=False"
