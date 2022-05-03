@@ -1,0 +1,793 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDB",
+      "label": "InfluxDB",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "__elements": [],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "8.5.1"
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "logs",
+      "name": "Logs",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "piechart",
+      "name": "Pie chart",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Grafana Dashboard for Veeam Backup for Microsoft 365 Audit Restores",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "iteration": 1651587599929,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "Pie chart with a detailed number of Restore Operations per Restore Operator, or Restore Administrator",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "displayName": "${__field.labels.vb365_restoresession_initiatedby}",
+          "mappings": [],
+          "min": 0,
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 10,
+        "x": 0,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "displayLabels": [
+          "value"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "values": [
+            "value"
+          ]
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_m365_auditrestore\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"vb365_restoresession_result\")\r\n  |> filter(fn: (r) => r[\"vb365_restoresession_initiatedby\"] =~ /${VB365Initiated:regex}/)\r\n  |> group(columns: [\"vb365_restoresession_initiatedby\"])\r\n  |> count()\r\n  |> yield(name: \"count\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Restore Operations per Administrator",
+      "transformations": [],
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "The last 7 days restores per Microsoft 365 Service. For example, Exchange Online, SharePoint, etc.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisGridShow": true,
+            "axisLabel": "Restores per Application",
+            "axisPlacement": "auto",
+            "axisSoftMin": 0,
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 77,
+            "gradientMode": "hue",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 0,
+            "pointSize": 6,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "always",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "displayName": "${__field.labels.vb365_restoresession_type}",
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Veod"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#854085",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "OneDrive Restores"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Vesp"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#038387",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "SharePoint Restores"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Vet"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#4052ab",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Teams Restores"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Vex"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#0078d4",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Exchange Restores"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 14,
+        "x": 10,
+        "y": 0
+      },
+      "hideTimeOverride": false,
+      "id": 5,
+      "interval": "24h",
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.5.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_m365_auditrestore\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"vb365_restoresession_result\")\r\n  |> group(columns: [\"vb365_restoresession_type\"])\r\n    |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")\r\n",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "7d",
+      "title": "Restore Operations per Microsoft Service",
+      "transformations": [],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "Table with high-level details of every Restore Operation Session, and includes Initiated By, IP, Scope, etc.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "filterable": false,
+            "inspect": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "1": {
+                  "color": "dark-green",
+                  "index": 0,
+                  "text": "Success"
+                },
+                "2": {
+                  "color": "dark-yellow",
+                  "index": 1,
+                  "text": "Warning"
+                },
+                "3": {
+                  "color": "dark-red",
+                  "index": 2,
+                  "text": "Error"
+                },
+                "Veod": {
+                  "index": 4,
+                  "text": "OneDrive Restore"
+                },
+                "Vesp": {
+                  "index": 6,
+                  "text": "SharePoint Restore"
+                },
+                "Vet": {
+                  "index": 7,
+                  "text": "Teams Restore"
+                },
+                "Vex": {
+                  "index": 5,
+                  "text": "Exchange Restore"
+                },
+                "null": {
+                  "index": 3,
+                  "text": "Not Specified"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Start Time"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 150
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Intiator"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 300
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "color-background"
+              },
+              {
+                "id": "custom.width",
+                "value": 120
+              },
+              {
+                "id": "custom.align",
+                "value": "center"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Microsoft 365 Organization"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 250
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Scope"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 300
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 2,
+      "options": {
+        "footer": {
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Start Time"
+          }
+        ]
+      },
+      "pluginVersion": "8.5.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_m365_auditrestore\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"vb365_restoresession_result\")\r\n  |> filter(fn: (r) => r[\"vb365_organization\"] =~ /${VB365Org:regex}/)\r\n  |> filter(fn: (r) => r[\"vb365_restoresession_type\"] =~ /${VB365Type:regex}/)\r\n  |> filter(fn: (r) => r[\"vb365_restoresession_initiatedby\"] =~ /${VB365Initiated:regex}/)\r\n  |> filter(fn: (r) => r[\"vb365_restoresession_clienthost\"] =~ /${VB365AdminIP:regex}/)\r\n  |> group(columns: [\"vb365_restoresession_id\"])\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Restore Operations Audit",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "_field": true,
+              "_measurement": true,
+              "_start": true,
+              "_stop": true,
+              "vb365_organization": true,
+              "vb365_restoresession_details": false,
+              "vb365_restoresession_id": true,
+              "vb365_restoresession_name": true,
+              "vb365_restoresession_scope": false,
+              "vb365_restoresession_state": true,
+              "vb365_restoresession_type": false
+            },
+            "indexByName": {
+              "_field": 0,
+              "_measurement": 1,
+              "_start": 4,
+              "_stop": 5,
+              "_time": 8,
+              "_value": 14,
+              "vb365_organization": 6,
+              "vb365_restoresession_clienthost": 12,
+              "vb365_restoresession_details": 13,
+              "vb365_restoresession_id": 2,
+              "vb365_restoresession_initiatedby": 9,
+              "vb365_restoresession_name": 7,
+              "vb365_restoresession_reason": 15,
+              "vb365_restoresession_scope": 10,
+              "vb365_restoresession_state": 3,
+              "vb365_restoresession_type": 11
+            },
+            "renameByName": {
+              "_time": "Start Time",
+              "_value": "Status",
+              "vb365_organization": "Microsoft 365 Organization",
+              "vb365_restoresession_clienthost": "Session IP",
+              "vb365_restoresession_details": "Items Processed",
+              "vb365_restoresession_initiatedby": "Intiator",
+              "vb365_restoresession_name": "Type",
+              "vb365_restoresession_reason": "Reason",
+              "vb365_restoresession_scope": "Scope",
+              "vb365_restoresession_type": "Restore Type"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "Log view with low-level details of every Restore Operation Session, and includes Initiated By, IP, Scope, etc.",
+      "gridPos": {
+        "h": 13,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "id": 6,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "8.5.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_m365_auditrestore_event\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"vb365_restoresession_event_SizeBytes\")\r\n  |> filter(fn: (r) => r[\"vb365_organization\"] =~ /${VB365Org:regex}/)\r\n  |> filter(fn: (r) => r[\"vb365_restoresession_type\"] =~ /${VB365Type:regex}/)\r\n  |> filter(fn: (r) => r[\"vb365_restoresession_initiatedby\"] =~ /${VB365Initiated:regex}/)\r\n  |> filter(fn: (r) => r[\"vb365_restoresession_clienthost\"] =~ /${VB365AdminIP:regex}/)\r\n  |> filter(fn: (r) => r[\"vb365_restoresession_event_type\"] =~ /${VB365EventType:regex}/)\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Restore Operations Audit - Extended level",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": false,
+              "_field": true,
+              "_measurement": true,
+              "_start": true,
+              "_stop": true,
+              "vb365_organization": true,
+              "vb365_restoresession_clienthost": false,
+              "vb365_restoresession_details": true,
+              "vb365_restoresession_event_SizeBytes": false,
+              "vb365_restoresession_event_itemtype": false,
+              "vb365_restoresession_event_message": false,
+              "vb365_restoresession_event_source": false,
+              "vb365_restoresession_event_target": false,
+              "vb365_restoresession_event_title": false,
+              "vb365_restoresession_event_type": false,
+              "vb365_restoresession_id": true,
+              "vb365_restoresession_name": false,
+              "vb365_restoresession_reason": true,
+              "vb365_restoresession_scope": false,
+              "vb365_restoresession_state": true,
+              "vb365_restoresession_type": false
+            },
+            "indexByName": {
+              "Time": 2,
+              "vb365_organization": 1,
+              "vb365_restoresession_clienthost": 5,
+              "vb365_restoresession_details": 17,
+              "vb365_restoresession_event_SizeBytes": 11,
+              "vb365_restoresession_event_itemtype": 6,
+              "vb365_restoresession_event_message": 12,
+              "vb365_restoresession_event_source": 8,
+              "vb365_restoresession_event_target": 9,
+              "vb365_restoresession_event_title": 10,
+              "vb365_restoresession_event_type": 7,
+              "vb365_restoresession_id": 0,
+              "vb365_restoresession_initiatedby": 4,
+              "vb365_restoresession_name": 3,
+              "vb365_restoresession_reason": 13,
+              "vb365_restoresession_scope": 14,
+              "vb365_restoresession_state": 15,
+              "vb365_restoresession_type": 16
+            },
+            "renameByName": {
+              "Time": "Start Time",
+              "_time": "Start Time",
+              "_value": "Transferred Bytes",
+              "vb365_organization": "Microsoft 365 Organization",
+              "vb365_restoresession_clienthost": "Session IP",
+              "vb365_restoresession_details": "Items Processed",
+              "vb365_restoresession_event_itemtype": "Item Type",
+              "vb365_restoresession_event_message": "1",
+              "vb365_restoresession_event_source": "Source",
+              "vb365_restoresession_event_target": "Target",
+              "vb365_restoresession_event_title": "Operation Result",
+              "vb365_restoresession_event_type": "Detailed Restore Type",
+              "vb365_restoresession_initiatedby": "Intiator",
+              "vb365_restoresession_name": "Type",
+              "vb365_restoresession_reason": "Reason",
+              "vb365_restoresession_scope": "Scope",
+              "vb365_restoresession_type": "Restore Type"
+            }
+          }
+        }
+      ],
+      "type": "logs"
+    }
+  ],
+  "schemaVersion": 36,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_m365_auditrestore\")\r\n  |> keep(columns: [\"vb365_organization\"])\r\n  |> distinct(column: \"vb365_organization\")\r\n  |> group()",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Microsoft Organization",
+        "multi": true,
+        "name": "VB365Org",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_m365_auditrestore\")\r\n  |> keep(columns: [\"vb365_organization\"])\r\n  |> distinct(column: \"vb365_organization\")\r\n  |> group()",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_m365_auditrestore\")\r\n  |> keep(columns: [\"vb365_restoresession_type\"])\r\n  |> distinct(column: \"vb365_restoresession_type\")\r\n  |> group()",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Restore Type",
+        "multi": true,
+        "name": "VB365Type",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_m365_auditrestore\")\r\n  |> keep(columns: [\"vb365_restoresession_type\"])\r\n  |> distinct(column: \"vb365_restoresession_type\")\r\n  |> group()",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_m365_auditrestore\")\r\n  |> keep(columns: [\"vb365_restoresession_initiatedby\"])\r\n  |> distinct(column: \"vb365_restoresession_initiatedby\")\r\n  |> group()",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Restore Admin",
+        "multi": true,
+        "name": "VB365Initiated",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_m365_auditrestore\")\r\n  |> keep(columns: [\"vb365_restoresession_initiatedby\"])\r\n  |> distinct(column: \"vb365_restoresession_initiatedby\")\r\n  |> group()",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_m365_auditrestore\")\r\n  |> keep(columns: [\"vb365_restoresession_clienthost\"])\r\n  |> distinct(column: \"vb365_restoresession_clienthost\")\r\n  |> group()",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Restore Session IP",
+        "multi": true,
+        "name": "VB365AdminIP",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_m365_auditrestore\")\r\n  |> keep(columns: [\"vb365_restoresession_clienthost\"])\r\n  |> distinct(column: \"vb365_restoresession_clienthost\")\r\n  |> group()",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_m365_auditrestore_event\")\r\n  |> keep(columns: [\"vb365_restoresession_event_type\"])\r\n  |> distinct(column: \"vb365_restoresession_event_type\")\r\n  |> group()",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Restore Event Type",
+        "multi": true,
+        "name": "VB365EventType",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_m365_auditrestore_event\")\r\n  |> keep(columns: [\"vb365_restoresession_event_type\"])\r\n  |> distinct(column: \"vb365_restoresession_event_type\")\r\n  |> group()",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-90d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Grafana Dashboard for Veeam Backup for Microsoft 365 Audit Restores",
+  "uid": "06i7-I_nz",
+  "version": 9,
+  "weekStart": ""
+}
