@@ -1,0 +1,2212 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDB",
+      "label": "InfluxDB",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "__elements": [],
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "geomap",
+      "name": "Geomap",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "8.3.2"
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "piechart",
+      "name": "Pie chart",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Grafana Dashboard for Veeam Backup for Google Cloud Platform v2 -  (Grafana 8.x / InfluxDB v2.x)",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "gnetId": 12204,
+  "graphTooltip": 0,
+  "id": null,
+  "iteration": 1640725809450,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 1,
+        "x": 0,
+        "y": 0
+      },
+      "id": 28,
+      "options": {
+        "content": "<a href=\"https://www.veeam.com/google-cloud-backup.html\" target=\"_blank\"><img src=\"https://www.jorgedelacruz.es/VCB_product_icon.svg\" alt=\"drawing\" width=\"50\"/></a>\n\n",
+        "mode": "html"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#135f4b",
+            "mode": "fixed"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#135f4b",
+                "value": null
+              }
+            ]
+          },
+          "unit": "locale"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total Policies"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total Repositories"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total Instances"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total Protected VMs"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 15,
+        "x": 1,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "alias": "Total Policies",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_azure_overview",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "  from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_overview\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Policies\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Policies"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Total Repositories",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_azure_overview",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "  from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"Repositories\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Repositories"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Total Instances",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_azure_overview",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "  from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"VMs\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "VMs"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Total Protected VMs",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_azure_overview",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "  from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"VMsProtected\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "VMsProtected"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "displayName": "Veeam for GCP version: ${__field.labels.version}",
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#135f4b",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      },
+      "id": 22,
+      "links": [],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {
+          "valueSize": 30
+        },
+        "textMode": "name"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "alias": "Version $tag_version",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "version"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_azure_overview",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "  from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"Policies\")\r\n  |> group(columns: [\"version\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Policies"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "description": "On this Map, you can quickly know which VMs are not Protected by Veeam Backup for GCP. \nWith a simple, yet powerful view, you can understand and try to mitigate the red spots.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#C4162A",
+                "value": null
+              },
+              {
+                "color": "#C4162A",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 16,
+        "w": 12,
+        "x": 0,
+        "y": 2
+      },
+      "id": 8,
+      "maxDataPoints": 1,
+      "options": {
+        "basemap": {
+          "name": "Basemap",
+          "type": "default"
+        },
+        "controls": {
+          "mouseWheelZoom": false,
+          "showAttribution": false,
+          "showDebug": false,
+          "showScale": false,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "showLegend": true,
+              "style": {
+                "color": {
+                  "fixed": "dark-red"
+                },
+                "opacity": 0.4,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "field": "Unprotected VMs",
+                  "fixed": 5,
+                  "max": 10,
+                  "min": 5
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "text": {
+                  "field": "VMRegion",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": -10,
+                  "offsetY": -5,
+                  "textAlign": "right",
+                  "textBaseline": "top"
+                }
+              }
+            },
+            "name": "Layer 1",
+            "type": "markers"
+          }
+        ],
+        "view": {
+          "id": "coords",
+          "lat": 39.943392,
+          "lon": -39.543707,
+          "zoom": 3
+        }
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "alias": "$tag_geohash",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "geohash"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "VMRegion"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_azure_vm_unprotected",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "  from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_vm_unprotected\")\r\n  |> keep(columns: [\"VMName\",\"geohash\",\"VMRegion\"])\r\n  |> distinct(column: \"VMName\")\r\n  |> group(columns: [\"geohash\",\"VMRegion\"])\r\n  |> count()",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "UPVM"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "metric"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Unprotected VMs",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "keepLabels": [
+              "VMRegion",
+              "geohash"
+            ]
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "VMID": true,
+              "VMRegion": false,
+              "_field": true,
+              "_measurement": true,
+              "_time": true,
+              "serverName": true
+            },
+            "indexByName": {},
+            "renameByName": {
+              "_time": "",
+              "_value": "Unprotected VMs",
+              "geohash": "geohash"
+            }
+          }
+        }
+      ],
+      "type": "geomap"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "VMsProtected"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#37872D",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Protected Workloads"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TotalVMs"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#C4162A",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Unprotected Workloads"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 4,
+        "x": 12,
+        "y": 2
+      },
+      "id": 30,
+      "links": [],
+      "maxDataPoints": 3,
+      "options": {
+        "displayLabels": [
+          "value",
+          "name"
+        ],
+        "legend": {
+          "calcs": [],
+          "displayMode": "hidden",
+          "placement": "right",
+          "values": [
+            "value"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "alias": "Protected VMs",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_azure_vm_protected",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"VMsProtected\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")\r\n",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "TotalVMs"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Unprotected VMs",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_azure_vm_unprotected",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_vm_unprotected\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"TotalVMs\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "TotalVMs"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Protected VMs Overview",
+      "type": "piechart"
+    },
+    {
+      "description": "On this Panel, you can quickly know how much time did a Backup, or Snapshot Policy take. You can quickly filter by Policy Name on the top menu.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "Job Duration",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "points",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 8,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "always",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "displayName": "${__field.labels.sessionPolicyName} (${__field.labels.sessionType})",
+          "links": [],
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 16,
+        "y": 2
+      },
+      "hideTimeOverride": false,
+      "id": 19,
+      "interval": "",
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "hidden",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "alias": "$tag_sessionPolicyName - $tag_sessionType",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "sessionPolicyName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "sessionType"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_azure_sessions",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_sessions\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"sessionDuration\")\r\n  |> filter(fn: (r) => r[\"sessionType\"] =~ /${PolicyType:regex}/)\r\n  |> filter(fn: (r) => r[\"sessionPolicyName\"] =~ /${PolicyName:regex}/)\r\n  |> group(columns: [\"sessionPolicyName\",\"sessionType\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\n",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "sessionDuration"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "sessionType",
+              "operator": "=~",
+              "value": "/^$PolicyType$/"
+            },
+            {
+              "condition": "AND",
+              "key": "sessionPolicyName",
+              "operator": "=~",
+              "value": "/^$PolicyName$/"
+            }
+          ]
+        }
+      ],
+      "title": "Job Duration",
+      "type": "timeseries"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "center",
+            "displayMode": "color-background",
+            "filterable": true
+          },
+          "mappings": [
+            {
+              "options": {
+                "1": {
+                  "text": "Success"
+                },
+                "2": {
+                  "text": "Warning"
+                },
+                "3": {
+                  "text": "Failed"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "transparent",
+                "value": null
+              },
+              {
+                "color": "dark-green",
+                "value": 1
+              },
+              {
+                "color": "dark-orange",
+                "value": 2
+              },
+              {
+                "color": "dark-red",
+                "value": 3
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "auto"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Policy Name"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "auto"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Policy Type"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "auto"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 11
+      },
+      "hideTimeOverride": false,
+      "id": 17,
+      "links": [],
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "alias": "$tag_sessionPolicyName",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "sessionPolicyName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "sessionType"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_azure_sessions",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_sessions\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"sessionStatus\")\r\n  |> filter(fn: (r) => r[\"sessionType\"] =~ /${PolicyType:regex}/)\r\n  |> filter(fn: (r) => r[\"sessionPolicyName\"] =~ /${PolicyName:regex}/)\r\n  |> group(columns: [\"sessionPolicyName\",\"sessionType\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")\r\n",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "sessionStatus"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "sessionPolicyName",
+              "operator": "=~",
+              "value": "/^$PolicyName$/"
+            }
+          ]
+        }
+      ],
+      "title": "Job Historical Information",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "Time": 0,
+              "Value": 3,
+              "sessionPolicyName": 1,
+              "sessionType": 2
+            },
+            "renameByName": {
+              "Value": "Last Result",
+              "sessionPolicyName": "Policy Name",
+              "sessionType": "Policy Type"
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "Time"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "description": "On this Panel, you can quickly know which VMs are Protected by Veeam Backup for GCP. With all the needed details as VM Name, Instance Type, GCP Region, etc..",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "center",
+            "displayMode": "color-background",
+            "filterable": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 18
+      },
+      "id": 31,
+      "interval": "",
+      "links": [],
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "VMName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "VMRegion"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "VMType"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "VMOSType"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "VMprivateIP"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "veeam_azure_vm",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_vm\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"RestorePoints\")\r\n  |> group(columns: [\"VMName\",\"VMRegion\",\"VMType\"])\r\n  |> last()\r\n  ",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "VMSize"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "VM  Size"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [],
+          "tz": ""
+        }
+      ],
+      "title": "Protected VMs",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "VMID": true,
+              "VMPolicy": true,
+              "VMpublicIP": true,
+              "VMsubnet": true,
+              "VMvirtualNetwork": true,
+              "_field": true,
+              "_measurement": true,
+              "_start": true,
+              "_stop": true,
+              "_time": true,
+              "serverName": true
+            },
+            "indexByName": {
+              "VMID": 6,
+              "VMName": 0,
+              "VMOSType": 1,
+              "VMPolicy": 7,
+              "VMRegion": 3,
+              "VMType": 2,
+              "VMprivateIP": 5,
+              "VMpublicIP": 8,
+              "VMsubnet": 9,
+              "VMvirtualNetwork": 10,
+              "_field": 11,
+              "_measurement": 12,
+              "_start": 14,
+              "_stop": 15,
+              "_time": 16,
+              "_value": 4,
+              "serverName": 13
+            },
+            "renameByName": {
+              "Time": "",
+              "VM  Size": "Size",
+              "VMID": "",
+              "VMName": "VM Name",
+              "VMOSType": "VM OS",
+              "VMRegion": "Region",
+              "VMType": "Type",
+              "VMprivateIP": "Private IP",
+              "VMpublicIP": "Public IP",
+              "VMsubnet": "Subnet",
+              "_time": "",
+              "_value": "Restore Points"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "description": "On this Panel, you can quickly know which VMs are not Protected by Veeam Backup for GCP. With all the needed details as VM Name, GCP Region, and GCP Instance Type.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "center",
+            "displayMode": "color-background",
+            "filterable": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-red",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 18
+      },
+      "id": 26,
+      "interval": "",
+      "links": [],
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "VMName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "VMRegion"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "VMType"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "VMOSType"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "VMprivateIP"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "veeam_azure_vm_unprotected",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_vm_unprotected\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"RestorePoints\")\r\n  |> filter(fn: (r) => r[\"VMName\"] =~ /${VMName:regex}/)\r\n  |> group(columns: [\"VMName\",\"VMRegion\",\"VMType\"])\r\n  |> last()",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "VMSize"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "VM  Size"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "VMName",
+              "operator": "=~",
+              "value": "/^$VMName$/"
+            }
+          ],
+          "tz": ""
+        }
+      ],
+      "title": "Unprotected VMs",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "UPVM": true,
+              "VMID": true,
+              "VMpublicIP": true,
+              "VMsubnet": true,
+              "VMvirtualNetwork": true,
+              "_field": true,
+              "_measurement": true,
+              "_start": true,
+              "_stop": true,
+              "_time": true,
+              "_value": true,
+              "geohash": true,
+              "serverName": true
+            },
+            "indexByName": {
+              "VMID": 7,
+              "VMName": 0,
+              "VMOSType": 1,
+              "VMRegion": 3,
+              "VMType": 2,
+              "VMprivateIP": 5,
+              "VMpublicIP": 8,
+              "VMsubnet": 9,
+              "VMvirtualNetwork": 10,
+              "_field": 11,
+              "_measurement": 12,
+              "_start": 14,
+              "_stop": 15,
+              "_time": 6,
+              "_value": 4,
+              "serverName": 13
+            },
+            "renameByName": {
+              "Time": "",
+              "VM  Size": "Size",
+              "VMID": "",
+              "VMName": "VM Name",
+              "VMOSType": "VM OS",
+              "VMRegion": "Region",
+              "VMType": "Type",
+              "VMprivateIP": "Private IP",
+              "VMpublicIP": "Public IP",
+              "VMsubnet": "Subnet",
+              "_value": "Size"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "description": "On this Panel, you can quickly see all your Backup Repositories, with name, type, etc.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "center",
+            "displayMode": "color-background",
+            "filterable": true
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "index": 0,
+                  "text": "Empty"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#da5041",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Encryption"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "0": {
+                        "text": "False"
+                      },
+                      "1": {
+                        "text": "True"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 25
+      },
+      "id": 33,
+      "interval": "",
+      "links": [],
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "repoAccountName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "repoContainer"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "repoDescription"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "repoName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "RepositoryTier"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "veeam_azure_repositories",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_repositories\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"repoEncryption\")\r\n  |> group(columns: [\"repoAccountName\",\"repoContainer\",\"repoDescription\",\"repoName\",\"RepositoryTier\"])\r\n  |> last()",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "repoEncryption"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "Encryption"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "repoName",
+              "operator": "=~",
+              "value": "/^$Repository$/"
+            }
+          ],
+          "tz": ""
+        }
+      ],
+      "title": "Backup Repositories",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "ProjectID": true,
+              "_field": true,
+              "_measurement": true,
+              "_start": true,
+              "_stop": true,
+              "_time": true,
+              "repoAzureID": true,
+              "repoID": true,
+              "repoStatus": true,
+              "serverName": true
+            },
+            "indexByName": {
+              "ProjectID": 10,
+              "_field": 3,
+              "_measurement": 6,
+              "_start": 9,
+              "_stop": 8,
+              "_time": 7,
+              "_value": 2,
+              "repoAFolder": 12,
+              "repoBucketName": 11,
+              "repoDescription": 1,
+              "repoID": 4,
+              "repoName": 0,
+              "repoTier": 13,
+              "serverName": 5
+            },
+            "renameByName": {
+              "RepositoryTier": "Tier",
+              "_field": "",
+              "_value": "Encryption",
+              "repoAFolder": "Bucket Folder",
+              "repoAccountName": "Storage Account",
+              "repoAzureID": "",
+              "repoBucketName": "Bucket Name",
+              "repoContainer": "Storage Container",
+              "repoDescription": "Description",
+              "repoName": "Name",
+              "repoTier": "Storage Class"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "description": "On this Panel, you can quickly see your different Policies, the retention, if it has application-aware enabled, etc.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "center",
+            "displayMode": "color-background",
+            "filterable": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-purple",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 240
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Description"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 315
+              },
+              {
+                "id": "custom.align",
+                "value": "left"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 25
+      },
+      "id": 32,
+      "links": [],
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "PolicyName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "PolicyStatus"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "veeam_azure_policies",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_policies\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"PolicySnapshotCountDaily\")\r\n  |> filter(fn: (r) => r[\"PolicyName\"] =~ /${PolicyName:regex}/)\r\n  |> group(columns: [\"PolicyName\",\"_field\"])\r\n  |> last()",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "PolicyAppAware"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "Application-Aware"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "PolicyName",
+              "operator": "=~",
+              "value": "/^$PolicyName$/"
+            }
+          ],
+          "tz": ""
+        }
+      ],
+      "title": "Protection Policies",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "mode": "columns"
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "PolicyID": false,
+              "ProjectID": true,
+              "_field": true,
+              "_measurement": true,
+              "_start": true,
+              "_stop": true,
+              "_time": true,
+              "serverName": true
+            },
+            "indexByName": {
+              "PolicyDescription": 8,
+              "PolicyID": 9,
+              "PolicyName": 7,
+              "PolicyStatus": 10,
+              "ProjectID": 3,
+              "_field": 6,
+              "_measurement": 4,
+              "_start": 0,
+              "_stop": 1,
+              "_time": 2,
+              "_value": 11,
+              "serverName": 5
+            },
+            "renameByName": {
+              "PolicyDescription": "Description",
+              "PolicyID": "ID",
+              "PolicyName": "Name",
+              "PolicySnapshotCountDaily": "Daily",
+              "PolicySnapshotCountMonthly": "Monthly",
+              "PolicySnapshotCountWeekly": "Weekly",
+              "PolicyStatus": "Enabled",
+              "ProjectID": "",
+              "_value": "Daily Protection"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 5,
+        "x": 19,
+        "y": 31
+      },
+      "id": 10,
+      "options": {
+        "content": "<a href=\"https://www.jorgedelacruz.es\"><img src=\"https://www.jorgedelacruz.es/wp-content/uploads/2019/04/jorgedelacruz-banner_2efede4ef704c939e63a3763231f5961.png\"></a>\n\n\n\n",
+        "mode": "html"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "transparent": true,
+      "type": "text"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 33,
+  "style": "dark",
+  "tags": [
+    "veeam",
+    "vba",
+    "gcp",
+    "veeam gcp",
+    "veeam google"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_sessions\")\r\n  |> keep(columns: [\"sessionPolicyName\"])\r\n  |> distinct(column: \"sessionPolicyName\")\r\n  |> group()",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Policy Name",
+        "multi": true,
+        "name": "PolicyName",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_sessions\")\r\n  |> keep(columns: [\"sessionPolicyName\"])\r\n  |> distinct(column: \"sessionPolicyName\")\r\n  |> group()",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_vm_unprotected\")\r\n  |> filter(fn: (r) => r[\"VMName\"] != \"\")\r\n  |> keep(columns: [\"VMName\"])\r\n  |> distinct(column: \"VMName\")\r\n  |> group()",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Unprotected VM",
+        "multi": true,
+        "name": "VMName",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_vm_unprotected\")\r\n  |> filter(fn: (r) => r[\"VMName\"] != \"\")\r\n  |> keep(columns: [\"VMName\"])\r\n  |> distinct(column: \"VMName\")\r\n  |> group()",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_repositories\")\r\n  |> filter(fn: (r) => r[\"repoName\"] != \"\")\r\n  |> keep(columns: [\"repoName\"])\r\n  |> distinct(column: \"repoName\")\r\n  |> group()",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Backup Repository",
+        "multi": true,
+        "name": "Repository",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_repositories\")\r\n  |> filter(fn: (r) => r[\"repoName\"] != \"\")\r\n  |> keep(columns: [\"repoName\"])\r\n  |> distinct(column: \"repoName\")\r\n  |> group()",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_sessions\")\r\n  |> filter(fn: (r) => r[\"sessionType\"] != \"\")\r\n  |> keep(columns: [\"sessionType\"])\r\n  |> distinct(column: \"sessionType\")\r\n  |> group()",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Policy Type",
+        "multi": true,
+        "name": "PolicyType",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_gcp_sessions\")\r\n  |> filter(fn: (r) => r[\"sessionType\"] != \"\")\r\n  |> keep(columns: [\"sessionType\"])\r\n  |> distinct(column: \"sessionType\")\r\n  |> group()",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-2d",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "Grafana Dashboard for Veeam Backup for Google Cloud Platform",
+  "uid": "fTKdVGA7z",
+  "version": 3,
+  "weekStart": ""
+}
