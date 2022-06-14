@@ -9,7 +9,7 @@
 ##      .Notes
 ##      NAME:  veeam_microsoft365.sh
 ##      ORIGINAL veeam_microsoft365.sh
-##      LASTEDIT: 11/03/2022
+##      LASTEDIT: 14/06/2022
 ##      VERSION: 6.0
 ##      KEYWORDS: Veeam, InfluxDB, Grafana
    
@@ -177,36 +177,39 @@ for id in $(echo "$veeamJobsUrl" | jq -r '.[].id'); do
     veeamJobSessionsUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $veeamBearer" "$veeamVBOUrl" 2>&1 -k --silent)
     declare -i arrayJobsSessions=0
     for id in $(echo "$veeamJobSessionsUrl" | jq -r '.results[].id'); do
-      creationTime=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].creationTime")
-      creationTimeUnix=$(date -d "$creationTime" +"%s")
-      endTime=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].endTime")
-      endTimeUnix=$(date -d "$endTime" +"%s")
-      totalDuration=$(($endTimeUnix - $creationTimeUnix))
-      status=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].status")
-      case $status in
-        Success)
-            jobStatus="1"
-        ;;
-        Warning)
-            jobStatus="2"
-        ;;
-        Failed)
-            jobStatus="3"
-        ;;
-        esac
-      processingRate=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].statistics.processingRateBytesPS")
-      readRate=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].statistics.readRateBytesPS")
-      writeRate=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].statistics.writeRateBytesPS")
-      transferredData=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].statistics.transferredDataBytes")
-      processedObjects=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].statistics.processedObjects")
-      bottleneck=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].statistics.bottleneck")
+        status=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].status")
+        if [[ "$status" != "Running" ]]; then
+            creationTime=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].creationTime")
+            creationTimeUnix=$(date -d "$creationTime" +"%s")
+            endTime=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].endTime")
+            endTimeUnix=$(date -d "$endTime" +"%s")
+            totalDuration=$(($endTimeUnix - $creationTimeUnix))
       
-      #echo "veeam_office365_jobs,veeamjobname=$nameJob,bottleneck=$bottleneck totalDuration=$totalDuration,status=$jobStatus,processingRate=$processingRate,readRate=$readRate,writeRate=$writeRate,transferredData=$transferredData,processedObjects=$processedObjects $endTimeUnix"
-      curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_office365_jobs,veeamjobname=$nameJob,bottleneck=$bottleneck totalDuration=$totalDuration,status=$jobStatus,processingRate=$processingRate,readRate=$readRate,writeRate=$writeRate,transferredData=$transferredData,processedObjects=$processedObjects $endTimeUnix"
-    if [[ $arrayJobsSessions = "1000" ]]; then
-        break
-        else
+            case $status in
+                Success)
+                    jobStatus="1"
+                ;;
+                Warning)
+                    jobStatus="2"
+                ;;
+                Failed)
+                    jobStatus="3"
+                ;;
+            esac 
+            processingRate=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].statistics.processingRateBytesPS")
+            readRate=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].statistics.readRateBytesPS")
+            writeRate=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].statistics.writeRateBytesPS")
+            transferredData=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].statistics.transferredDataBytes")
+            processedObjects=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].statistics.processedObjects")
+            bottleneck=$(echo "$veeamJobSessionsUrl" | jq --raw-output ".results[$arrayJobsSessions].statistics.bottleneck")
+      
+            #echo "veeam_office365_jobs,veeamjobname=$nameJob,bottleneck=$bottleneck totalDuration=$totalDuration,status=$jobStatus,processingRate=$processingRate,readRate=$readRate,writeRate=$writeRate,transferredData=$transferredData,processedObjects=$processedObjects $endTimeUnix"
+            curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_office365_jobs,veeamjobname=$nameJob,bottleneck=$bottleneck totalDuration=$totalDuration,status=$jobStatus,processingRate=$processingRate,readRate=$readRate,writeRate=$writeRate,transferredData=$transferredData,processedObjects=$processedObjects $endTimeUnix"
+            if [[ $arrayJobsSessions = "1000" ]]; then
+                break
+            else
             arrayJobsSessions=$arrayJobsSessions+1
+        fi
     fi
     done
     arrayJobs=$arrayJobs+1
@@ -220,23 +223,26 @@ veeamRestoreSessionsUrl=$(curl -X GET --header "Accept:application/json" --heade
 
 declare -i arrayRestoreSessions=0
 for id in $(echo "$veeamRestoreSessionsUrl" | jq -r '.results[].id'); do
-    name=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].name")
-    nameJob=$(echo $name | awk -F": " '{print $2}' | awk -F" - " '{print $1}' | awk '{gsub(/ /,"\\ ");print}')
-    organization=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].organization" | awk '{gsub(/ /,"\\ ");print}') 
-    type=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].type")
-    endTime=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].endTime")
-    endTimeUnix=$(date -d "$endTime" +"%s")
-    result=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].result")
-    initiatedBy=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].initiatedBy")
-    details=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].details")
-    itemsProcessed=$(echo $details | awk '//{ print $1 }')
+    state=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].state")
+    if [[ "$state" != "Working" ]]; then
+        name=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].name")
+        nameJob=$(echo $name | awk -F": " '{print $2}' | awk -F" - " '{print $1}' | awk '{gsub(/ /,"\\ ");print}')
+        organization=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].organization" | awk '{gsub(/ /,"\\ ");print}') 
+        type=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].type")
+        creationTime=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].creationTime")
+        endTimeUnix=$(date -d "$creationTime" +"%s")
+        result=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].result")
+        initiatedBy=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].initiatedBy")
+        details=$(echo "$veeamRestoreSessionsUrl" | jq --raw-output ".results[$arrayRestoreSessions].details")
+        itemsProcessed=$(echo $details | awk '//{ print $1 }')
 
-    [[ ! -z "$itemsProcessed" ]] || itemsProcessed="0"
-    itemsSuccess=$(echo $details | awk '//{ print $4 }' | awk '{gsub(/\(|\)/,"");print $1}')
-    [[ ! -z "$itemsSuccess" ]] || itemsSuccess="0"
+        [[ ! -z "$itemsProcessed" ]] || itemsProcessed="0"
+        itemsSuccess=$(echo $details | awk '//{ print $4 }' | awk '{gsub(/\(|\)/,"");print $1}')
+        [[ ! -z "$itemsSuccess" ]] || itemsSuccess="0"
 
-    #echo "veeam_office365_restoresession,organization=$organization,veeamjobname=$nameJob,type=$type,result=$result,initiatedBy=$initiatedBy itemsProcessed=$itemsProcessed,itemsSuccess=$itemsSuccess $endTimeUnix"
-    curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_office365_restoresession,organization=$organization,veeamjobname=$nameJob,type=$type,result=$result,initiatedBy=$initiatedBy itemsProcessed=$itemsProcessed,itemsSuccess=$itemsSuccess $endTimeUnix"
+        #echo "veeam_office365_restoresession,organization=$organization,veeamjobname=$nameJob,type=$type,result=$result,initiatedBy=$initiatedBy itemsProcessed=$itemsProcessed,itemsSuccess=$itemsSuccess $endTimeUnix"
+        curl -i -XPOST "$veeamInfluxDBURL:$veeamInfluxDBPort/api/v2/write?org=$veeamInfluxDBOrg&bucket=$veeamInfluxDBBucket&precision=s" -H "Authorization: Token $veeamInfluxDBToken" --data-binary "veeam_office365_restoresession,organization=$organization,veeamjobname=$nameJob,type=$type,result=$result,initiatedBy=$initiatedBy itemsProcessed=$itemsProcessed,itemsSuccess=$itemsSuccess $endTimeUnix"
+    fi
     arrayRestoreSessions=$arrayRestoreSessions+1
 done
 
