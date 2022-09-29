@@ -3368,7 +3368,7 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 12,
+        "w": 24,
         "x": 0,
         "y": 41
       },
@@ -3565,7 +3565,7 @@
         "name": "organization",
         "options": [],
         "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_organization\")\r\n  |> keep(columns: [\"veeamOrgName\"])\r\n  |> distinct(column: \"veeamOrgName\")\r\n  |> group()",
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
@@ -3611,7 +3611,7 @@
         "name": "proxies",
         "options": [],
         "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_proxies\")\r\n  |> keep(columns: [\"proxies\"])\r\n  |> distinct(column: \"proxies\")\r\n  |> group()",
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
@@ -3634,7 +3634,7 @@
         "name": "objectstorage",
         "options": [],
         "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_objectstorage\")\r\n  |> keep(columns: [\"objectname\"])\r\n  |> distinct(column: \"objectname\")\r\n  |> group()\r\n",
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
@@ -3657,7 +3657,7 @@
         "name": "repository",
         "options": [],
         "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_repository\")\r\n  |> keep(columns: [\"repository\"])\r\n  |> distinct(column: \"repository\")\r\n  |> group()",
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
@@ -3680,7 +3680,7 @@
         "name": "rbacrole",
         "options": [],
         "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_rbac_roles\")\r\n  |> filter(fn: (r) => r[\"organization\"] =~ /${organization:regex}/)\r\n  |> keep(columns: [\"rbacRoleName\"])\r\n  |> distinct(column: \"rbacRoleName\")\r\n  |> group()\r\n",
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
@@ -3689,7 +3689,7 @@
     ]
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {
@@ -3720,6 +3720,6 @@
   "timezone": "browser",
   "title": "Grafana Dashboard for Veeam Backup for Microsoft 365",
   "uid": "AGZEYsbZk",
-  "version": 8,
+  "version": 10,
   "weekStart": ""
 }
