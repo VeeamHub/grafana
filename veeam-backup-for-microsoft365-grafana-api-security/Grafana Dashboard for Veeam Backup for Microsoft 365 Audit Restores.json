@@ -9,13 +9,13 @@
       "pluginName": "InfluxDB"
     }
   ],
-  "__elements": [],
+  "__elements": {},
   "__requires": [
     {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "8.5.1"
+      "version": "9.1.3"
     },
     {
       "type": "datasource",
@@ -75,8 +75,22 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1651587599929,
-  "links": [],
+  "links": [
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "includeVars": true,
+      "keepTime": true,
+      "tags": [
+        "veeam microsoft 365 audit"
+      ],
+      "targetBlank": true,
+      "title": "More dashboards",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
   "liveNow": false,
   "panels": [
     {
@@ -118,6 +132,7 @@
         "legend": {
           "displayMode": "table",
           "placement": "right",
+          "showLegend": true,
           "values": [
             "value"
           ]
@@ -161,6 +176,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisGridShow": true,
             "axisLabel": "Restores per Application",
             "axisPlacement": "auto",
@@ -302,7 +319,8 @@
             "sum"
           ],
           "displayMode": "table",
-          "placement": "right"
+          "placement": "right",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -320,7 +338,6 @@
           "refId": "A"
         }
       ],
-      "timeFrom": "7d",
       "title": "Restore Operations per Microsoft Service",
       "transformations": [],
       "type": "timeseries"
@@ -486,7 +503,7 @@
           }
         ]
       },
-      "pluginVersion": "8.5.1",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "datasource": {
@@ -673,9 +690,15 @@
       "type": "logs"
     }
   ],
-  "schemaVersion": 36,
+  "schemaVersion": 37,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "veeam",
+    "microsoft 365",
+    "audit restore operations",
+    "veeam microsoft 365",
+    "veeam microsoft 365 audit"
+  ],
   "templating": {
     "list": [
       {
@@ -781,13 +804,13 @@
     ]
   },
   "time": {
-    "from": "now-90d",
+    "from": "now-6M",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Grafana Dashboard for Veeam Backup for Microsoft 365 Audit Restores",
   "uid": "06i7-I_nz",
-  "version": 9,
+  "version": 13,
   "weekStart": ""
 }

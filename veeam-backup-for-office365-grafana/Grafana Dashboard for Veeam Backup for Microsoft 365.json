@@ -9,7 +9,7 @@
       "pluginName": "InfluxDB"
     }
   ],
-  "__elements": [],
+  "__elements": {},
   "__requires": [
     {
       "type": "panel",
@@ -27,7 +27,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "8.3.3"
+      "version": "9.1.3"
     },
     {
       "type": "datasource",
@@ -64,7 +64,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -85,15 +88,29 @@
   "gnetId": 11286,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1647037429761,
-  "links": [],
+  "links": [
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "includeVars": true,
+      "keepTime": true,
+      "tags": [
+        "veeam microsoft 365 audit"
+      ],
+      "targetBlank": true,
+      "title": "More dashboards",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
   "liveNow": false,
   "panels": [
     {
       "collapsed": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "InfluxDB"
       },
       "gridPos": {
         "h": 1,
@@ -103,6 +120,15 @@
       },
       "id": 61,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "InfluxDB"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Overview",
       "type": "row"
     },
@@ -124,11 +150,24 @@
         "content": "<span style=\"color:#fff; font-family: 'Lato'; font-size: 2.1em;\">Veeam Backup for Microsoft 365</span><br/>\r\n<span style=\"color:#fff; font-family: 'Lato'; font-size: 2em;\">Installed version: $version</span>",
         "mode": "markdown"
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "9.1.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "refId": "A"
+        }
+      ],
       "transparent": true,
       "type": "text"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "decimals": 0,
@@ -187,7 +226,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "",
@@ -243,6 +282,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "decimals": 0,
@@ -301,7 +344,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "datasource": {
@@ -356,6 +399,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "decimals": 0,
@@ -414,7 +461,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "",
@@ -464,6 +511,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "decimals": 2,
@@ -520,7 +571,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "datasource": {
@@ -569,6 +620,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "decimals": 0,
@@ -627,7 +682,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "datasource": {
@@ -682,6 +737,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "Veeam Backup for Microsoft 365 provides users with the ability to explore and restore data from backups by themselves or delegate this task to restore operators.\n",
       "fieldConfig": {
         "defaults": {
@@ -754,7 +813,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "",
@@ -805,6 +864,10 @@
     },
     {
       "collapsed": false,
+      "datasource": {
+        "type": "influxdb",
+        "uid": "gK_s8WTMk"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -813,10 +876,23 @@
       },
       "id": 227,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "gK_s8WTMk"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Self-Service Portal, and Restore Operators Security",
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "In the operator restore scenario, Veeam Backup for Microsoft 365 administrators must add restore operator roles. Inside the Roles, we have the Restore Operators, this is a list with all the Restore Operators, use the variable on the top to change between the different Roles.",
       "fieldConfig": {
         "defaults": {
@@ -827,7 +903,8 @@
           "custom": {
             "align": "auto",
             "displayMode": "color-background",
-            "filterable": true
+            "filterable": true,
+            "inspect": false
           },
           "decimals": 0,
           "mappings": [],
@@ -880,7 +957,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "$tag_veeamjobname",
@@ -1049,6 +1126,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "Restore operators will be able to explore and restore backed-up data of the objects listed on this table using Restore Portal.",
       "fieldConfig": {
         "defaults": {
@@ -1059,7 +1140,8 @@
           "custom": {
             "align": "auto",
             "displayMode": "color-background",
-            "filterable": true
+            "filterable": true,
+            "inspect": false
           },
           "decimals": 0,
           "mappings": [],
@@ -1112,7 +1194,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "$tag_veeamjobname",
@@ -1229,7 +1311,7 @@
       "collapsed": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "InfluxDB"
       },
       "gridPos": {
         "h": 1,
@@ -1239,10 +1321,23 @@
       },
       "id": 151,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "InfluxDB"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Summaries",
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "decimals": 0,
@@ -1312,7 +1407,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "9.1.3",
       "repeat": "job",
       "repeatDirection": "h",
       "targets": [
@@ -1375,291 +1470,44 @@
       "type": "stat"
     },
     {
-      "collapsed": true,
+      "collapsed": false,
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
         "y": 17
       },
-      "id": 216,
-      "panels": [
-        {
-          "fieldConfig": {
-            "defaults": {
-              "decimals": 0,
-              "mappings": [
-                {
-                  "options": {
-                    "match": "null",
-                    "result": {
-                      "color": "dark-blue",
-                      "text": "0"
-                    }
-                  },
-                  "type": "special"
-                }
-              ],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "dark-blue"
-                  },
-                  {
-                    "color": "dark-yellow",
-                    "value": 1
-                  },
-                  {
-                    "color": "dark-red",
-                    "value": 50
-                  }
-                ]
-              },
-              "unit": "none"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 3,
-            "w": 3,
-            "x": 0,
-            "y": 10
-          },
-          "id": 138,
-          "links": [],
-          "maxDataPoints": 100,
-          "maxPerRow": 8,
-          "options": {
-            "colorMode": "background",
-            "fieldOptions": {
-              "calcs": [
-                "sum"
-              ]
-            },
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "sum"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "textMode": "auto"
-          },
-          "pluginVersion": "8.3.3",
-          "repeat": "job",
-          "repeatDirection": "h",
-          "targets": [
-            {
-              "datasource": {
-                "type": "influxdb",
-                "uid": "${DS_INFLUXDB}"
-              },
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "veeamjobname"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "veeam_office365_restoresession",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_jobs\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"itemsSuccess\")\r\n  |> filter(fn: (r) => r[\"veeamjobname\"] =~ /${job:regex}/)\r\n  |> group(columns: [\"itemsSuccess\",\"_field\"])\r\n  |> aggregateWindow(every: ${inter}, fn: last, createEmpty: false)",
-              "rawQuery": false,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "itemsSuccess"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "last"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "veeamjobname",
-                  "operator": "=~",
-                  "value": "/^$job$/"
-                }
-              ]
-            }
-          ],
-          "title": "$job - Restore - Items Recovered",
-          "type": "stat"
-        },
-        {
-          "fieldConfig": {
-            "defaults": {
-              "decimals": 0,
-              "mappings": [
-                {
-                  "options": {
-                    "match": "null",
-                    "result": {
-                      "color": "dark-blue",
-                      "text": "0"
-                    }
-                  },
-                  "type": "special"
-                }
-              ],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "dark-blue"
-                  },
-                  {
-                    "color": "dark-yellow",
-                    "value": 1
-                  },
-                  {
-                    "color": "dark-red",
-                    "value": 50
-                  }
-                ]
-              },
-              "unit": "none"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 3,
-            "w": 3,
-            "x": 0,
-            "y": 13
-          },
-          "id": 128,
-          "links": [],
-          "maxDataPoints": 100,
-          "maxPerRow": 8,
-          "options": {
-            "colorMode": "background",
-            "fieldOptions": {
-              "calcs": [
-                "sum"
-              ]
-            },
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "sum"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "textMode": "auto"
-          },
-          "pluginVersion": "8.3.3",
-          "repeat": "job",
-          "repeatDirection": "h",
-          "targets": [
-            {
-              "datasource": {
-                "type": "influxdb",
-                "uid": "${DS_INFLUXDB}"
-              },
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "veeamjobname"
-                  ],
-                  "type": "tag"
-                }
-              ],
-              "measurement": "veeam_office365_restoresession",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_jobs\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"itemsProcessed\")\r\n  |> filter(fn: (r) => r[\"veeamjobname\"] =~ /${job:regex}/)\r\n  |> group(columns: [\"itemsProcessed\",\"_field\"])\r\n  |> aggregateWindow(every: ${inter}, fn: last, createEmpty: false)",
-              "rawQuery": false,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "itemsProcessed"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "last"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "veeamjobname",
-                  "operator": "=~",
-                  "value": "/^$job$/"
-                }
-              ]
-            }
-          ],
-          "title": "$job - Restore - Items Processed",
-          "type": "stat"
-        }
-      ],
-      "title": "Restore Operations Tracking",
-      "type": "row"
-    },
-    {
-      "collapsed": false,
-      "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
-      },
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 18
-      },
       "id": 120,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "InfluxDB"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Stats",
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "Read MB/s",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1765,7 +1613,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 19
+        "y": 18
       },
       "id": 104,
       "links": [],
@@ -1773,10 +1621,12 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.3.3",
@@ -1898,12 +1748,18 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "Processed KB/s",
             "axisPlacement": "auto",
             "axisSoftMin": 0,
@@ -2003,7 +1859,7 @@
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 19
+        "y": 18
       },
       "id": 105,
       "links": [],
@@ -2011,10 +1867,12 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.3.3",
@@ -2136,12 +1994,18 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "Duration in Seconds",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -2193,7 +2057,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 19
+        "y": 18
       },
       "id": 106,
       "links": [],
@@ -2201,10 +2065,12 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.3.3",
@@ -2270,6 +2136,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2279,7 +2149,8 @@
           "custom": {
             "align": "auto",
             "displayMode": "color-background",
-            "filterable": true
+            "filterable": true,
+            "inspect": false
           },
           "decimals": 0,
           "mappings": [],
@@ -2335,7 +2206,7 @@
         "h": 8,
         "w": 11,
         "x": 0,
-        "y": 26
+        "y": 25
       },
       "hideTimeOverride": false,
       "id": 113,
@@ -2350,7 +2221,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "$tag_veeamjobname",
@@ -2448,6 +2319,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "This Panel includes the Backup Repositories.\nWhen using Object Storage, it will appear on the right column with the prefix called OBJECT.",
       "fieldConfig": {
         "defaults": {
@@ -2514,12 +2389,14 @@
         "h": 8,
         "w": 13,
         "x": 11,
-        "y": 26
+        "y": 25
       },
       "id": 46,
       "links": [],
       "options": {
         "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
         "orientation": "vertical",
         "reduceOptions": {
           "calcs": [
@@ -2530,12 +2407,12 @@
         },
         "showUnfilled": false
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "gK_s8WTMk"
+            "uid": "${DS_INFLUXDB}"
           },
           "hide": false,
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_repository\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"capacity\" or r[\"_field\"] == \"freeSpace\")\r\n  |> filter(fn: (r) => r[\"repository\"] =~ /${repository:regex}/)\r\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> map(fn: (r) => ({ r with  _value: (float(v: r.capacity) - float(v: r.freeSpace))  }))\r\n  |> group(columns: [\"repository\",\"_field\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
@@ -2591,21 +2468,34 @@
       "collapsed": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "InfluxDB"
       },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 34
+        "y": 33
       },
       "id": 198,
       "panels": [],
       "repeat": "objectstorage",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "InfluxDB"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Object Storage Status $objectstorage",
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2613,6 +2503,8 @@
             "mode": "fixed"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "Consumed Space in Object Storage",
             "axisPlacement": "auto",
             "axisSoftMin": 0,
@@ -2664,18 +2556,20 @@
         "h": 6,
         "w": 14,
         "x": 0,
-        "y": 35
+        "y": 34
       },
       "id": 209,
       "links": [],
       "options": {
         "legend": {
           "calcs": [],
-          "displayMode": "hidden",
-          "placement": "bottom"
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.3.3",
@@ -2739,6 +2633,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2763,7 +2661,7 @@
         "h": 6,
         "w": 4,
         "x": 14,
-        "y": 35
+        "y": 34
       },
       "id": 208,
       "links": [],
@@ -2782,7 +2680,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "$tag_type",
@@ -2843,6 +2741,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2870,7 +2772,7 @@
         "h": 2,
         "w": 6,
         "x": 18,
-        "y": 35
+        "y": 34
       },
       "id": 213,
       "links": [],
@@ -2889,7 +2791,7 @@
         },
         "textMode": "name"
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "$tag_servicePoint",
@@ -2950,6 +2852,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2977,7 +2883,7 @@
         "h": 2,
         "w": 4,
         "x": 18,
-        "y": 37
+        "y": 36
       },
       "id": 187,
       "links": [],
@@ -2996,7 +2902,7 @@
         },
         "textMode": "name"
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "$tag_type",
@@ -3057,6 +2963,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -3084,7 +2994,7 @@
         "h": 2,
         "w": 2,
         "x": 22,
-        "y": 37
+        "y": 36
       },
       "id": 214,
       "links": [],
@@ -3103,7 +3013,7 @@
         },
         "textMode": "name"
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "$tag_region",
@@ -3164,6 +3074,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -3191,7 +3105,7 @@
         "h": 2,
         "w": 4,
         "x": 18,
-        "y": 39
+        "y": 38
       },
       "id": 210,
       "links": [],
@@ -3210,7 +3124,7 @@
         },
         "textMode": "name"
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "$tag_bucketname",
@@ -3271,6 +3185,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -3298,7 +3216,7 @@
         "h": 2,
         "w": 2,
         "x": 22,
-        "y": 39
+        "y": 38
       },
       "id": 211,
       "links": [],
@@ -3317,7 +3235,7 @@
         },
         "textMode": "name"
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "$tag_objectStorageEncryptionEnabled",
@@ -3381,20 +3299,33 @@
       "collapsed": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "InfluxDB"
       },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 41
+        "y": 40
       },
       "id": 25,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "InfluxDB"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Backup Repositories Status",
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -3439,7 +3370,7 @@
         "h": 6,
         "w": 12,
         "x": 0,
-        "y": 42
+        "y": 41
       },
       "id": 34,
       "links": [],
@@ -3456,7 +3387,7 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "9.1.3",
       "repeat": "repository",
       "repeatDirection": "h",
       "targets": [
@@ -3516,11 +3447,12 @@
     }
   ],
   "refresh": "5m",
-  "schemaVersion": 34,
+  "schemaVersion": 37,
   "style": "dark",
   "tags": [
     "Veeam",
-    "Office 365"
+    "veeam microsoft 365 audit",
+    "veeam microsoft 365"
   ],
   "templating": {
     "list": [
@@ -3600,10 +3532,10 @@
         "type": "interval"
       },
       {
-        "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
         },
         "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_version\")\r\n  |> keep(columns: [\"veeamVersion\"])\r\n  |> distinct(column: \"veeamVersion\")\r\n  |> group()\r\n",
         "hide": 2,
@@ -3613,18 +3545,14 @@
         "name": "version",
         "options": [],
         "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_version\")\r\n  |> keep(columns: [\"veeamVersion\"])\r\n  |> distinct(column: \"veeamVersion\")\r\n  |> group()\r\n",
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
         "type": "query"
       },
       {
-        "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
-        },
+        "current": {},
         "datasource": {
           "type": "influxdb",
           "uid": "${DS_INFLUXDB}"
@@ -3647,11 +3575,7 @@
         "useTags": false
       },
       {
-        "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
-        },
+        "current": {},
         "datasource": {
           "type": "influxdb",
           "uid": "${DS_INFLUXDB}"
@@ -3674,11 +3598,7 @@
         "useTags": false
       },
       {
-        "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
-        },
+        "current": {},
         "datasource": {
           "type": "influxdb",
           "uid": "${DS_INFLUXDB}"
@@ -3701,11 +3621,7 @@
         "useTags": false
       },
       {
-        "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
-        },
+        "current": {},
         "datasource": {
           "type": "influxdb",
           "uid": "${DS_INFLUXDB}"
@@ -3728,11 +3644,7 @@
         "useTags": false
       },
       {
-        "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
-        },
+        "current": {},
         "datasource": {
           "type": "influxdb",
           "uid": "${DS_INFLUXDB}"
@@ -3755,14 +3667,10 @@
         "useTags": false
       },
       {
-        "current": {
-          "selected": true,
-          "text": [
-            "Delegated Admin Role"
-          ],
-          "value": [
-            "Delegated Admin Role"
-          ]
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
         },
         "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_rbac_roles\")\r\n  |> filter(fn: (r) => r[\"organization\"] =~ /${organization:regex}/)\r\n  |> keep(columns: [\"rbacRoleName\"])\r\n  |> distinct(column: \"rbacRoleName\")\r\n  |> group()\r\n",
         "hide": 0,
@@ -3781,7 +3689,7 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-2d",
     "to": "now"
   },
   "timepicker": {
@@ -3812,6 +3720,6 @@
   "timezone": "browser",
   "title": "Grafana Dashboard for Veeam Backup for Microsoft 365",
   "uid": "AGZEYsbZk",
-  "version": 6,
+  "version": 8,
   "weekStart": ""
 }
