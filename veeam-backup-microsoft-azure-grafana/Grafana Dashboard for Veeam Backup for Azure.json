@@ -9,7 +9,7 @@
       "pluginName": "InfluxDB"
     }
   ],
-  "__elements": [],
+  "__elements": {},
   "__requires": [
     {
       "type": "panel",
@@ -21,7 +21,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "8.3.2"
+      "version": "9.1.3"
     },
     {
       "type": "datasource",
@@ -64,7 +64,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -85,7 +88,6 @@
   "gnetId": 12204,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1639417557456,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -105,9 +107,13 @@
         "content": "<a href=\"https://www.veeam.com/backup-azure.html\" target=\"_blank\"><img src=\"https://www.jorgedelacruz.es/VCB_product_icon.svg\" alt=\"drawing\" width=\"50\"/></a>\n\n",
         "mode": "html"
       },
-      "pluginVersion": "8.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
           "groupBy": [
             {
               "params": [
@@ -147,6 +153,10 @@
       "type": "text"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -238,7 +248,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "Total Policies",
@@ -416,16 +426,14 @@
           "tags": []
         }
       ],
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        }
-      ],
       "transparent": true,
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "displayName": "Version: ${__field.labels.version}",
@@ -479,7 +487,7 @@
         },
         "textMode": "name"
       },
-      "pluginVersion": "8.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "Version $tag_version",
@@ -534,6 +542,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "displayName": "Worker Version: ${__field.labels.workerversion}",
@@ -587,7 +599,7 @@
         },
         "textMode": "name"
       },
-      "pluginVersion": "8.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "Worker $tag_workerversion",
@@ -642,11 +654,22 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "On this Map, you can quickly know which VMs are not Protected by Veeam Backup for Azure. \nWith a simple, yet powerful view, you can understand and try to mitigate the red spots.",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
           },
           "mappings": [],
           "thresholds": {
@@ -724,10 +747,13 @@
                 }
               }
             },
-            "name": "Layer 1",
+            "name": "Unprotected VMs",
             "type": "markers"
           }
         ],
+        "tooltip": {
+          "mode": "details"
+        },
         "view": {
           "id": "coords",
           "lat": 39.943392,
@@ -735,7 +761,7 @@
           "zoom": 3
         }
       },
-      "pluginVersion": "8.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "$tag_geohash",
@@ -773,7 +799,7 @@
           "measurement": "veeam_azure_vm_unprotected",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_aws_vm_unprotected\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"UPVM\" and r._value >=1)\r\n  |> group(columns: [\"geohash\",\"VMRegion\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_vm_unprotected\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"UPVM\" and r._value >=1)\r\n  |> group(columns: [\"geohash\",\"VMRegion\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "table",
@@ -819,8 +845,11 @@
           "id": "organize",
           "options": {
             "excludeByName": {
+              "VMRegion": false,
               "_field": true,
-              "_time": true
+              "_measurement": true,
+              "_time": true,
+              "geohash": false
             },
             "indexByName": {},
             "renameByName": {
@@ -834,6 +863,10 @@
       "type": "geomap"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -907,8 +940,9 @@
         ],
         "legend": {
           "calcs": [],
-          "displayMode": "hidden",
+          "displayMode": "list",
           "placement": "right",
+          "showLegend": false,
           "values": [
             "value"
           ]
@@ -922,7 +956,8 @@
           "values": false
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
@@ -1017,6 +1052,10 @@
       "type": "piechart"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "On this Panel, you can quickly know how much time did a Backup, or Snapshot Policy take. You can quickly filter by Policy Name on the top menu.",
       "fieldConfig": {
         "defaults": {
@@ -1024,6 +1063,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "Job Duration",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1086,11 +1127,13 @@
             "max",
             "min"
           ],
-          "displayMode": "hidden",
-          "placement": "bottom"
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.3.2",
@@ -1167,12 +1210,17 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
             "align": "center",
             "displayMode": "color-background",
-            "filterable": true
+            "filterable": true,
+            "inspect": false
           },
           "mappings": [
             {
@@ -1270,7 +1318,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "$tag_sessionPolicyName",
@@ -1365,203 +1413,18 @@
       "type": "table"
     },
     {
-      "description": "On this Panel, you can quickly know which Databases are Protected by Veeam Backup for Azure. With all the needed details as DB Name, SQL Name, Azure Region, and Azure Instance Type.",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": "center",
-            "displayMode": "color-background",
-            "filterable": true,
-            "width": 120
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "dark-purple",
-                "value": null
-              }
-            ]
-          },
-          "unit": "decmbytes"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Size"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "decgbytes"
-              }
-            ]
-          }
-        ]
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
       },
-      "gridPos": {
-        "h": 7,
-        "w": 8,
-        "x": 0,
-        "y": 18
-      },
-      "id": 31,
-      "interval": "",
-      "links": [],
-      "options": {
-        "footer": {
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
-        "showHeader": true
-      },
-      "pluginVersion": "8.3.2",
-      "targets": [
-        {
-          "alias": "",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          },
-          "groupBy": [
-            {
-              "params": [
-                "VMName"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "VMRegion"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "VMType"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "VMOSType"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "VMprivateIP"
-              ],
-              "type": "tag"
-            }
-          ],
-          "measurement": "veeam_azure_vm",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_vm_database\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"DatabaseSize\")\r\n  |> group(columns: [\"DatabaseName\"])\r\n  |> last()\r\n  ",
-          "rawQuery": true,
-          "refId": "A",
-          "resultFormat": "table",
-          "select": [
-            [
-              {
-                "params": [
-                  "VMSize"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              },
-              {
-                "params": [
-                  "VM  Size"
-                ],
-                "type": "alias"
-              }
-            ]
-          ],
-          "tags": [],
-          "tz": ""
-        }
-      ],
-      "title": "Protected Databases",
-      "transformations": [
-        {
-          "id": "labelsToFields",
-          "options": {}
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "DatabaseEnvironment": true,
-              "DatabaseID": true,
-              "Time": true,
-              "VMID": true,
-              "VMPolicy": true,
-              "VMpublicIP": true,
-              "VMsubnet": true,
-              "VMvirtualNetwork": true,
-              "_field": true,
-              "_measurement": true,
-              "_start": true,
-              "_stop": true,
-              "_time": true,
-              "serverName": true
-            },
-            "indexByName": {
-              "DatabaseEnvironment": 11,
-              "DatabaseID": 12,
-              "DatabaseName": 0,
-              "DatabaseRegion": 2,
-              "DatabaseSQLName": 1,
-              "DatabaseSQLType": 3,
-              "_field": 5,
-              "_measurement": 6,
-              "_start": 8,
-              "_stop": 9,
-              "_time": 10,
-              "_value": 4,
-              "serverName": 7
-            },
-            "renameByName": {
-              "DatabaseName": "Azure Database Name",
-              "DatabaseRegion": "Region",
-              "DatabaseSQLName": "Azure SQL Name",
-              "DatabaseSQLType": "Database Type",
-              "Time": "",
-              "VM  Size": "Size",
-              "VMName": "VM Name",
-              "VMOSType": "VM OS",
-              "VMRegion": "Region",
-              "VMType": "Type",
-              "VMprivateIP": "Private IP",
-              "VMpublicIP": "Public IP",
-              "VMsubnet": "Subnet",
-              "_field": "",
-              "_time": "",
-              "_value": "Size"
-            }
-          }
-        }
-      ],
-      "type": "table"
-    },
-    {
       "description": "On this Panel, you can quickly know which VMs are Protected by Veeam Backup for Azure. With all the needed details as VM Name, Operating System, Azure Region, and Azure Instance Type.",
       "fieldConfig": {
         "defaults": {
           "custom": {
             "align": "center",
             "displayMode": "color-background",
-            "filterable": true
+            "filterable": true,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -1591,11 +1454,11 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 8,
-        "x": 8,
+        "w": 12,
+        "x": 0,
         "y": 18
       },
-      "id": 34,
+      "id": 31,
       "interval": "",
       "links": [],
       "options": {
@@ -1608,7 +1471,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "",
@@ -1744,13 +1607,18 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "On this Panel, you can quickly know which VMs are not Protected by Veeam Backup for Azure. With all the needed details as VM Name, Operating System, Azure Region, and Azure Instance Type.",
       "fieldConfig": {
         "defaults": {
           "custom": {
             "align": "center",
             "displayMode": "color-background",
-            "filterable": true
+            "filterable": true,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -1780,8 +1648,8 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 8,
-        "x": 16,
+        "w": 12,
+        "x": 12,
         "y": 18
       },
       "id": 26,
@@ -1797,7 +1665,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "",
@@ -1937,6 +1805,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "On this Panel, you can quickly see all your Backup Repositories, with name, type, etc.",
       "fieldConfig": {
         "defaults": {
@@ -1950,8 +1822,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#da5041",
-                "value": null
+                "color": "#da5041"
               }
             ]
           }
@@ -2002,7 +1873,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.2",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "alias": "",
@@ -2136,6 +2007,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "description": "On this Panel, you can quickly see your different Policies, the retention, if it has application-aware enabled, etc.",
       "fieldConfig": {
         "defaults": {
@@ -2149,8 +2024,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-purple",
-                "value": null
+                "color": "dark-purple"
               }
             ]
           }
@@ -2201,7 +2075,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.2",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "alias": "",
@@ -2420,10 +2294,6 @@
           "options": {}
         },
         {
-          "id": "merge",
-          "options": {}
-        },
-        {
           "id": "organize",
           "options": {
             "excludeByName": {
@@ -2484,9 +2354,13 @@
         "content": "<a href=\"https://www.jorgedelacruz.es\"><img src=\"https://www.jorgedelacruz.es/wp-content/uploads/2019/04/jorgedelacruz-banner_2efede4ef704c939e63a3763231f5961.png\"></a>\n\n\n\n",
         "mode": "html"
       },
-      "pluginVersion": "8.3.2",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
           "groupBy": [
             {
               "params": [
@@ -2527,7 +2401,7 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 33,
+  "schemaVersion": 37,
   "style": "dark",
   "tags": [
     "veeam",
@@ -2551,7 +2425,7 @@
         "name": "PolicyName",
         "options": [],
         "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_sessions\")\r\n  |> keep(columns: [\"sessionPolicyName\"])\r\n  |> distinct(column: \"sessionPolicyName\")\r\n  |> group()",
-        "refresh": 2,
+        "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
@@ -2574,7 +2448,7 @@
         "name": "VMName",
         "options": [],
         "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_vm_unprotected\")\r\n  |> filter(fn: (r) => r[\"VMName\"] != \"\")\r\n  |> keep(columns: [\"VMName\"])\r\n  |> distinct(column: \"VMName\")\r\n  |> group()",
-        "refresh": 2,
+        "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
@@ -2597,7 +2471,7 @@
         "name": "Repository",
         "options": [],
         "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_repositories\")\r\n  |> filter(fn: (r) => r[\"repoName\"] != \"\")\r\n  |> keep(columns: [\"repoName\"])\r\n  |> distinct(column: \"repoName\")\r\n  |> group()",
-        "refresh": 2,
+        "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
@@ -2620,7 +2494,7 @@
         "name": "PolicyType",
         "options": [],
         "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_sessions\")\r\n  |> filter(fn: (r) => r[\"sessionType\"] != \"\")\r\n  |> keep(columns: [\"sessionType\"])\r\n  |> distinct(column: \"sessionType\")\r\n  |> group()",
-        "refresh": 2,
+        "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
@@ -2632,7 +2506,7 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-6M",
     "to": "now"
   },
   "timepicker": {
@@ -2652,6 +2526,6 @@
   "timezone": "",
   "title": "Grafana Dashboard for Veeam Backup for Azure",
   "uid": "NHs2j76Zz",
-  "version": 7,
+  "version": 10,
   "weekStart": ""
 }
