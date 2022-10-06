@@ -9,7 +9,7 @@
 ##      .Notes
 ##      NAME:  veeam_azure.sh
 ##      ORIGINAL NAME: veeam_azure.sh
-##      LASTEDIT: 14/12/2021
+##      LASTEDIT: 06/10/2022
 ##      VERSION: 3.0
 ##      KEYWORDS: Veeam, InfluxDB, Grafana
    
@@ -338,7 +338,7 @@ for id in $(echo "$veeamVBAPoliciesUrl" | jq -r '.results[].id'); do
     RepositoryID=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories].id")
     RepositoryName=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories].name" | awk '{gsub(/ /,"\\ ");print}')
     RepositoryDescription=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories].description" | awk '{gsub(/ /,"\\ ");print}')
-    if [ "$PolicyDescription" == "" ]; then declare -i PolicyDescription=0; fi
+    if [ "$RepositoryDescription" == "" ]; then declare -i RepositoryDescription=0; fi
     RepositoryAccountName=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories].azureStorageAccountName" | awk '{gsub(/ /,"\\ ");print}')
     RepositoryContainerName=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories].azureStorageContainer.name" | awk '{gsub(/ /,"\\ ");print}')    
     RepositoryEncryption=$(echo "$veeamVBAPoliciesUrl" | jq --raw-output ".results[$arrayrepositories].enableEncryption") 
