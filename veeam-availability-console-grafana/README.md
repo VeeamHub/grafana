@@ -1,4 +1,4 @@
-Grafana Dashboard for Veeam Availability Console
+Grafana Dashboard for Veeam Availability Console (VAC) or Service Provider Console (VSPC)
 ===================
 
 ![alt tag](https://jorgedelacruz.uk/wp-content/uploads/2019/01/veeam-vac-grafana-001.png)
@@ -15,6 +15,8 @@ Click on a job to see its History | Click on a Repo to see its history
 This project consists in a Bash Shell script to retrieve the Veeam Availability Console information, directly from the RESTfulAPI, about last jobs, tenants and much more. The information is being saved it into InfluxDB output directly into the InfluxDB database using curl, then in Grafana: a Dashboard is created to present all the information.
 
 We use Veeam Availability Console RESTfulAPI to reduce the workload and increase the speed of script execution.
+
+This also works with the Veeam Service Provider Console (VSPC) used by MSPs. 
 
 ----------
 
