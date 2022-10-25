@@ -2,6 +2,15 @@ Grafana Dashboard for Veeam Availability Console
 ===================
 
 ![alt tag](https://jorgedelacruz.uk/wp-content/uploads/2019/01/veeam-vac-grafana-001.png)
+![image](https://user-images.githubusercontent.com/36752644/197901132-b3d6315a-a4f0-4362-9dfc-0839a8ba0dee.png)
+Job History             | Repository History
+:-------------------------:|:-------------------------:
+![image](https://user-images.githubusercontent.com/36752644/197901423-3da1a416-efca-4b5b-b171-0d2a91a3b48b.png) |  ![image](https://user-images.githubusercontent.com/36752644/197902231-9adc345e-1ab0-42ca-996f-df6e9e49ba8e.png)
+Click on a job to see its History | Click on a Repo to see its history
+
+
+
+
 
 This project consists in a Bash Shell script to retrieve the Veeam Availability Console information, directly from the RESTfulAPI, about last jobs, tenants and much more. The information is being saved it into InfluxDB output directly into the InfluxDB database using curl, then in Grafana: a Dashboard is created to present all the information.
 
@@ -17,7 +26,9 @@ Or try with this simple steps:
 * Make the script executable with the command chmod +x veeam-availability-console-script.sh
 * Run the veeam-availability-console-script.sh and check on Chronograf that you can retrieve the information properly
 * Schedule the script execution, for example every 30 minutes using crontab
-* Download the two Grafana Dashboards JSON files and import it into your Grafana
+* Download the Grafana Dashboards JSON files 
+* Import the JSON files into your Grafana
+* Edit the links on the repository and jobs panels to point to the relevant imported dashboards instead of "yourinstance.com", but keep the URL params at the end of the link
 * Enjoy :)
 
 ----------
