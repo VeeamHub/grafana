@@ -5,7 +5,8 @@ Grafana Dashboard for Veeam Availability Console (VAC) or Service Provider Conso
 ![image](https://user-images.githubusercontent.com/36752644/197901132-b3d6315a-a4f0-4362-9dfc-0839a8ba0dee.png)
 Job History             | Repository History
 :-------------------------:|:-------------------------:
-![image](https://user-images.githubusercontent.com/36752644/197901423-3da1a416-efca-4b5b-b171-0d2a91a3b48b.png) |  ![image](https://user-images.githubusercontent.com/36752644/197902231-9adc345e-1ab0-42ca-996f-df6e9e49ba8e.png)
+![image](https://user-images.githubusercontent.com/36752644/197901423-3da1a416-efca-4b5b-b171-0d2a91a3b48b.png) |  ![image](https://user-images.githubusercontent.com/36752644/197906116-386b5ecc-3579-4582-942e-22cf21b4acac.png)
+
 Click on a job to see its History | Click on a Repo to see its history
 
 
