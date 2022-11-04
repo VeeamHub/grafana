@@ -1,0 +1,2854 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDB",
+      "label": "InfluxDB",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "9.2.3-046dbf9789"
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Grafana Dashboard for Veeam Backup for Salesforce v1 -  (Grafana 8.x / InfluxDB v2.x)",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "gnetId": 12204,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 1,
+        "x": 0,
+        "y": 0
+      },
+      "id": 28,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<a href=\"https://www.veeam.com/backup-salesforce.html?ad=menu-products\" target=\"_blank\"><img src=\"https://www.jorgedelacruz.es/VCB_product_icon.svg\" alt=\"drawing\" width=\"50\"/></a>\n\n",
+        "mode": "html"
+      },
+      "pluginVersion": "9.2.3-046dbf9789",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#135f4b",
+            "mode": "fixed"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#135f4b",
+                "value": null
+              }
+            ]
+          },
+          "unit": "locale"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total Policies"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total Databases"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total Organizations"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total Companies"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 12,
+        "x": 1,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "9.2.3-046dbf9789",
+      "targets": [
+        {
+          "alias": "Total Policies",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_azure_overview",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"veeam\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_jobs\")\n  |> filter(fn: (r) => r[\"companyName\"] =~ /${Company:regex}/)\n  |> keep(columns: [\"jobName\"])\n  |> distinct(column: \"jobName\")\n  |> group()\n  |> count()\n",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Policies"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Total Repositories",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_azure_overview",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"veeam\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_databases\")\r\n  |> keep(columns: [\"databaseID\"])\r\n  |> distinct(column: \"databaseID\")\r\n  |> group()\r\n  |> count()",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Repositories"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Total Instances",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_azure_overview",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"veeam\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_organizations\")\r\n  |> keep(columns: [\"organizationSFID\"])\r\n  |> distinct(column: \"organizationSFID\")\r\n  |> group()\r\n  |> count()",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "VMs"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Total Protected VMs",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_azure_overview",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"veeam\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_companies\")\r\n  |> keep(columns: [\"companyID\"])\r\n  |> distinct(column: \"companyID\")\r\n  |> group()\r\n  |> count()",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "VMsProtected"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "displayName": "Build Version: ${__field.labels.build_version}",
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#135f4b",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 13,
+        "y": 0
+      },
+      "id": 22,
+      "links": [],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {
+          "valueSize": 25
+        },
+        "textMode": "name"
+      },
+      "pluginVersion": "9.2.3-046dbf9789",
+      "targets": [
+        {
+          "alias": "Version $tag_version",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "version"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_azure_overview",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"veeam\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"VBSF\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")\r\n",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Policies"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#135f4b",
+            "mode": "fixed"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#135f4b",
+                "value": null
+              }
+            ]
+          },
+          "unit": "locale"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total API - Backup"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total API - Restores"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 7,
+        "x": 17,
+        "y": 0
+      },
+      "id": 34,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "9.2.3-046dbf9789",
+      "targets": [
+        {
+          "alias": "Total Policies",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_azure_overview",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"veeam\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_jobslogs\")\n  |> filter(fn: (r) => r[\"_field\"] == \"jobAPICalls\")\n  |> group(columns: [\"_field\"])\n  |> sum()\n  |> group()",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Policies"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Total Repositories",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_azure_overview",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"veeam\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_restores\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"restoreAPICalls\")\r\n  |> group(columns: [\"_field\"])\r\n  |> sum()\r\n  |> group()",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Repositories"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "center",
+            "displayMode": "color-background",
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "FAILED": {
+                  "color": "dark-red",
+                  "index": 2,
+                  "text": "Failed"
+                },
+                "SUCCESS": {
+                  "color": "dark-green",
+                  "index": 0,
+                  "text": "Success"
+                },
+                "WARNING": {
+                  "color": "dark-orange",
+                  "index": 1,
+                  "text": "Warning"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "transparent",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Policy Name"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "auto"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Last Run Date"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsLocal"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 10,
+        "x": 0,
+        "y": 2
+      },
+      "hideTimeOverride": false,
+      "id": 17,
+      "links": [],
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "9.2.3-046dbf9789",
+      "targets": [
+        {
+          "alias": "$tag_sessionPolicyName",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "sessionPolicyName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "sessionType"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_azure_sessions",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"veeam\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_jobs\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"jobLastRunUnix\")\r\n  |> filter(fn: (r) => r[\"companyName\"] =~ /${Company:regex}/)\r\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> map(fn: (r) => ({ r with  _value: float(v: r.jobLastRunUnix) * 1000.0 }))\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "sessionStatus"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "sessionPolicyName",
+              "operator": "=~",
+              "value": "/^$PolicyName$/"
+            }
+          ]
+        }
+      ],
+      "title": "Job Historical Information",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "keepLabels": [
+              "companyName",
+              "jobName",
+              "jobSchedule",
+              "jobStatus"
+            ]
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "VBSFjob": true,
+              "_value": true,
+              "companyID": true,
+              "jobCreation": true,
+              "jobID": true,
+              "jobState": true,
+              "jobType": true
+            },
+            "indexByName": {
+              "Time": 0,
+              "Value": 5,
+              "companyName": 2,
+              "jobName": 1,
+              "jobSchedule": 4,
+              "jobStatus": 3
+            },
+            "renameByName": {
+              "Time": "",
+              "VBSFjob": "",
+              "Value": "Last Run Date",
+              "_value": "",
+              "companyID": "",
+              "companyName": "Salesforce Alias",
+              "jobCreation": "",
+              "jobID": "",
+              "jobName": "Policy Name",
+              "jobSchedule": "Schedule",
+              "jobState": "",
+              "jobStatus": "Last Status",
+              "sessionPolicyName": "Policy Name",
+              "sessionType": "Policy Type"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "On this Panel, you can quickly know how much time did a Backup Policy take. You can quickly filter by Policy Name on the top menu.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Policy Duration",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 27,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "dash": [
+                10,
+                10
+              ],
+              "fill": "dash"
+            },
+            "lineWidth": 1,
+            "pointSize": 14,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "displayName": "Job ID: ${__field.labels.jobLogID} - ${__field.labels.jobName} - Type: ${__field.labels.jobLogType} - (${__field.labels.jobrunType})",
+          "links": [],
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 14,
+        "x": 10,
+        "y": 2
+      },
+      "hideTimeOverride": false,
+      "id": 19,
+      "interval": "1h",
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "alias": "$tag_sessionPolicyName - $tag_sessionType",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "sessionPolicyName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "sessionType"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_azure_sessions",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"veeam\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_jobslogs\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"jobDuration\")\r\n  |> filter(fn: (r) => r[\"companyName\"] =~ /${Company:regex}/)\r\n  |> filter(fn: (r) => r[\"jobName\"] =~ /${JobName:regex}/)\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")\r\n",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "sessionDuration"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "sessionType",
+              "operator": "=~",
+              "value": "/^$PolicyType$/"
+            },
+            {
+              "condition": "AND",
+              "key": "sessionPolicyName",
+              "operator": "=~",
+              "value": "/^$PolicyName$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": "7d",
+      "title": "Policy Duration",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "On this Panel, you can quickly know how many API Calls per Job chunk. You can quickly filter by Policy Name on the top menu.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "# of API Calls",
+            "axisPlacement": "auto",
+            "barAlignment": -1,
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 2,
+            "pointSize": 14,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "displayName": "Job ID: ${__field.labels.jobLogID} - ${__field.labels.jobName} - Type: ${__field.labels.jobLogType} - (${__field.labels.jobrunType})",
+          "links": [],
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "super-light-blue",
+                "value": null
+              },
+              {
+                "color": "light-blue",
+                "value": 100
+              },
+              {
+                "color": "#6ED0E0",
+                "value": 500
+              },
+              {
+                "color": "blue",
+                "value": 1000
+              },
+              {
+                "color": "semi-dark-blue",
+                "value": 5000
+              },
+              {
+                "color": "dark-blue",
+                "value": 10000
+              },
+              {
+                "color": "#2808e0",
+                "value": 50000
+              }
+            ]
+          },
+          "unit": "locale"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 14,
+        "x": 10,
+        "y": 9
+      },
+      "hideTimeOverride": false,
+      "id": 35,
+      "interval": "1h",
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "alias": "$tag_sessionPolicyName - $tag_sessionType",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "sessionPolicyName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "sessionType"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_azure_sessions",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"veeam\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_jobslogs\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"jobAPICalls\")\r\n  |> filter(fn: (r) => r[\"companyName\"] =~ /${Company:regex}/)\r\n  |> filter(fn: (r) => r[\"jobName\"] =~ /${JobName:regex}/)\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")\r\n",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "sessionDuration"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "sessionType",
+              "operator": "=~",
+              "value": "/^$PolicyType$/"
+            },
+            {
+              "condition": "AND",
+              "key": "sessionPolicyName",
+              "operator": "=~",
+              "value": "/^$PolicyName$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": "7d",
+      "title": "API Consumption",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "center",
+            "displayMode": "color-background",
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "FAILED": {
+                  "color": "dark-red",
+                  "index": 2,
+                  "text": "Failed"
+                },
+                "SUCCESS": {
+                  "color": "dark-green",
+                  "index": 0,
+                  "text": "Success"
+                },
+                "WARNING": {
+                  "color": "dark-orange",
+                  "index": 1,
+                  "text": "Warning"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "transparent",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Policy Name"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "auto"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Duration"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.width",
+                "value": 109
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Finish"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsLocal"
+              },
+              {
+                "id": "custom.width",
+                "value": 164
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Session ID"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 102
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Type"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Processed Objects"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 121
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "hideTimeOverride": false,
+      "id": 36,
+      "links": [],
+      "options": {
+        "footer": {
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Finish"
+          }
+        ]
+      },
+      "pluginVersion": "9.2.3-046dbf9789",
+      "targets": [
+        {
+          "alias": "$tag_sessionPolicyName",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "sessionPolicyName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "sessionType"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_azure_sessions",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"veeam\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_jobslogs\")\r\n  |> filter(fn: (r) => r[\"companyName\"] =~ /${Company:regex}/)\r\n  |> filter(fn: (r) => r[\"_field\"] == \"jobAPICalls\" or r[\"_field\"] == \"jobDuration\" or r[\"_field\"] == \"jobProccessedObjects\" or r[\"_field\"] == \"jobRowsDeleted\" or r[\"_field\"] == \"jobRowsFailed\" or r[\"_field\"] == \"jobRowsInserted\" or r[\"_field\"] == \"jobRowsLoaded\" or r[\"_field\"] == \"jobRowsUpdated\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")\r\n",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "sessionStatus"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "sessionPolicyName",
+              "operator": "=~",
+              "value": "/^$PolicyName$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_sessionPolicyName",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "sessionPolicyName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "sessionType"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "veeam_azure_sessions",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"veeam\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_jobslogs\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"jobLastRunUnix\")\r\n  |> filter(fn: (r) => r[\"companyName\"] =~ /${Company:regex}/)\r\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> map(fn: (r) => ({ r with  _value: float(v: r.jobLastRunUnix) * 1000.0 }))\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "sessionStatus"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "sessionPolicyName",
+              "operator": "=~",
+              "value": "/^$PolicyName$/"
+            }
+          ]
+        }
+      ],
+      "title": "Detailed Job Historical Information",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "keepLabels": [
+              "jobName",
+              "jobSchedule",
+              "jobStatus",
+              "jobLogID",
+              "jobLogType",
+              "jobrunType"
+            ]
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "VBSFjob": true,
+              "Value": false,
+              "_value": true,
+              "companyID": true,
+              "jobCreation": true,
+              "jobID": true,
+              "jobRowsFailed": false,
+              "jobRowsLoaded": true,
+              "jobState": true,
+              "jobType": true,
+              "jobrunType": false
+            },
+            "indexByName": {
+              "Time": 0,
+              "Value": 3,
+              "jobAPICalls": 8,
+              "jobDuration": 4,
+              "jobLogID": 1,
+              "jobLogType": 2,
+              "jobName": 5,
+              "jobProccessedObjects": 7,
+              "jobRowsDeleted": 11,
+              "jobRowsFailed": 12,
+              "jobRowsInserted": 9,
+              "jobRowsLoaded": 13,
+              "jobRowsUpdated": 10,
+              "jobStatus": 6,
+              "jobrunType": 14
+            },
+            "renameByName": {
+              "Time": "Start",
+              "VBSFjob": "",
+              "Value": "Finish",
+              "_value": "",
+              "companyID": "",
+              "companyName": "Salesforce Alias",
+              "jobAPICalls": "API Usage",
+              "jobCreation": "",
+              "jobDuration": "Duration",
+              "jobID": "",
+              "jobLogID": "Session ID",
+              "jobLogType": "Type",
+              "jobName": "Policy Name",
+              "jobProccessedObjects": "Processed Objects",
+              "jobRowsDeleted": "Deleted",
+              "jobRowsFailed": "Failed",
+              "jobRowsInserted": "Inserted",
+              "jobRowsLoaded": "",
+              "jobRowsUpdated": "Updated",
+              "jobSchedule": "Schedule",
+              "jobState": "",
+              "jobStatus": "Last Status",
+              "jobrunType": "Run Type",
+              "sessionPolicyName": "Policy Name",
+              "sessionType": "Policy Type"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "center",
+            "displayMode": "color-background",
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "FAILED": {
+                  "color": "dark-red",
+                  "index": 2,
+                  "text": "Failed"
+                },
+                "SUCCESS": {
+                  "color": "dark-green",
+                  "index": 0,
+                  "text": "Success"
+                },
+                "WARNING": {
+                  "color": "dark-orange",
+                  "index": 1,
+                  "text": "Warning"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "transparent"
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Policy Name"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "auto"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Duration"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Job Name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 228
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "restoreName"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 209
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 29
+      },
+      "hideTimeOverride": false,
+      "id": 37,
+      "links": [],
+      "options": {
+        "footer": {
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "9.2.3-046dbf9789",
+      "targets": [
+        {
+          "alias": "$tag_sessionPolicyName",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "sessionPolicyName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "sessionType"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_azure_sessions",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"veeam\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_restores\")\r\n  |> filter(fn: (r) => r[\"companyName\"] =~ /${Company:regex}/)\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")\r\n",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "sessionStatus"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "sessionPolicyName",
+              "operator": "=~",
+              "value": "/^$PolicyName$/"
+            }
+          ]
+        }
+      ],
+      "title": "Restores Historical Information",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "keepLabels": [
+              "companyName",
+              "restoreCreatedDateUnix",
+              "restoreDescription",
+              "restoreFinishDateUnix",
+              "restoreName",
+              "restoreSFInstanceName",
+              "restoreStartDateUnix",
+              "restoreStatus",
+              "restoreType"
+            ]
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "VBSFjob": true,
+              "_value": true,
+              "companyID": true,
+              "jobCreation": true,
+              "jobID": true,
+              "jobRowsLoaded": true,
+              "jobState": true,
+              "jobType": true,
+              "restoreCreatedDateUnix": true,
+              "restoreDescription": false,
+              "restoreFinishDateUnix": true,
+              "restoreID": true,
+              "restoreStartDateUnix": true
+            },
+            "indexByName": {
+              "Time": 0,
+              "companyID": 5,
+              "companyName": 4,
+              "restoreAPICalls": 15,
+              "restoreCreatedDateUnix": 6,
+              "restoreDescription": 2,
+              "restoreFailed": 14,
+              "restoreFinishDateUnix": 7,
+              "restoreID": 8,
+              "restoreInserted": 12,
+              "restoreName": 1,
+              "restoreSFInstanceName": 9,
+              "restoreStartDateUnix": 10,
+              "restoreStatus": 3,
+              "restoreType": 11,
+              "restoreUpdated": 13
+            },
+            "renameByName": {
+              "Time": "Start",
+              "VBSFjob": "",
+              "Value": "Last Result",
+              "_value": "",
+              "companyID": "",
+              "companyName": "Salesforce Alias",
+              "jobAPICalls": "API Usage",
+              "jobCreation": "",
+              "jobDuration": "Duration",
+              "jobID": "",
+              "jobLogID": "Session ID",
+              "jobLogType": "Type",
+              "jobName": "Policy Name",
+              "jobProccessedObjects": "Processed Objects",
+              "jobRowsDeleted": "Deleted",
+              "jobRowsFailed": "Failed",
+              "jobRowsInserted": "Inserted",
+              "jobRowsLoaded": "",
+              "jobRowsUpdated": "Updated",
+              "jobSchedule": "Schedule",
+              "jobState": "",
+              "jobStatus": "Last Status",
+              "jobrunType": "Run Type",
+              "restoreAPICalls": "API Usage",
+              "restoreDescription": "Job Description",
+              "restoreFailed": "Failed",
+              "restoreID": "",
+              "restoreInserted": "Inserted",
+              "restoreName": "Job Name",
+              "restoreSFInstanceName": "Restore to",
+              "restoreStatus": "Status",
+              "restoreUpdated": "Updated",
+              "sessionPolicyName": "Policy Name",
+              "sessionType": "Policy Type"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "On this Panel, you can quickly see your different Organizations, Databases, etc.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "center",
+            "displayMode": "color-background",
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-purple"
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Salesforce URL"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 300
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Repository"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 300
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 37
+      },
+      "id": 32,
+      "interval": "",
+      "links": [],
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "9.2.3-046dbf9789",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "PolicyName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "PolicyStatus"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "veeam_azure_policies",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"veeam\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_organizations\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"organizationDBID\")\r\n  |> last()",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "PolicyAppAware"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "Application-Aware"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "PolicyName",
+              "operator": "=~",
+              "value": "/^$PolicyName$/"
+            }
+          ],
+          "tz": ""
+        },
+        {
+          "alias": "",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "PolicyName"
+              ],
+              "type": "tag"
+            }
+          ],
+          "hide": true,
+          "measurement": "veeam_azure_policies",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_policies\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"PolicySnapshotCountDaily\")\r\n  |> filter(fn: (r) => r[\"PolicyName\"] =~ /${PolicyName:regex}/)\r\n  |> group(columns: [\"PolicyName\",\"PolicyStatus\"])\r\n  |> last()",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "PolicySnapshotCountDaily"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "Daily"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "PolicyName",
+              "operator": "=~",
+              "value": "/^$PolicyName$/"
+            }
+          ],
+          "tz": ""
+        },
+        {
+          "alias": "",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "PolicyName"
+              ],
+              "type": "tag"
+            }
+          ],
+          "hide": true,
+          "measurement": "veeam_azure_policies",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_policies\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"PolicySnapshotCountWeekly\")\r\n  |> filter(fn: (r) => r[\"PolicyName\"] =~ /${PolicyName:regex}/)\r\n  |> group(columns: [\"PolicyName\",\"PolicyStatus\"])\r\n  |> last()",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "PolicySnapshotCountWeekly"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "Weekly"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "PolicyName",
+              "operator": "=~",
+              "value": "/^$PolicyName$/"
+            }
+          ],
+          "tz": ""
+        },
+        {
+          "alias": "",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "PolicyName"
+              ],
+              "type": "tag"
+            }
+          ],
+          "hide": true,
+          "measurement": "veeam_azure_policies",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_policies\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"PolicySnapshotCountMonthly\")\r\n  |> filter(fn: (r) => r[\"PolicyName\"] =~ /${PolicyName:regex}/)\r\n  |> group(columns: [\"PolicyName\",\"PolicyStatus\"])\r\n  |> last()",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "PolicySnapshotCountMonthly"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "Monthly"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "PolicyName",
+              "operator": "=~",
+              "value": "/^$PolicyName$/"
+            }
+          ],
+          "tz": ""
+        }
+      ],
+      "title": "Salesforce Organizations",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "PolicyBackupRetentionType": true,
+              "PolicyDescription": true,
+              "PolicyID": true,
+              "PolicyStatus": true,
+              "TenantID": true,
+              "Time": true,
+              "_measurement": true,
+              "_start": true,
+              "_stop": true,
+              "_time": true,
+              "organizationCompanyID": true,
+              "organizationCompanyName": true,
+              "organizationDBID": true,
+              "organizationDBURL": true,
+              "organizationSFID": true,
+              "organizationSFOrgName": true,
+              "organizationStatus": true,
+              "serverName": true
+            },
+            "indexByName": {
+              "Time": 1,
+              "organizationCompanyID": 14,
+              "organizationCompanyName": 2,
+              "organizationDBID": 15,
+              "organizationDBName": 8,
+              "organizationDBServerName": 7,
+              "organizationDBURL": 16,
+              "organizationName": 3,
+              "organizationRepository": 9,
+              "organizationSFID": 13,
+              "organizationSFInstanceName": 4,
+              "organizationSFOrgName": 11,
+              "organizationSFOrgType": 5,
+              "organizationSFPublicID": 6,
+              "organizationSFPublicURL": 10,
+              "organizationStatus": 12,
+              "serverName": 0
+            },
+            "renameByName": {
+              "PolicyAppAware": "Application-Aware",
+              "PolicyBackupRetentionType": "",
+              "PolicyName": "Name",
+              "PolicySnapshotCountDaily": "Daily Snapshots",
+              "PolicySnapshotCountMonthly": "Monthly Snapshots",
+              "PolicySnapshotCountWeekly": "Weekly Snapshots",
+              "organizationCompanyID": "",
+              "organizationCompanyName": "",
+              "organizationDBID": "",
+              "organizationDBName": "Database Name",
+              "organizationDBServerName": "Database Label",
+              "organizationName": "Salesfore Alias",
+              "organizationRepository": "Repository",
+              "organizationSFID": "",
+              "organizationSFInstanceName": "Instance",
+              "organizationSFOrgName": "",
+              "organizationSFOrgType": "Salesforce Edition",
+              "organizationSFPublicID": "Salesforce ID",
+              "organizationSFPublicURL": "Salesforce URL",
+              "organizationStatus": ""
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "On this Panel, you can quickly see all your Databases, with name, type, etc.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "center",
+            "displayMode": "color-background",
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#da5041"
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Local Storage Size"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bytes"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 42
+      },
+      "id": 33,
+      "interval": "",
+      "links": [],
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "9.2.3-046dbf9789",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "repoAccountName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "repoContainer"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "repoDescription"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "repoName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "RepositoryTier"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "veeam_azure_repositories",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"veeam\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_companies\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> last()",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "repoEncryption"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "Encryption"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "repoName",
+              "operator": "=~",
+              "value": "/^$Repository$/"
+            }
+          ],
+          "tz": ""
+        }
+      ],
+      "title": "Companies",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "_field": true,
+              "_measurement": true,
+              "_start": true,
+              "_stop": true,
+              "_time": true,
+              "companyID": true,
+              "companyStorageSize": true,
+              "repoAzureID": true,
+              "repoID": true,
+              "repoStatus": true,
+              "serverName": true
+            },
+            "indexByName": {
+              "Time": 1,
+              "companyDataSize": 6,
+              "companyID": 2,
+              "companyName": 4,
+              "companyStorageSize": 3,
+              "companyUsers": 5,
+              "serverName": 0
+            },
+            "renameByName": {
+              "RepositoryTier": "Tier",
+              "_field": "",
+              "_value": "Encryption",
+              "companyDataSize": "Local Storage Size",
+              "companyName": "Company",
+              "companyUsers": "Company Licensed Users",
+              "repoAccountName": "Storage Account",
+              "repoAzureID": "",
+              "repoContainer": "Storage Container",
+              "repoDescription": "Description",
+              "repoName": "Name"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "On this Panel, you can quickly know which VMs are Protected by Veeam Backup for Azure. With all the needed details as VM Name, Operating System, Azure Region, and Azure Instance Type.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "center",
+            "displayMode": "color-background",
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue"
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Size"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decgbytes"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 42
+      },
+      "id": 31,
+      "interval": "",
+      "links": [],
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "9.2.3-046dbf9789",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "VMName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "VMRegion"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "VMType"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "VMOSType"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "VMprivateIP"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "veeam_azure_vm",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"veeam\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_databases\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> last()\r\n  ",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "VMSize"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "VM  Size"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [],
+          "tz": ""
+        }
+      ],
+      "title": "Databases",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "VMID": true,
+              "VMPolicy": true,
+              "VMpublicIP": true,
+              "VMsubnet": true,
+              "VMvirtualNetwork": true,
+              "_field": true,
+              "_measurement": true,
+              "_start": true,
+              "_stop": true,
+              "_time": true,
+              "companyID": true,
+              "databaseID": true,
+              "databaseStatus": true,
+              "serverName": true
+            },
+            "indexByName": {
+              "Time": 1,
+              "companyID": 7,
+              "companyName": 6,
+              "databaseConnection": 2,
+              "databaseID": 8,
+              "databaseName": 5,
+              "databasePort": 4,
+              "databaseStatus": 9,
+              "databaseURL": 3,
+              "databaseUsername": 10,
+              "serverName": 0
+            },
+            "renameByName": {
+              "Time": "",
+              "VM  Size": "Size",
+              "VMName": "VM Name",
+              "VMOSType": "VM OS",
+              "VMRegion": "Region",
+              "VMType": "Type",
+              "VMprivateIP": "Private IP",
+              "VMpublicIP": "Public IP",
+              "VMsubnet": "Subnet",
+              "_time": "",
+              "_value": "Size",
+              "companyName": "Company Name",
+              "databaseConnection": "Connected",
+              "databaseName": "Database",
+              "databasePort": "Port",
+              "databaseURL": "Server",
+              "databaseUsername": "DB Username"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 5,
+        "x": 19,
+        "y": 49
+      },
+      "id": 10,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<a href=\"https://www.jorgedelacruz.es\"><img src=\"https://www.jorgedelacruz.es/wp-content/uploads/2019/04/jorgedelacruz-banner_2efede4ef704c939e63a3763231f5961.png\"></a>\n\n\n\n",
+        "mode": "html"
+      },
+      "pluginVersion": "9.2.3-046dbf9789",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "transparent": true,
+      "type": "text"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 37,
+  "style": "dark",
+  "tags": [
+    "veeam",
+    "vbsf",
+    "veeam salesforce",
+    "salesforce"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_organizations\")\r\n  |> keep(columns: [\"organizationCompanyName\"])\r\n  |> distinct(column: \"organizationCompanyName\")\r\n  |> group()",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Organization",
+        "multi": true,
+        "name": "Organization",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_organizations\")\r\n  |> keep(columns: [\"organizationCompanyName\"])\r\n  |> distinct(column: \"organizationCompanyName\")\r\n  |> group()",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_companies\")\r\n  |> filter(fn: (r) => r[\"companyName\"] != \"\")\r\n  |> filter(fn: (r) => r[\"companyName\"] =~ /${Company:regex}/)\r\n  |> keep(columns: [\"companyName\"])\r\n  |> distinct(column: \"companyName\")\r\n  |> group()",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Company",
+        "multi": true,
+        "name": "Company",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_companies\")\r\n  |> filter(fn: (r) => r[\"companyName\"] != \"\")\r\n  |> filter(fn: (r) => r[\"companyName\"] =~ /${Company:regex}/)\r\n  |> keep(columns: [\"companyName\"])\r\n  |> distinct(column: \"companyName\")\r\n  |> group()",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_databases\")\r\n  |> filter(fn: (r) => r[\"databaseName\"] != \"\")\r\n  |> filter(fn: (r) => r[\"companyName\"] =~ /${Company:regex}/)\r\n  |> keep(columns: [\"databaseName\"])\r\n  |> distinct(column: \"databaseName\")\r\n  |> group()",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Databases",
+        "multi": true,
+        "name": "Databases",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_databases\")\r\n  |> filter(fn: (r) => r[\"databaseName\"] != \"\")\r\n  |> filter(fn: (r) => r[\"companyName\"] =~ /${Company:regex}/)\r\n  |> keep(columns: [\"databaseName\"])\r\n  |> distinct(column: \"databaseName\")\r\n  |> group()",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_jobs\")\r\n  |> filter(fn: (r) => r[\"jobName\"] != \"\")\r\n  |> filter(fn: (r) => r[\"companyName\"] =~ /${Company:regex}/)\r\n  |> keep(columns: [\"jobName\"])\r\n  |> distinct(column: \"jobName\")\r\n  |> group()",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Job Name",
+        "multi": true,
+        "name": "JobName",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_salesforce_jobs\")\r\n  |> filter(fn: (r) => r[\"jobName\"] != \"\")\r\n  |> filter(fn: (r) => r[\"companyName\"] =~ /${Company:regex}/)\r\n  |> keep(columns: [\"jobName\"])\r\n  |> distinct(column: \"jobName\")\r\n  |> group()",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6M",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "Grafana Dashboard for Veeam Backup for Salesforce",
+  "uid": "NHs2j76Zz",
+  "version": 10,
+  "weekStart": ""
+}
