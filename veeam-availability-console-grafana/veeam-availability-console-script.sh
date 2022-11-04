@@ -9,26 +9,27 @@
 ##      .Notes
 ##      NAME:  veeam-availability-console-script.sh
 ##      ORIGINAL NAME: veeam_availability-console-grafana.sh
-##      LASTEDIT: 22/12/2018
-##      VERSION: 0.1
+##      LASTEDIT: 2022-10-26
+##      VERSION: 0.2
 ##      KEYWORDS: Veeam, InfluxDB, Grafana
    
 ##      .Link
 ##      https://jorgedelacruz.es/
 ##      https://jorgedelacruz.uk/
+##      https://mpowell.tech/
 
 ##
 # Configurations
 ##
 # Endpoint URL for InfluxDB
-InfluxDBURL="YOURINFLUXDB"
+InfluxDBURL="<url or IP address>"
 InfluxDBPort="8086" #Default Port
-InfluxDB="telegraf" #Default Database
+InfluxDB="veeam_vspc" #Default Database
 
 # Endpoint URL for login action
-Username="YOURVACUSER"
-Password="YOURVACPASSWORD"
-RestServer="YOURVACURL"
+Username="<domain>\\<username>"
+Password="<password>"
+RestServer="https://<url or IP address>"
 RestPort="1281" #Default Port
 Bearer=$(curl -X POST --header "Content-Type: application/x-www-form-urlencoded" --header "Accept: application/json" -d "grant_type=password&username=$Username&password=$Password" "$RestServer:$RestPort/token" -k --silent | jq -r '.access_token')
 
@@ -39,6 +40,10 @@ NoExpiration="1893456000"
 ##
 # Veeam Availability Console - Licenses per Tenant. This section will check on every Tenant and retrieve Licensing Information
 ##
+
+echo =================================
+echo Retrieving licenses per tenant...
+echo 
 VACUrl="$RestServer:$RestPort/v2/tenants"
 TenantUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $Bearer" "$VACUrl" 2>&1 -k --silent)
 
@@ -67,11 +72,25 @@ for id in $(echo "$TenantUrl" | jq -r ".[].id"); do
     fi
 
     #echo "veeam_vac_tenant,companyName=$TenantName,enabled=$TenantEnabled,expirationEnabled=$TenantexpirationEnabled,expirationDate=$TenantexpirationDate maxConcurrentTasks=$TenantmaxConcurrentTasks,bandwidthThrottlingEnabled=$TenantbandwidthThrottlingEnabled,allowedBandwidth=$TenantallowedBandwidth,vMsBackedUp=$TenantvMsBackedUp,vMsReplicated=$TenantvMsReplicated,vMsBackedUpToCloud=$TenantvMsBackedUpToCloud,managedPhysicalWorkstations=$TenantmanagedPhysicalWorkstations,managedCloudWorkstations=$TenantmanagedCloudWorkstations,managedPhysicalServers=$TenantmanagedPhysicalServers,managedCloudServers=$TenantmanagedCloudServers"
+    # FIX NULLS!!!
+    TenantmaxConcurrentTasks=0
+    if [ "$TenantbandwidthThrottlingEnabled" == "null" ]
+    then
+	TenantbandwidthThrottlingEnabled="false";
+    	TenantallowedBandwidth=0;
+    fi
+
     curl -i -XPOST "http://$InfluxDBURL:$InfluxDBPort/write?precision=s&db=$InfluxDB" --data-binary "veeam_vac_tenant,companyName=$TenantName,enabled=$TenantEnabled,expirationEnabled=$TenantexpirationEnabled,bandwidthThrottlingEnabled=$TenantbandwidthThrottlingEnabled expirationDate=$TenantexpirationDateUnix,maxConcurrentTasks=$TenantmaxConcurrentTasks,allowedBandwidth=$TenantallowedBandwidth,vMsBackedUp=$TenantvMsBackedUp,vMsReplicated=$TenantvMsReplicated,vMsBackedUpToCloud=$TenantvMsBackedUpToCloud,managedPhysicalWorkstations=$TenantmanagedPhysicalWorkstations,managedCloudWorkstations=$TenantmanagedCloudWorkstations,managedPhysicalServers=$TenantmanagedPhysicalServers,managedCloudServers=$TenantmanagedCloudServers"
+    echo =====================================
+    echo Backup resources......
+    echo
+
     VACUrl="$RestServer:$RestPort/v2/tenants/$TenantId/backupResources"
     BackupResourcesUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $Bearer" "$VACUrl" 2>&1 -k --silent)
     declare -i arrayresources=0
+    echo TODO This is run.... but inside the loop is not
     for id in $(echo "$BackupResourcesUrl" | jq -r ".[].id"); do
+	    echo TODO: THIS IS NEVER RUN!!!!!!
     cloudRepositoryName=$(echo "$BackupResourcesUrl" | jq --raw-output ".[$arrayresources].cloudRepositoryName"| awk '{gsub(/ /,"\\ ");print}')
     storageQuota=$(echo "$BackupResourcesUrl" | jq --raw-output ".[$arrayresources].storageQuota")
     storageQuotaUnits=$(echo "$BackupResourcesUrl" | jq --raw-output ".[$arrayresources].storageQuotaUnits")
@@ -157,6 +176,9 @@ done
 ##
 # Veeam Availability Console, Cloud Connect and Veeam Backup & Replication Licensing - This section will retrieve the licensing of the Veeam Availability Console, Veeam Cloud Connect and every managed Veeam Backup & Replication Server
 ##
+echo =========================================
+echo Retreiving other licenses....
+echo
 
 # Cloud Connect Licensing
 VACUrl="$RestServer:$RestPort/v2/licensing/cloudconnectLicenses"
@@ -197,6 +219,10 @@ CloudConnectLicenseusedCloudconnectWorkstations=$(echo "$CloudConnectLicenseUrl"
 curl -i -XPOST "http://$InfluxDBURL:$InfluxDBPort/write?precision=s&db=$InfluxDB" --data-binary "veeam_vac_vcclicense,edition=$CloudConnectLicenseEdition,status=$CloudConnectLicenselicensestatus,type=$CloudConnectLicenselicenseType,contactPerson=$CloudConnectLicensecontactPerson,backupServerName=$CloudConnectLicensebackupServerName,companyName=$CloudConnectLicensecompanyName licenseExpirationDate=$CloudConnectLicenselicenseExpirationDateUnix,supportExpirationDate=$CloudConnectLicensesupportExpirationDateUnix,licensedCloudConnectBackups=$CloudConnectLicenselicensedCloudconnectBackups,usedCloudConnectBackups=$CloudConnectLicenseusedCloudconnectBackups,licensedCloudConnectReplicas=$CloudConnectLicenselicensedCloudconnectReplicas,usedCloudConnectReplicas=$CloudConnectLicenseusedCloudconnectReplicas,licensedCloudConnectServers=$CloudConnectLicenselicensedCloudconnectServers,usedCloudConnectServers=$CloudConnectLicenseusedCloudconnectServers,licensedCloudConnectWorkstations=$CloudConnectLicenselicensedCloudconnectWorkstations,usedCloudConnectWorkstations=$CloudConnectLicenseusedCloudconnectWorkstations"
 
 # Veeam Availability Console Licensing
+echo =================================
+echo Retrieving VAC Licenses....
+echo
+
 VACUrl="$RestServer:$RestPort/v2/licenseSettings"
 VACLicenseUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $Bearer" "$VACUrl" 2>&1 -k --silent)
 
@@ -226,6 +252,10 @@ VACLicensecloudconnectReplicationVmCount=$(echo "$VACLicenseUrl" | jq --raw-outp
 curl -i -XPOST "http://$InfluxDBURL:$InfluxDBPort/write?precision=s&db=$InfluxDB" --data-binary "veeam_vac_vaclicense,productName=$VACLicenseproductName,licensedTo=$VACLicenselicensedTo,licenseType=$VACLicenselicenseType,licensesCount=$VACLicenselicensesCount,licensesUsedCount=$VACLicenselicensesUsedCount,supportID=$VACLicensesupportId licenseExpirationDate=$VACLicenselicenseExpirationDateUnix,supportExpirationDate=$VACLicensesupportExpirationDateUnix,licensevmCount=$VACLicensevmCount,licenseworkstationCount=$VACLicenseworkstationCount,licenseserverCount=$VACLicenseserverCount,licensecloudWorkstationCount=$VACLicensecloudWorkstationCount,licensecloudServerCount=$VACLicensecloudServerCount,licensecloudconnectBackupVmCount=$VACLicensecloudconnectBackupVmCount,cloudconnectBackupWorkstationCount=$VACLicensecloudconnectBackupWorkstationCount,cloudconnectBackupServerCount=$VACLicensecloudconnectBackupServerCount,cloudconnectReplicationVmCount=$VACLicensecloudconnectReplicationVmCount"
 
 # Veeam Backup & Replication Licensing
+echo ====================================
+echo Retrieving B\&R Licensing
+echo
+
 VACUrl="$RestServer:$RestPort/v2/licensing/backupserverLicenses"
 TenantLicenseUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $Bearer" "$VACUrl" 2>&1 -k --silent)
 
@@ -259,6 +289,9 @@ for id in $(echo "$TenantLicenseUrl" | jq -r ".[].id"); do
     TenantLicensebackupServerName=$(echo "$TenantLicenseUrl" | jq --raw-output ".[$arrayVBRLicense].backupServerName")
     TenantLicensecompanyName=$(echo "$TenantLicenseUrl" | jq --raw-output ".[$arrayVBRLicense].companyName" | awk '{gsub(/ /,"\\ ");print}')
     #echo "veeam_vac_vbrlicense,companyName=$TenantLicensecompanyName,edition=$TenantLicenseEdition,status=$TenantLicenseStatus,SupportID=$TenantLicenseSupportID,LicenseExpirationDate=$TenantLicenselicenseExpirationDate,SupportExpirationDate=$TenantLicensesupportExpirationDate,backupServerName=$TenantLicensebackupServerName licensedSockets=$TenantLicenselicensedSockets,usedSockets=$TenantLicenseusedSockets,licensedVMs=$TenantLicenselicensedVMs,usedVMs=$TenantLicenseusedVMs"
+    #FIX NULL!
+    TenantLicensesupportExpirationDateUnix=0
+
     curl -i -XPOST "http://$InfluxDBURL:$InfluxDBPort/write?precision=s&db=$InfluxDB" --data-binary "veeam_vac_vbrlicense,companyName=$TenantLicensecompanyName,edition=$TenantLicenseEdition,status=$TenantLicenseStatus,SupportID=$TenantLicenseSupportID,backupServerName=$TenantLicensebackupServerName licenseExpirationDate=$TenantLicenselicenseExpirationDateUnix,supportExpirationDate=$TenantLicensesupportExpirationDateUnix,licensedSockets=$TenantLicenselicensedSockets,usedSockets=$TenantLicenseusedSockets,licensedVMs=$TenantLicenselicensedVMs,usedVMs=$TenantLicenseusedVMs"
     arrayVBRLicense=$arrayVBRLicense+1
 done
@@ -266,6 +299,10 @@ done
 ##
 # Veeam Availability Backup Repositories per every Veeam Backup & Replication Server. This part will check the capacity and used space of the Backup Repositories
 ##
+echo ==================================================
+echo Checking capacity and used space of repositories
+echo
+
 VACUrl="$RestServer:$RestPort/v2/backupRepositories"
 BackupRepoLicenseUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $Bearer" "$VACUrl" 2>&1 -k --silent)
 
@@ -337,6 +374,10 @@ done
 ##
 # Veeam Availability Jobs per every Veeam Backup & Replication Server. This part will check the different Jobs, and the Job Sessions per every Job
 ##
+echo ======================
+echo Checking jobs....
+echo
+
 VACUrl="$RestServer:$RestPort/v2/jobs"
 veeamJobsUrl=$(curl -X GET --header "Accept:application/json" --header "Authorization:Bearer $Bearer" "$VACUrl" 2>&1 -k --silent)
 
@@ -407,7 +448,7 @@ for id in $(echo "$veeamJobsUrl" | jq -r '.[].id'); do
     isEnabled=$(echo "$veeamJobsUrl" | jq --raw-output ".[$arrayJobs].isEnabled")
     protectedVMs=$(echo "$veeamJobsUrl" | jq --raw-output ".[$arrayJobs].protectedVMs")
     #echo "veeam_vac_jobs,veeamjobname=$nameJob,backupServerName=$BackupReposerverName,bottleneck=$bottleneck,typeJob=$typeJob,isEnabled=$isEnabled totalDuration=$totalDuration,status=$jobStatus,processingRate=$processingRate,transferredData=$transferredData,protectedVMs=$protectedVMs $lastRunTimeUnix"
-    curl -i -XPOST "http://$InfluxDBURL:$InfluxDBPort/write?precision=s&db=$InfluxDB" --data-binary "veeam_vac_jobs,veeamjobname=$nameJob,backupServerName=$BackupReposerverName,bottleneck=$bottleneck,typeJob=$typeJob,isEnabled=$isEnabled totalDuration=$totalDuration,status=$jobStatus,processingRate=$processingRate,transferredData=$transferredData,protectedVMs=$protectedVMs $lastRunTimeUnix"
+    curl -i -XPOST "http://$InfluxDBURL:$InfluxDBPort/write?precision=s&db=$InfluxDB" --data-binary "veeam_vac_jobs,veeamjobname=$nameJob,backupServerName=$BackupReposerverName,bottleneck=$bottleneck,typeJob=$typeJob,isEnabled=$isEnabled totalDuration=$totalDuration,status=\"$jobStatus\",processingRate=$processingRate,transferredData=$transferredData,protectedVMs=$protectedVMs,lastRunTime=$lastRunTimeUnix"
     arrayJobs=$arrayJobs+1
 done
 
