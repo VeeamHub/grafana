@@ -9,7 +9,7 @@
       "pluginName": "InfluxDB"
     }
   ],
-  "__elements": [],
+  "__elements": {},
   "__requires": [
     {
       "type": "panel",
@@ -27,13 +27,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "8.3.0"
-    },
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph (old)",
-      "version": ""
+      "version": "9.3.2"
     },
     {
       "type": "datasource",
@@ -64,7 +58,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -85,7 +82,6 @@
   "gnetId": 11516,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1638873508225,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -93,7 +89,7 @@
       "collapsed": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "gK_s8WTMk"
       },
       "gridPos": {
         "h": 1,
@@ -103,10 +99,23 @@
       },
       "id": 61,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "gK_s8WTMk"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Enterprise Manager - Summary",
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -345,7 +354,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.0",
+      "pluginVersion": "9.3.2",
       "targets": [
         {
           "alias": "Backup Servers",
@@ -744,6 +753,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -787,6 +800,8 @@
       "id": 289,
       "options": {
         "displayMode": "lcd",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
         "orientation": "vertical",
         "reduceOptions": {
           "calcs": [
@@ -798,7 +813,7 @@
         "showUnfilled": true,
         "text": {}
       },
-      "pluginVersion": "8.3.0",
+      "pluginVersion": "9.3.2",
       "targets": [
         {
           "alias": "$tag_veeamRepositoryName",
@@ -843,7 +858,7 @@
           "tags": []
         }
       ],
-      "timeFrom": "3h",
+      "timeFrom": "$interval",
       "title": "Backup Repository - Usage Capacity",
       "type": "bargauge"
     },
@@ -851,7 +866,7 @@
       "collapsed": true,
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "gK_s8WTMk"
       },
       "gridPos": {
         "h": 1,
@@ -862,6 +877,10 @@
       "id": 25,
       "panels": [
         {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -903,7 +922,7 @@
           },
           "gridPos": {
             "h": 4,
-            "w": 4,
+            "w": 4.8,
             "x": 0,
             "y": 10
           },
@@ -923,7 +942,7 @@
             "showThresholdMarkers": true,
             "text": {}
           },
-          "pluginVersion": "8.3.0",
+          "pluginVersion": "9.3.2",
           "repeat": "repository",
           "repeatDirection": "h",
           "targets": [
@@ -982,14 +1001,23 @@
           "type": "gauge"
         }
       ],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "gK_s8WTMk"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Backup Repositories - Overview",
       "type": "row"
     },
     {
-      "collapsed": true,
+      "collapsed": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "gK_s8WTMk"
       },
       "gridPos": {
         "h": 1,
@@ -998,769 +1026,821 @@
         "y": 10
       },
       "id": 151,
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "links": []
-            },
-            "overrides": []
-          },
-          "fill": 5,
-          "fillGradient": 0,
-          "gridPos": {
-            "h": 5,
-            "w": 12,
-            "x": 0,
-            "y": 11
-          },
-          "hiddenSeries": false,
-          "id": 543,
-          "legend": {
-            "alignAsTable": false,
-            "avg": false,
-            "current": false,
-            "hideEmpty": false,
-            "hideZero": false,
-            "max": false,
-            "min": false,
-            "rightSide": false,
-            "show": false,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "options": {
-            "alertThreshold": true
-          },
-          "percentage": false,
-          "pluginVersion": "8.3.0",
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": true,
-          "steppedLine": false,
-          "targets": [
-            {
-              "alias": "$tag_host $col",
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "host"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "linear"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "win_cpu",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "Percent_Privileged_Time"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  },
-                  {
-                    "params": [
-                      "% Privileged Time"
-                    ],
-                    "type": "alias"
-                  }
-                ],
-                [
-                  {
-                    "params": [
-                      "Percent_User_Time"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  },
-                  {
-                    "params": [
-                      "% User Time"
-                    ],
-                    "type": "alias"
-                  }
-                ],
-                [
-                  {
-                    "params": [
-                      "Percent_Interrupt_Time"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  },
-                  {
-                    "params": [
-                      "% Interrupt Time"
-                    ],
-                    "type": "alias"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "host",
-                  "operator": "=~",
-                  "value": "/^$veeamserver$/"
-                }
-              ]
-            }
-          ],
-          "thresholds": [],
-          "timeRegions": [],
-          "title": "CPU Usage",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "percent",
-              "label": "CPU Usage in %",
-              "logBase": 1,
-              "show": true
-            },
-            {
-              "format": "short",
-              "logBase": 1,
-              "show": false
-            }
-          ],
-          "yaxis": {
-            "align": false
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "links": []
-            },
-            "overrides": []
-          },
-          "fill": 5,
-          "fillGradient": 0,
-          "gridPos": {
-            "h": 5,
-            "w": 12,
-            "x": 12,
-            "y": 11
-          },
-          "hiddenSeries": false,
-          "id": 544,
-          "legend": {
-            "alignAsTable": false,
-            "avg": false,
-            "current": false,
-            "hideEmpty": false,
-            "hideZero": false,
-            "max": false,
-            "min": false,
-            "rightSide": false,
-            "show": false,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "options": {
-            "alertThreshold": true
-          },
-          "percentage": false,
-          "pluginVersion": "8.3.0",
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "alias": "$tag_host $col",
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "host"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "linear"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "win_mem",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "Available_Bytes"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  },
-                  {
-                    "params": [
-                      "Available Bytes"
-                    ],
-                    "type": "alias"
-                  }
-                ],
-                [
-                  {
-                    "params": [
-                      "Pool_Nonpaged_Bytes"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  },
-                  {
-                    "params": [
-                      "Pool non-paged Bytes"
-                    ],
-                    "type": "alias"
-                  }
-                ],
-                [
-                  {
-                    "params": [
-                      "Pool_Paged_Bytes"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  },
-                  {
-                    "params": [
-                      "Pool paged Bytes"
-                    ],
-                    "type": "alias"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "host",
-                  "operator": "=~",
-                  "value": "/^$veeamserver$/"
-                }
-              ]
-            }
-          ],
-          "thresholds": [],
-          "timeRegions": [],
-          "title": "RAM Usage",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "decbytes",
-              "label": "RAM Usage in bytes",
-              "logBase": 1,
-              "show": true
-            },
-            {
-              "format": "short",
-              "logBase": 1,
-              "show": false
-            }
-          ],
-          "yaxis": {
-            "align": false
-          }
-        },
+      "panels": [],
+      "repeat": "veeamserver",
+      "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
+            "uid": "gK_s8WTMk"
           },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "mappings": [
-                {
-                  "options": {
-                    "match": "null",
-                    "result": {
-                      "text": "N/A"
-                    }
-                  },
-                  "type": "special"
-                }
-              ],
-              "min": 0,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "dark-blue",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "s"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 6,
-            "w": 3,
-            "x": 0,
-            "y": 16
-          },
-          "id": 542,
-          "links": [],
-          "maxDataPoints": 100,
-          "options": {
-            "colorMode": "background",
-            "fieldOptions": {
-              "calcs": [
-                "lastNotNull"
-              ]
-            },
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "horizontal",
-            "reduceOptions": {
-              "calcs": [
-                "mean"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "text": {},
-            "textMode": "auto"
-          },
-          "pluginVersion": "8.3.0",
-          "targets": [
-            {
-              "groupBy": [],
-              "measurement": "win_system",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "SELECT \"System_Up_Time\" FROM \"win_system\" WHERE (\"host\" =~ /^$vboserver$/) AND $timeFilter",
-              "rawQuery": false,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "System_Up_Time"
-                    ],
-                    "type": "field"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "host",
-                  "operator": "=~",
-                  "value": "/^$veeamserver$/"
-                }
-              ]
-            }
-          ],
-          "title": "Uptime",
-          "type": "stat"
-        },
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "mappings": [],
-              "max": 100,
-              "min": 0,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "dark-green",
-                    "value": null
-                  },
-                  {
-                    "color": "dark-yellow",
-                    "value": 80
-                  },
-                  {
-                    "color": "dark-red",
-                    "value": 90
-                  }
-                ]
-              },
-              "unit": "percent"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 6,
-            "w": 10,
-            "x": 3,
-            "y": 16
-          },
-          "id": 545,
-          "links": [],
-          "options": {
-            "displayMode": "lcd",
-            "orientation": "horizontal",
-            "reduceOptions": {
-              "calcs": [
-                "mean"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "showUnfilled": true,
-            "text": {}
-          },
-          "pluginVersion": "8.3.0",
-          "targets": [
-            {
-              "alias": "$tag_instance",
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "instance"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "linear"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "win_disk",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "SELECT 100 - (mean(\"Percent_Free_Space\")) FROM \"win_disk\" WHERE (\"host\" =~ /^$veeamserver$/ ) AND (\"instance\" !='HarddiskVolume1') AND $timeFilter GROUP BY time($__interval), \"instance\" fill(linear)",
-              "rawQuery": true,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "Percent_Free_Space"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "host",
-                  "operator": "=~",
-                  "value": "/^$vboserver$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "instance",
-                  "operator": "=~",
-                  "value": "/^$disk$/"
-                }
-              ]
-            }
-          ],
-          "title": "Disk Usage",
-          "type": "bargauge"
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "links": []
-            },
-            "overrides": []
-          },
-          "fill": 5,
-          "fillGradient": 0,
-          "gridPos": {
-            "h": 6,
-            "w": 11,
-            "x": 13,
-            "y": 16
-          },
-          "hiddenSeries": false,
-          "id": 546,
-          "legend": {
-            "alignAsTable": false,
-            "avg": false,
-            "current": false,
-            "hideEmpty": false,
-            "hideZero": false,
-            "max": false,
-            "min": false,
-            "rightSide": false,
-            "show": false,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "options": {
-            "alertThreshold": true
-          },
-          "percentage": false,
-          "pluginVersion": "8.3.0",
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "alias": "$tag_host $col",
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "host"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "none"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "win_net",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "Bytes_Received_persec"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  },
-                  {
-                    "params": [
-                      "Bytes received"
-                    ],
-                    "type": "alias"
-                  }
-                ],
-                [
-                  {
-                    "params": [
-                      "Bytes_Sent_persec"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  },
-                  {
-                    "params": [
-                      "Bytes sent"
-                    ],
-                    "type": "alias"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "host",
-                  "operator": "=~",
-                  "value": "/^$veeamserver$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "instance",
-                  "operator": "=",
-                  "value": "vmxnet3 Ethernet Adapter _2"
-                }
-              ]
-            }
-          ],
-          "thresholds": [],
-          "timeRegions": [],
-          "title": "Network Usage",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "decimals": 2,
-              "format": "decbytes",
-              "label": "Net Usage in bytes",
-              "logBase": 1,
-              "show": true
-            },
-            {
-              "format": "short",
-              "logBase": 1,
-              "show": false
-            }
-          ],
-          "yaxis": {
-            "align": false
-          }
+          "refId": "A"
         }
       ],
-      "repeat": "veeamserver",
       "title": "$veeamserver v$veeamversionM ($veeamversion) - Veeam Backup Performance",
       "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "CPU Usage in %",
+            "axisPlacement": "auto",
+            "axisSoftMin": 0,
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 30,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 80
+              },
+              {
+                "color": "dark-red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 12,
+        "x": 0,
+        "y": 11
+      },
+      "id": 543,
+      "interval": "5m",
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.3.2",
+      "targets": [
+        {
+          "alias": "$tag_host $col",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "host"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "win_cpu",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"win_cpu\")\r\n  |> filter(fn: (r) => r[\"host\"] =~ /${veeamserver:regex}/)\r\n  |> filter(fn: (r) => r[\"_field\"] == \"Percent_Privileged_Time\" or r[\"_field\"] == \"Percent_User_Time\" or r[\"_field\"] == \"Percent_Interrupt_Time\")\r\n  |> group(columns: [\"veeamserver\",\"_field\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Percent_Privileged_Time"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "% Privileged Time"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "Percent_User_Time"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "% User Time"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "Percent_Interrupt_Time"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "% Interrupt Time"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$veeamserver$/"
+            }
+          ]
+        }
+      ],
+      "title": "CPU Usage",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "RAM Usage in bytes",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 30,
+            "gradientMode": "hue",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 12,
+        "x": 12,
+        "y": 11
+      },
+      "id": 544,
+      "interval": "5m",
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.3.2",
+      "targets": [
+        {
+          "alias": "$tag_host $col",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "host"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "win_mem",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"win_mem\")\r\n  |> filter(fn: (r) => r[\"host\"] =~ /${veeamserver:regex}/)\r\n  |> filter(fn: (r) => r[\"_field\"] == \"Available_Bytes\" or r[\"_field\"] == \"Pool_Nonpaged_Bytes\" or r[\"_field\"] == \"Pool_Paged_Bytes\")\r\n  |> group(columns: [\"veeamserver\",\"_field\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Available_Bytes"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "Available Bytes"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "Pool_Nonpaged_Bytes"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "Pool non-paged Bytes"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "Pool_Paged_Bytes"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "Pool paged Bytes"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$veeamserver$/"
+            }
+          ]
+        }
+      ],
+      "title": "RAM Usage",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 0,
+        "y": 16
+      },
+      "id": 542,
+      "links": [],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "background",
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [],
+          "measurement": "win_system",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"win_system\")\r\n  |> filter(fn: (r) => r[\"host\"] =~ /${veeamserver:regex}/)\r\n  |> filter(fn: (r) => r[\"_field\"] == \"System_Up_Time\")\r\n  |> group(columns: [\"veeamserver\",\"_field\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "System_Up_Time"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$veeamserver$/"
+            }
+          ]
+        }
+      ],
+      "title": "Uptime",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-green",
+                "value": null
+              },
+              {
+                "color": "dark-yellow",
+                "value": 80
+              },
+              {
+                "color": "dark-red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 10,
+        "x": 3,
+        "y": 16
+      },
+      "id": 545,
+      "links": [],
+      "options": {
+        "displayMode": "lcd",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "text": {}
+      },
+      "pluginVersion": "9.3.2",
+      "targets": [
+        {
+          "alias": "$tag_instance",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "instance"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "win_disk",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"win_disk\")\r\n  |> filter(fn: (r) => r[\"host\"] =~ /${veeamserver:regex}/)\r\n  |> filter(fn: (r) => r[\"_field\"] == \"Percent_Free_Space\")\r\n  |> filter(fn: (r) => r[\"instance\"] != \"HarddiskVolume1\")\r\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> map(fn: (r) => ({ r with  _value: 100.0 - float(v: r.Percent_Free_Space)  }))\r\n  |> group(columns: [\"_field\",\"instance\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")\r\n",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Percent_Free_Space"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$vboserver$/"
+            },
+            {
+              "condition": "AND",
+              "key": "instance",
+              "operator": "=~",
+              "value": "/^$disk$/"
+            }
+          ]
+        }
+      ],
+      "title": "Disk Usage",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Net Usage in bytes",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 30,
+            "gradientMode": "hue",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 11,
+        "x": 13,
+        "y": 16
+      },
+      "id": 546,
+      "interval": "5m",
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.3.2",
+      "targets": [
+        {
+          "alias": "$tag_host $col",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "host"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "win_net",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"win_net\")\r\n  |> filter(fn: (r) => r[\"host\"] =~ /${veeamserver:regex}/)\r\n  |> filter(fn: (r) => r[\"_field\"] == \"Bytes_Received_persec\" or r[\"_field\"] == \"Bytes_Sent_persec\")\r\n  |> group(columns: [\"instance\",\"veeamserver\",\"_field\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Bytes_Received_persec"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "Bytes received"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "Bytes_Sent_persec"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "Bytes sent"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$veeamserver$/"
+            },
+            {
+              "condition": "AND",
+              "key": "instance",
+              "operator": "=",
+              "value": "vmxnet3 Ethernet Adapter _2"
+            }
+          ]
+        }
+      ],
+      "title": "Network Usage",
+      "type": "timeseries"
     },
     {
       "collapsed": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "gK_s8WTMk"
       },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 11
+        "y": 22
       },
       "id": 569,
       "panels": [],
       "repeat": "veeamserver",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "gK_s8WTMk"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "$veeamserver v$veeamversionM ($veeamversion) - Backup Jobs",
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1810,9 +1890,9 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 4,
+        "w": 6,
         "x": 0,
-        "y": 12
+        "y": 23
       },
       "id": 109,
       "links": [],
@@ -1838,7 +1918,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.0",
+      "pluginVersion": "9.3.2",
       "repeat": "backupjob",
       "repeatDirection": "h",
       "targets": [
@@ -1914,190 +1994,215 @@
       "type": "stat"
     },
     {
-      "collapsed": true,
+      "collapsed": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "gK_s8WTMk"
       },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 21
+        "y": 26
       },
       "id": 608,
-      "panels": [
+      "panels": [],
+      "repeat": "veeamserver",
+      "targets": [
         {
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "decimals": 0,
-              "mappings": [
-                {
-                  "options": {
-                    "1": {
-                      "text": "Success"
-                    },
-                    "2": {
-                      "text": "Warning"
-                    },
-                    "3": {
-                      "text": "Failed"
-                    }
-                  },
-                  "type": "value"
-                }
-              ],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "rgb(133, 133, 133)",
-                    "value": null
-                  },
-                  {
-                    "color": "dark-green",
-                    "value": 0
-                  },
-                  {
-                    "color": "dark-orange",
-                    "value": 1.1
-                  },
-                  {
-                    "color": "dark-red",
-                    "value": 2.1
-                  }
-                ]
-              },
-              "unit": "short"
-            },
-            "overrides": []
+          "datasource": {
+            "type": "influxdb",
+            "uid": "gK_s8WTMk"
           },
-          "gridPos": {
-            "h": 3,
-            "w": 24,
-            "x": 0,
-            "y": 13
-          },
-          "id": 354,
-          "links": [],
-          "maxDataPoints": 100,
-          "maxPerRow": 6,
-          "options": {
-            "colorMode": "background",
-            "fieldOptions": {
-              "calcs": [
-                "lastNotNull"
-              ]
-            },
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "horizontal",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "text": {},
-            "textMode": "auto"
-          },
-          "pluginVersion": "8.3.0",
-          "repeat": "replicajob",
-          "repeatDirection": "h",
-          "targets": [
-            {
-              "alias": "$tag_veeamReplicaSessionsName",
-              "datasource": {
-                "type": "influxdb",
-                "uid": "${DS_INFLUXDB}"
-              },
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "veeamReplicaSessionsName"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "none"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "veeam_em_job_sessions",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_em_job_sessions\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"veeamReplicaSessionsJobResult\")\r\n  |> filter(fn: (r) => r[\"veeamReplicaSessionsName\"] =~ /${replicajob:regex}/)\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] =~ /${veeamserver:regex}/)\r\n  |> group()\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-              "rawQuery": true,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "veeamReplicaSessionsJobResult"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "last"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "veeamReplicaSessionsName",
-                  "operator": "=~",
-                  "value": "/^$replicajob$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "veeamVBR",
-                  "operator": "=~",
-                  "value": "/^$veeamserver$/"
-                }
-              ]
-            }
-          ],
-          "title": "$replicajob - Last Result",
-          "type": "stat"
+          "refId": "A"
         }
       ],
-      "repeat": "veeamserver",
       "title": "$veeamserver v$veeamversionM ($veeamversion) - Replica Jobs",
       "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [
+            {
+              "options": {
+                "1": {
+                  "text": "Success"
+                },
+                "2": {
+                  "text": "Warning"
+                },
+                "3": {
+                  "text": "Failed"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(133, 133, 133)",
+                "value": null
+              },
+              {
+                "color": "dark-green",
+                "value": 0
+              },
+              {
+                "color": "dark-orange",
+                "value": 1.1
+              },
+              {
+                "color": "dark-red",
+                "value": 2.1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 12,
+        "x": 0,
+        "y": 27
+      },
+      "id": 354,
+      "links": [],
+      "maxDataPoints": 100,
+      "maxPerRow": 6,
+      "options": {
+        "colorMode": "background",
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.3.2",
+      "repeat": "replicajob",
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "alias": "$tag_veeamReplicaSessionsName",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "veeamReplicaSessionsName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_em_job_sessions",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_em_job_sessions\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"veeamReplicaSessionsJobResult\")\r\n  |> filter(fn: (r) => r[\"veeamReplicaSessionsName\"] =~ /${replicajob:regex}/)\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] =~ /${veeamserver:regex}/)\r\n  |> group()\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "veeamReplicaSessionsJobResult"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "veeamReplicaSessionsName",
+              "operator": "=~",
+              "value": "/^$replicajob$/"
+            },
+            {
+              "condition": "AND",
+              "key": "veeamVBR",
+              "operator": "=~",
+              "value": "/^$veeamserver$/"
+            }
+          ]
+        }
+      ],
+      "title": "$replicajob - Last Result",
+      "type": "stat"
     },
     {
       "collapsed": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "gK_s8WTMk"
       },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 22
+        "y": 30
       },
       "id": 622,
       "panels": [],
       "repeat": "veeamserver",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "gK_s8WTMk"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "$veeamserver v$veeamversionM ($veeamversion) - Protected VMs",
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2146,9 +2251,9 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 2,
+        "w": 3.4285714285714284,
         "x": 0,
-        "y": 23
+        "y": 31
       },
       "id": 369,
       "links": [],
@@ -2174,7 +2279,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.0",
+      "pluginVersion": "9.3.2",
       "repeat": "backupvm",
       "repeatDirection": "h",
       "targets": [
@@ -2247,21 +2352,34 @@
       "collapsed": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "gK_s8WTMk"
       },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 31
+        "y": 35
       },
       "id": 625,
       "panels": [],
       "repeat": "veeamserver",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "gK_s8WTMk"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "$veeamserver v$veeamversionM ($veeamversion) - Replicated VMs",
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2310,9 +2428,9 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 24,
+        "w": 12,
         "x": 0,
-        "y": 32
+        "y": 36
       },
       "id": 435,
       "links": [],
@@ -2338,7 +2456,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.0",
+      "pluginVersion": "9.3.2",
       "repeat": "replicavm",
       "repeatDirection": "h",
       "targets": [
@@ -2405,29 +2523,44 @@
       "collapsed": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "gK_s8WTMk"
       },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 36
+        "y": 40
       },
       "id": 668,
       "panels": [],
       "repeat": "veeamserver",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "gK_s8WTMk"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "$veeamserver v$veeamversionM ($veeamversion) - Veeam Agents Overview",
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
           "custom": {
+            "align": "auto",
             "displayMode": "color-background",
-            "filterable": false
+            "filterable": false,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -2453,13 +2586,20 @@
                   {
                     "options": {
                       "1": {
+                        "index": 4,
                         "text": "✅"
                       },
                       "2": {
+                        "index": 3,
                         "text": "⚠️"
                       },
                       "3": {
+                        "index": 2,
                         "text": "❌"
+                      },
+                      "5": {
+                        "index": 1,
+                        "text": "Not Initialized"
                       }
                     },
                     "type": "value"
@@ -2468,6 +2608,7 @@
                     "options": {
                       "match": "null",
                       "result": {
+                        "index": 0,
                         "text": "No info"
                       }
                     },
@@ -2489,9 +2630,11 @@
                   {
                     "options": {
                       "1": {
+                        "index": 2,
                         "text": "✅"
                       },
                       "2": {
+                        "index": 1,
                         "text": "❌"
                       }
                     },
@@ -2501,6 +2644,7 @@
                     "options": {
                       "match": "null",
                       "result": {
+                        "index": 0,
                         "text": "No info"
                       }
                     },
@@ -2513,7 +2657,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Veeam Agent version"
+              "options": "Veeam Agent Version"
             },
             "properties": [
               {
@@ -2521,7 +2665,8 @@
                 "value": [
                   {
                     "options": {
-                      "0": {
+                      "0.0": {
+                        "index": 0,
                         "text": "No info"
                       }
                     },
@@ -2543,6 +2688,11 @@
                   {
                     "options": {
                       "0": {
+                        "index": 0,
+                        "text": "No info"
+                      },
+                      "": {
+                        "index": 1,
                         "text": "No info"
                       }
                     },
@@ -2558,7 +2708,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 37
+        "y": 41
       },
       "hideTimeOverride": false,
       "id": 750,
@@ -2574,7 +2724,7 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "8.3.0",
+      "pluginVersion": "9.3.2",
       "targets": [
         {
           "alias": "$tag_veeamAgentName",
@@ -2705,29 +2855,44 @@
       "collapsed": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "gK_s8WTMk"
       },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 43
+        "y": 47
       },
       "id": 752,
       "panels": [],
       "repeat": "veeamserver",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "gK_s8WTMk"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "$veeamserver v$veeamversionM ($veeamversion) - Veeam NAS Backup Overview",
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
           "custom": {
+            "align": "auto",
             "displayMode": "color-background",
-            "filterable": false
+            "filterable": false,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -2771,7 +2936,7 @@
         "h": 9,
         "w": 13,
         "x": 0,
-        "y": 44
+        "y": 48
       },
       "hideTimeOverride": false,
       "id": 755,
@@ -2787,7 +2952,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.3.0",
+      "pluginVersion": "9.3.2",
       "targets": [
         {
           "alias": "$tag_veeamAgentName",
@@ -2927,6 +3092,7 @@
           "tz": ""
         }
       ],
+      "timeFrom": "$interval",
       "title": "Veeam NAS Jobs Status and Information",
       "transformations": [
         {
@@ -2978,12 +3144,18 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "Job Duration",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -3036,7 +3208,7 @@
         "h": 9,
         "w": 11,
         "x": 13,
-        "y": 44
+        "y": 48
       },
       "hideTimeOverride": false,
       "id": 756,
@@ -3052,10 +3224,12 @@
             "sum"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "7.4.1",
@@ -3089,7 +3263,7 @@
           "measurement": "veeam_em_nas_sessions",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_em_nas_sessions\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"veeamNASJobDuration\")\r\n  |> filter(fn: (r) => r[\"veeamNASJobName\"] =~ /${veeamnasjob:regex}/)\r\n  |> group(columns: [\"veeamNASJobName\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_em_nas_sessions\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"veeamNASJobDuration\" )\r\n  |> filter(fn: (r) => r[\"veeamNASJobName\"] =~ /${veeamnasjob:regex}/)\r\n  |> group(columns: [\"veeamNASJobName\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")\r\n",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -3116,7 +3290,7 @@
           ]
         }
       ],
-      "timeFrom": "7d",
+      "timeFrom": "$interval",
       "title": "Job Duration",
       "type": "timeseries"
     },
@@ -3124,21 +3298,34 @@
       "collapsed": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "gK_s8WTMk"
       },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 53
+        "y": 57
       },
       "id": 627,
       "panels": [],
       "repeat": "veeamserver",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "gK_s8WTMk"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "$veeamserver v$veeamversionM ($veeamversion) - Job Historical Performance and Duration",
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -3148,7 +3335,8 @@
           "custom": {
             "align": "auto",
             "displayMode": "color-background",
-            "filterable": false
+            "filterable": false,
+            "inspect": false
           },
           "decimals": 0,
           "displayName": "",
@@ -3225,7 +3413,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 54
+        "y": 58
       },
       "hideTimeOverride": false,
       "id": 113,
@@ -3240,7 +3428,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.0",
+      "pluginVersion": "9.3.2",
       "targets": [
         {
           "alias": "$tag_veeamBackupSessionsName",
@@ -3310,6 +3498,7 @@
           ]
         }
       ],
+      "timeFrom": "$interval",
       "title": "Job Historical Information",
       "transformations": [
         {
@@ -3358,12 +3547,18 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "Job Duration",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -3393,6 +3588,7 @@
             }
           },
           "decimals": 0,
+          "displayName": "${__field.labels.veeamBackupSessionsName}",
           "mappings": [],
           "min": 0,
           "thresholds": {
@@ -3420,6 +3616,10 @@
               {
                 "id": "unit",
                 "value": "s"
+              },
+              {
+                "id": "displayName",
+                "value": "${__field.labels.veeamReplicaSessionsName}"
               }
             ]
           }
@@ -3429,7 +3629,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 54
+        "y": 58
       },
       "hideTimeOverride": false,
       "id": 463,
@@ -3441,11 +3641,13 @@
           "calcs": [
             "lastNotNull"
           ],
-          "displayMode": "hidden",
-          "placement": "bottom"
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "7.4.1",
@@ -3579,13 +3781,13 @@
           ]
         }
       ],
-      "timeFrom": "7d",
+      "timeFrom": "$interval",
       "title": "Job Duration (All type)",
       "type": "timeseries"
     }
   ],
   "refresh": false,
-  "schemaVersion": 33,
+  "schemaVersion": 37,
   "style": "dark",
   "tags": [
     "Veeam",
@@ -3593,6 +3795,66 @@
   ],
   "templating": {
     "list": [
+      {
+        "auto": false,
+        "auto_count": 30,
+        "auto_min": "5m",
+        "current": {
+          "selected": false,
+          "text": "7d",
+          "value": "7d"
+        },
+        "hide": 0,
+        "label": "Sampling",
+        "name": "interval",
+        "options": [
+          {
+            "selected": false,
+            "text": "30m",
+            "value": "30m"
+          },
+          {
+            "selected": false,
+            "text": "1h",
+            "value": "1h"
+          },
+          {
+            "selected": false,
+            "text": "6h",
+            "value": "6h"
+          },
+          {
+            "selected": false,
+            "text": "12h",
+            "value": "12h"
+          },
+          {
+            "selected": false,
+            "text": "1d",
+            "value": "1d"
+          },
+          {
+            "selected": true,
+            "text": "7d",
+            "value": "7d"
+          },
+          {
+            "selected": false,
+            "text": "14d",
+            "value": "14d"
+          },
+          {
+            "selected": false,
+            "text": "30d",
+            "value": "30d"
+          }
+        ],
+        "query": "30m,1h,6h,12h,1d,7d,14d,30d",
+        "queryValue": "",
+        "refresh": 2,
+        "skipUrlSync": false,
+        "type": "interval"
+      },
       {
         "current": {},
         "datasource": {
@@ -3925,6 +4187,6 @@
   "timezone": "browser",
   "title": "Grafana Dashboard for Veeam Enterprise Manager",
   "uid": "WmrXrCYZk",
-  "version": 20,
+  "version": 22,
   "weekStart": ""
 }
