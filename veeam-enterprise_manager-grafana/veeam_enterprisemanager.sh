@@ -370,7 +370,7 @@ else
         endTimeUnix=$(date -d "$veeamBackupSessionsVMTimeEnd" +"%s")
         veeamBackupSessionsVMDuration=$(($endTimeUnix-$creationTimeUnix))
 
-        echo "veeam_em_job_sessionsvm,veeamBackupSessionsVmDisplayName=$veeamBackupSessionsVmDisplayName,veeamVBR=$veeamVBR,veeamBackupSessionsJobVMState=$veeamBackupSessionsJobVMState veeamBackupSessionsTotalSize=$veeamBackupSessionsTotalSize,veeamBackupSessionsJobVMResult=$jobStatus $creationTimeUnix"
+        #echo "veeam_em_job_sessionsvm,veeamBackupSessionsVmDisplayName=$veeamBackupSessionsVmDisplayName,veeamVBR=$veeamVBR,veeamBackupSessionsJobVMState=$veeamBackupSessionsJobVMState veeamBackupSessionsTotalSize=$veeamBackupSessionsTotalSize,veeamBackupSessionsJobVMResult=$jobStatus $creationTimeUnix"
 
         ##Comment the influx write while debugging
         echo "Writing veeam_em_job_sessionsvm to InfluxDB"     
