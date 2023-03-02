@@ -88,7 +88,7 @@ veeamEMOVMUrl=$(curl -X GET "$veeamEMUrl" -H "Accept:application/json" -H "X-Res
     
     ##Comment the influx write while debugging
     echo "Writing veeam_em_overview_vms to InfluxDB"    
-        influx write \
+    influx write \
     -t "$veeamInfluxDBToken" \
     -b "$veeamInfluxDBBucket" \
     -o "$veeamInfluxDBOrg" \

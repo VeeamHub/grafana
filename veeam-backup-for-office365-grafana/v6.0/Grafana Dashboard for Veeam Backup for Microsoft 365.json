@@ -27,7 +27,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.3.2"
+      "version": "9.1.3"
     },
     {
       "type": "datasource",
@@ -82,7 +82,7 @@
       }
     ]
   },
-  "description": "Grafana Dashboard for Veeam Backup for Microsoft 365 Dashboard / VBO v7 + Influx v2",
+  "description": "Grafana Dashboard for Veeam Backup for Microsoft 365 Dashboard / VBO v6 + Influx v2",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "gnetId": 11286,
@@ -147,15 +147,10 @@
       "id": 164,
       "links": [],
       "options": {
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        },
         "content": "<span style=\"color:#fff; font-family: 'Lato'; font-size: 2.1em;\">Veeam Backup for Microsoft 365</span><br/>\r\n<span style=\"color:#fff; font-family: 'Lato'; font-size: 2em;\">Installed version: $version</span>",
         "mode": "markdown"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "datasource": {
@@ -231,7 +226,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "",
@@ -349,7 +344,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "datasource": {
@@ -466,7 +461,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "",
@@ -576,7 +571,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "datasource": {
@@ -687,7 +682,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "datasource": {
@@ -818,7 +813,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "",
@@ -962,7 +957,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "$tag_veeamjobname",
@@ -1199,7 +1194,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "$tag_veeamjobname",
@@ -1412,7 +1407,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.1.3",
       "repeat": "job",
       "repeatDirection": "h",
       "targets": [
@@ -2226,7 +2221,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "$tag_veeamjobname",
@@ -2358,7 +2353,7 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "OBJECT - ${__field.labels.objectname}"
+                "value": "${__field.labels.objectname}"
               },
               {
                 "id": "color",
@@ -2412,7 +2407,7 @@
         },
         "showUnfilled": false
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "datasource": {
@@ -2664,7 +2659,7 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 3,
+        "w": 4,
         "x": 14,
         "y": 34
       },
@@ -2685,7 +2680,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "$tag_type",
@@ -2775,8 +2770,8 @@
       },
       "gridPos": {
         "h": 2,
-        "w": 7,
-        "x": 17,
+        "w": 6,
+        "x": 18,
         "y": 34
       },
       "id": 213,
@@ -2796,7 +2791,7 @@
         },
         "textMode": "name"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "$tag_servicePoint",
@@ -2886,8 +2881,8 @@
       },
       "gridPos": {
         "h": 2,
-        "w": 3,
-        "x": 17,
+        "w": 4,
+        "x": 18,
         "y": 36
       },
       "id": 187,
@@ -2907,7 +2902,7 @@
         },
         "textMode": "name"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "$tag_type",
@@ -2998,7 +2993,7 @@
       "gridPos": {
         "h": 2,
         "w": 2,
-        "x": 20,
+        "x": 22,
         "y": 36
       },
       "id": 214,
@@ -3018,7 +3013,7 @@
         },
         "textMode": "name"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "$tag_region",
@@ -3108,119 +3103,8 @@
       },
       "gridPos": {
         "h": 2,
-        "w": 2,
-        "x": 22,
-        "y": 36
-      },
-      "id": 211,
-      "links": [],
-      "maxDataPoints": 100,
-      "options": {
-        "colorMode": "none",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "mean"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "name"
-      },
-      "pluginVersion": "9.3.2",
-      "targets": [
-        {
-          "alias": "$tag_objectStorageEncryptionEnabled",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          },
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "objectStorageEncryptionEnabled"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "veeam_office365_objectstorage",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_objectstorage\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"usedSpaceGB\")\r\n  |> filter(fn: (r) => r[\"objectname\"] =~ /${objectstorage:regex}/)\r\n  |> group(columns: [\"objectStorageEncryptionEnabled\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "usedSpaceGB"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "objectname",
-              "operator": "=~",
-              "value": "/^$objectstorage$/"
-            }
-          ]
-        }
-      ],
-      "title": "Encryption",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
         "w": 4,
-        "x": 17,
+        "x": 18,
         "y": 38
       },
       "id": 210,
@@ -3240,7 +3124,7 @@
         },
         "textMode": "name"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "$tag_bucketname",
@@ -3305,66 +3189,53 @@
         "type": "influxdb",
         "uid": "${DS_INFLUXDB}"
       },
-      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
-          "mappings": [
-            {
-              "options": {
-                "false": {
-                  "color": "dark-red",
-                  "index": 1,
-                  "text": "Disabled"
-                },
-                "true": {
-                  "color": "dark-green",
-                  "index": 0,
-                  "text": "Enabled"
-                }
-              },
-              "type": "value"
-            }
-          ],
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
                 "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
               }
             ]
           },
-          "unit": "string"
+          "unit": "none"
         },
         "overrides": []
       },
       "gridPos": {
         "h": 2,
-        "w": 3,
-        "x": 21,
+        "w": 2,
+        "x": 22,
         "y": 38
       },
-      "id": 263,
+      "id": 211,
       "links": [],
       "maxDataPoints": 100,
       "options": {
-        "colorMode": "background",
+        "colorMode": "none",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "mean"
           ],
-          "fields": "/.*/",
+          "fields": "",
           "values": false
         },
-        "textMode": "value"
+        "textMode": "name"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.1.3",
       "targets": [
         {
           "alias": "$tag_objectStorageEncryptionEnabled",
@@ -3395,7 +3266,7 @@
           "measurement": "veeam_office365_objectstorage",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_objectstorage\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"immutability\")\r\n  |> filter(fn: (r) => r[\"objectname\"] =~ /${objectstorage:regex}/)\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_office365_objectstorage\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"usedSpaceGB\")\r\n  |> filter(fn: (r) => r[\"objectname\"] =~ /${objectstorage:regex}/)\r\n  |> group(columns: [\"objectStorageEncryptionEnabled\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -3421,19 +3292,7 @@
           ]
         }
       ],
-      "title": "Immutability",
-      "transformations": [
-        {
-          "id": "reduce",
-          "options": {
-            "includeTimeField": false,
-            "mode": "reduceFields",
-            "reducers": [
-              "lastNotNull"
-            ]
-          }
-        }
-      ],
+      "title": "Encryption",
       "type": "stat"
     },
     {
@@ -3446,7 +3305,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 47
+        "y": 40
       },
       "id": 25,
       "panels": [],
@@ -3509,9 +3368,9 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 8,
+        "w": 24,
         "x": 0,
-        "y": 48
+        "y": 41
       },
       "id": 34,
       "links": [],
@@ -3528,7 +3387,7 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.1.3",
       "repeat": "repository",
       "repeatDirection": "h",
       "targets": [
@@ -3830,7 +3689,7 @@
     ]
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {
@@ -3861,6 +3720,6 @@
   "timezone": "browser",
   "title": "Grafana Dashboard for Veeam Backup for Microsoft 365",
   "uid": "AGZEYsbZk",
-  "version": 12,
+  "version": 10,
   "weekStart": ""
 }
