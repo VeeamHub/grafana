@@ -1,7 +1,7 @@
 Grafana Dashboard for Veeam Backup for Microsoft 365
 ===================
 
-![alt tag](https://jorgedelacruz.uk/wp-content/uploads/2022/03/vbo-v6-grafana-001.jpg)
+![alt tag](https://jorgedelacruz.uk/wp-content/uploads/2023/03/Grafana-VB365-v7.png)
 
 This project consists in a Bash Shell script to retrieve the Veeam Backup for Microsoft 365 information, directly from the RESTfulAPI, about last jobs, users and much more. The information is being saved it into InfluxDB output directly into the InfluxDB database using curl, then in Grafana: a Dashboard is created to present all the information.
 
