@@ -1,0 +1,1853 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDB",
+      "label": "InfluxDB",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "9.5.2"
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Grafana Dashboard for Veeam Backup & Replication REST API.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 26,
+      "panels": [],
+      "title": "$vbrserver - v$vbrmajorversion | Job Historical Data",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "rgb(64, 64, 64)",
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Jobs",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 70,
+            "gradientMode": "hue",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 6,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "displayName": "",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgba(50, 172, 45, 0.97)",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Success"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-yellow",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Warning"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Error"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "hideTimeOverride": false,
+      "id": 4,
+      "interval": "1d",
+      "links": [],
+      "maxDataPoints": 50000,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.4.3",
+      "targets": [
+        {
+          "alias": "$tag_veeamBackupSessionsName",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "veeamBackupSessionsName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_em_job_sessions",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_sessions\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"veeamVBRSessionsJobResult\")\r\n  |> filter(fn: (r) => r[\"_value\"] == 1) \r\n  |> filter(fn: (r) => r[\"veeamVBRSessionJobName\"] =~ /${vbrjobs:regex}/)\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] =~ /${vbrserver:regex}/)\r\n  |> window(every: 24h)\r\n  |> count() \r\n  |> group()\r\n",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "veeamBackupSessionsJobResult"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "veeamBackupSessionsName",
+              "operator": "=~",
+              "value": "/^$backupjob$/"
+            },
+            {
+              "condition": "AND",
+              "key": "veeamVBR",
+              "operator": "=~",
+              "value": "/^$veeamserver$/"
+            },
+            {
+              "condition": "AND",
+              "key": "veeamBackupSessionsJobType",
+              "operator": "=~",
+              "value": "/^$backuptype$/"
+            }
+          ]
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "hide": false,
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_sessions\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"veeamVBRSessionsJobResult\")\r\n  |> filter(fn: (r) => r[\"_value\"] == 2) \r\n  |> filter(fn: (r) => r[\"veeamVBRSessionJobName\"] =~ /${vbrjobs:regex}/)\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] =~ /${vbrserver:regex}/)\r\n  |> window(every: 24h)\r\n  |> count() \r\n  |> group()\r\n",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "hide": false,
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_sessions\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"veeamVBRSessionsJobResult\")\r\n  |> filter(fn: (r) => r[\"_value\"] == 3) \r\n  |> filter(fn: (r) => r[\"veeamVBRSessionJobName\"] =~ /${vbrjobs:regex}/)\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] =~ /${vbrserver:regex}/)\r\n  |> window(every: 24h)\r\n  |> count() \r\n  |> group()\r\n",
+          "refId": "C"
+        }
+      ],
+      "title": "Job Historical Information",
+      "transformations": [],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "rgb(64, 64, 64)",
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "mode": "gradient",
+              "type": "color-background"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "decimals": 0,
+          "displayName": "",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgba(50, 172, 45, 0.97)",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Time"
+              },
+              {
+                "id": "unit",
+                "value": "time: MMMM D, YYYY LT"
+              },
+              {
+                "id": "custom.align"
+              },
+              {
+                "id": "custom.width",
+                "value": 179
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Job Result"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Job Result"
+              },
+              {
+                "id": "custom.align",
+                "value": "center"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "1": {
+                        "text": "🟢"
+                      },
+                      "2": {
+                        "text": "🟡"
+                      },
+                      "3": {
+                        "text": "🔴"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              },
+              {
+                "id": "custom.width"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Job Name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 328
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Veeam Server"
+            },
+            "properties": [
+              {
+                "id": "custom.width"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      },
+      "hideTimeOverride": false,
+      "id": 2,
+      "links": [],
+      "maxDataPoints": 50000,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Time"
+          }
+        ]
+      },
+      "pluginVersion": "9.5.2",
+      "targets": [
+        {
+          "alias": "$tag_veeamBackupSessionsName",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "veeamBackupSessionsName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_em_job_sessions",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_sessions\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"veeamVBRSessionsJobResult\" )\r\n  |> filter(fn: (r) => r[\"veeamVBRSessionJobName\"] =~ /${vbrjobs:regex}/)\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] =~ /${vbrserver:regex}/)\r\n  |> group(columns: [\"veeamVBRSessionJobName\"])\r\n",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "veeamBackupSessionsJobResult"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "veeamBackupSessionsName",
+              "operator": "=~",
+              "value": "/^$backupjob$/"
+            },
+            {
+              "condition": "AND",
+              "key": "veeamVBR",
+              "operator": "=~",
+              "value": "/^$veeamserver$/"
+            },
+            {
+              "condition": "AND",
+              "key": "veeamBackupSessionsJobType",
+              "operator": "=~",
+              "value": "/^$backuptype$/"
+            }
+          ]
+        }
+      ],
+      "title": "Job Historical Information",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "keepLabels": [
+              "veeamBackupSessionsName",
+              "veeamVBRSessionJobName"
+            ],
+            "mode": "columns"
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "_field": true,
+              "_measurement": true,
+              "_time": false,
+              "veeamBackupSessionsJobState": true,
+              "veeamBackupSessionsJobType": true,
+              "veeamVBRSessionsJobResultMessage": true,
+              "veeamVBRSessionsJobState": true,
+              "veeamVBRSessiontype": false
+            },
+            "indexByName": {
+              "_field": 0,
+              "_measurement": 1,
+              "_time": 2,
+              "_value": 5,
+              "veeamVBR": 4,
+              "veeamVBRSessionJobName": 3,
+              "veeamVBRSessionsJobResultMessage": 7,
+              "veeamVBRSessionsJobState": 8,
+              "veeamVBRSessiontype": 6
+            },
+            "renameByName": {
+              "_field": "",
+              "_time": "Time",
+              "_value": "Job Result",
+              "veeamBackupSessionsJobState": "",
+              "veeamBackupSessionsJobType": "",
+              "veeamBackupSessionsName": "Job Name",
+              "veeamVBR": "Veeam Server",
+              "veeamVBRSessionJobName": "Job Name",
+              "veeamVBRSessiontype": "Type"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "rgb(64, 64, 64)",
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Job Duration",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "points",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 7,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "displayName": "${__field.labels.veeamVBRSessionJobName}",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgba(50, 172, 45, 0.97)",
+                "value": null
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Time"
+              },
+              {
+                "id": "unit",
+                "value": "time: MMMM D, YYYY LT"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Job Result"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Job Result"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "1": {
+                        "text": "🟢"
+                      },
+                      "2": {
+                        "text": "🟡"
+                      },
+                      "3": {
+                        "text": "🔴"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "hideTimeOverride": false,
+      "id": 3,
+      "links": [],
+      "maxDataPoints": 50000,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.4.3",
+      "targets": [
+        {
+          "alias": "$tag_veeamBackupSessionsName",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "veeamBackupSessionsName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_em_job_sessions",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_sessions\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"veeamBackupSessionsTimeDuration\")\r\n  |> filter(fn: (r) => r[\"veeamVBRSessionJobName\"] =~ /${vbrjobs:regex}/)\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] =~ /${vbrserver:regex}/)\r\n  |> filter(fn: (r) => r[\"_value\"] > 0) // exclude negative values\r\n  |> filter(fn: (r) => r[\"_value\"] <= 86400) // exclude values greater than 86400 seconds\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")\r\n",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "veeamBackupSessionsJobResult"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "veeamBackupSessionsName",
+              "operator": "=~",
+              "value": "/^$backupjob$/"
+            },
+            {
+              "condition": "AND",
+              "key": "veeamVBR",
+              "operator": "=~",
+              "value": "/^$veeamserver$/"
+            },
+            {
+              "condition": "AND",
+              "key": "veeamBackupSessionsJobType",
+              "operator": "=~",
+              "value": "/^$backuptype$/"
+            }
+          ]
+        }
+      ],
+      "title": "Job Historical Information",
+      "transformations": [],
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "id": 16,
+      "panels": [],
+      "title": "$vbrserver - v$vbrmajorversion | Job Last Result",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [
+            {
+              "options": {
+                "1": {
+                  "text": "Success"
+                },
+                "2": {
+                  "text": "Warning"
+                },
+                "3": {
+                  "text": "Failed"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(133, 133, 133)",
+                "value": null
+              },
+              {
+                "color": "dark-green",
+                "value": 0
+              },
+              {
+                "color": "dark-orange",
+                "value": 1.1
+              },
+              {
+                "color": "dark-red",
+                "value": 2.1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 0,
+        "y": 19
+      },
+      "id": 6,
+      "links": [],
+      "maxDataPoints": 100,
+      "maxPerRow": 6,
+      "options": {
+        "colorMode": "background",
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.5.2",
+      "repeat": "vbrjobs",
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "alias": "$tag_veeamBackupSessionsName",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "veeamBackupSessionsName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "veeam_em_job_sessions",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_sessions\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"veeamVBRSessionsJobResult\")\r\n  |> filter(fn: (r) => r[\"veeamVBRSessionJobName\"] =~ /${vbrjobs:regex}/)\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] =~ /${vbrserver:regex}/)\r\n  |> group()\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "veeamBackupSessionsJobResult"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "veeamBackupSessionsName",
+              "operator": "=~",
+              "value": "/^$backupjob$/"
+            },
+            {
+              "condition": "AND",
+              "key": "veeamVBR",
+              "operator": "=~",
+              "value": "/^$veeamserver$/"
+            },
+            {
+              "condition": "AND",
+              "key": "veeamBackupSessionsJobType",
+              "operator": "=~",
+              "value": "/^$backuptype$/"
+            }
+          ]
+        }
+      ],
+      "title": "$vbrjobs - Last Result",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 34
+      },
+      "id": 36,
+      "panels": [],
+      "title": "$vbrserver - v$vbrmajorversion | Infrastructure",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-blue",
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "mode": "gradient",
+              "type": "color-background"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 267
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Description"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 439
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 0,
+        "y": 35
+      },
+      "id": 46,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "9.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_managedservers\")\r\n  |> filter(fn: (r) => r[\"veeamVBRMSName\"] =~ /${vbrmanaged:regex}/)\r\n  |> filter(fn: (r) => r[\"_field\"] == \"veeamVBRMSInternalID\")\r\n  |> group(columns: [\"veeamVBRMSName\"])\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Managed Servers",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "keepLabels": [
+              "veeamVBRMSName"
+            ]
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "_field": true,
+              "_measurement": true,
+              "_time": true,
+              "_value": true
+            },
+            "indexByName": {
+              "_field": 2,
+              "_measurement": 3,
+              "_time": 0,
+              "_value": 1,
+              "veeamVBRMSDescription": 5,
+              "veeamVBRMSName": 4,
+              "veeamVBRMStype": 6
+            },
+            "renameByName": {
+              "veeamVBRMSDescription": "Description",
+              "veeamVBRMSName": "Name",
+              "veeamVBRMStype": "Type"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-purple",
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "mode": "gradient",
+              "type": "color-background"
+            },
+            "inspect": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "ViProxy": {
+                  "index": 0,
+                  "text": "VMware vSphere"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 242
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Description"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 241
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Mode"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 95
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Type"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 157
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 12,
+        "y": 35
+      },
+      "id": 55,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "9.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_proxies\")\r\n  |> filter(fn: (r) => r[\"veeamVBRProxyName\"] =~ /${vbrproxies:regex}/)\r\n  |> filter(fn: (r) => r[\"_field\"] == \"veeamVBRProxyTask\")\r\n  |> group(columns: [\"veeamVBRProxyName\"])\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Proxies",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "keepLabels": [
+              "veeamVBRMSName",
+              "veeamVBRProxyName"
+            ]
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "_field": true,
+              "_measurement": true,
+              "_time": true,
+              "_value": false
+            },
+            "indexByName": {
+              "_field": 1,
+              "_measurement": 2,
+              "_time": 0,
+              "_value": 7,
+              "veeamVBRProxyDescription": 4,
+              "veeamVBRProxyMode": 5,
+              "veeamVBRProxyName": 3,
+              "veeamVBRProxytype": 6
+            },
+            "renameByName": {
+              "_value": "Concurrent Tasks",
+              "veeamVBRMSDescription": "Description",
+              "veeamVBRMSName": "Name",
+              "veeamVBRMStype": "Type",
+              "veeamVBRProxyDescription": "Description",
+              "veeamVBRProxyMode": "Mode",
+              "veeamVBRProxyName": "Name",
+              "veeamVBRProxytype": "Type"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "text",
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "mode": "gradient",
+              "type": "color-background"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "noValue": "N/A",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 242
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Description"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 241
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Mode"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 95
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Type"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 157
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "veeamVBRRepoName"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 254
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Per-VM"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 93
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Path"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 174
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Concurrent Tasks"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 134
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 48
+      },
+      "id": 64,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "9.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "  from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_repositories\")\r\n  |> filter(fn: (r) => r[\"veeamVBRRepoName\"] =~ /${vbrrepositories:regex}/)\r\n  |> group(columns: [\"veeamVBRRepoName\"])\r\n  |> last()\r\n  |> yield(name: \"last\")\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Backup Repositories",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "keepLabels": [
+              "veeamVBRRepoName"
+            ],
+            "mode": "columns"
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "_field": true,
+              "_measurement": true,
+              "_time": true,
+              "_value": false,
+              "veeamVBRRepoXFS": true
+            },
+            "indexByName": {
+              "_field": 1,
+              "_measurement": 2,
+              "_time": 0,
+              "_value": 5,
+              "veeamVBRMSDescription": 4,
+              "veeamVBRRepoBucketFolder": 10,
+              "veeamVBRRepoBucketImmutable": 11,
+              "veeamVBRRepoBucketName": 9,
+              "veeamVBRRepoName": 3,
+              "veeamVBRRepoPerVM": 6,
+              "veeamVBRRepoRegion": 12,
+              "veeamVBRRepoServicePoint": 13,
+              "veeamVBRRepoXFS": 14,
+              "veeamVBRRepopath": 7,
+              "veeamVBRRepotype": 8
+            },
+            "renameByName": {
+              "_value": "Concurrent Tasks",
+              "veeamVBRMSDescription": "Description",
+              "veeamVBRMSName": "Name",
+              "veeamVBRMStype": "Type",
+              "veeamVBRProxyDescription": "Description",
+              "veeamVBRProxyMode": "Mode",
+              "veeamVBRProxyName": "Name",
+              "veeamVBRProxytype": "Type",
+              "veeamVBRRepoBucketFolder": "Folder",
+              "veeamVBRRepoBucketImmutable": "Immutable",
+              "veeamVBRRepoBucketName": "Bucket",
+              "veeamVBRRepoPerVM": "Per-VM",
+              "veeamVBRRepoRegion": "Region",
+              "veeamVBRRepoServicePoint": "Service Point",
+              "veeamVBRRepoXFS": "XFS",
+              "veeamVBRRepopath": "Path",
+              "veeamVBRRepotype": "Type"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 59
+      },
+      "id": 91,
+      "panels": [],
+      "title": "$vbrserver - v$vbrmajorversion | Restore Points",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "light-blue",
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "noValue": "N/A",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "semi-dark-green",
+                "value": 7
+              },
+              {
+                "color": "dark-green",
+                "value": 14
+              },
+              {
+                "color": "#205519",
+                "value": 30
+              },
+              {
+                "color": "#113c0c",
+                "value": 60
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 60
+      },
+      "id": 71,
+      "maxPerRow": 8,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Restore Points$/",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "9.5.2",
+      "repeat": "vbrprotected",
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "  from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_backupobjects\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"restorePointsCount\")\r\n    |> filter(fn: (r) => r[\"veeamVBRBobjectName\"] =~ /${vbrprotected:regex}/)\r\n  |> group(columns: [\"veeamVBRBobjectName\"])\r\n  |> last()\r\n  |> yield(name: \"last\")\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "$vbrprotected",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "keepLabels": [
+              "veeamVBRRepoName",
+              "veeamVBRBobjectName"
+            ],
+            "mode": "columns"
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "_field": true,
+              "_measurement": true,
+              "_time": true,
+              "_value": false,
+              "veeamVBRBobjectObjectId": true,
+              "veeamVBRBobjectPath": true,
+              "veeamVBRBobjectPlatform": true,
+              "veeamVBRBobjecttype": true,
+              "veeamVBRBobjectviType": true,
+              "veeamVBRRepoXFS": true
+            },
+            "indexByName": {
+              "_field": 1,
+              "_measurement": 2,
+              "_time": 0,
+              "_value": 9,
+              "veeamVBRBobjectName": 5,
+              "veeamVBRBobjectObjectId": 3,
+              "veeamVBRBobjectPath": 6,
+              "veeamVBRBobjectPlatform": 7,
+              "veeamVBRBobjecttype": 8,
+              "veeamVBRBobjectviType": 4
+            },
+            "renameByName": {
+              "_measurement": "",
+              "_value": "Restore Points",
+              "veeamVBRBobjectName": "Workload Name",
+              "veeamVBRBobjectObjectId": "",
+              "veeamVBRBobjectPath": "Source",
+              "veeamVBRBobjectPlatform": "Platform",
+              "veeamVBRBobjecttype": "Type",
+              "veeamVBRMSDescription": "Description",
+              "veeamVBRMSName": "Name",
+              "veeamVBRMStype": "Type",
+              "veeamVBRProxyDescription": "Description",
+              "veeamVBRProxyMode": "Mode",
+              "veeamVBRProxyName": "Name",
+              "veeamVBRProxytype": "Type",
+              "veeamVBRRepoBucketFolder": "Folder",
+              "veeamVBRRepoBucketImmutable": "Immutable",
+              "veeamVBRRepoBucketName": "Bucket",
+              "veeamVBRRepoPerVM": "Per-VM",
+              "veeamVBRRepoRegion": "Region",
+              "veeamVBRRepoServicePoint": "Service Point",
+              "veeamVBRRepoXFS": "XFS",
+              "veeamVBRRepopath": "Path",
+              "veeamVBRRepotype": "Type"
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    }
+  ],
+  "refresh": false,
+  "revision": 1,
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [
+    "veeam",
+    "backup & replication",
+    "vbr"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_info\")\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] != \"\")\r\n  |> keep(columns: [\"veeamVBR\"])\r\n  |> distinct(column: \"veeamVBR\")\r\n  |> group()",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Veeam Backup Server",
+        "multi": true,
+        "name": "vbrserver",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_info\")\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] != \"\")\r\n  |> keep(columns: [\"veeamVBR\"])\r\n  |> distinct(column: \"veeamVBR\")\r\n  |> group()",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_sessions\")\r\n  |> filter(fn: (r) => r[\"veeamVBRSessionJobName\"] != \"\")\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] == \"${vbrserver}\")\r\n  |> keep(columns: [\"veeamVBRSessionJobName\"])\r\n  |> distinct(column: \"veeamVBRSessionJobName\")\r\n  |> group()",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Jobs",
+        "multi": true,
+        "name": "vbrjobs",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_sessions\")\r\n  |> filter(fn: (r) => r[\"veeamVBRSessionJobName\"] != \"\")\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] == \"${vbrserver}\")\r\n  |> keep(columns: [\"veeamVBRSessionJobName\"])\r\n  |> distinct(column: \"veeamVBRSessionJobName\")\r\n  |> group()",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_managedservers\")\r\n  |> filter(fn: (r) => r[\"veeamVBRMSName\"] != \"\")\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] == \"${vbrserver}\")\r\n  |> keep(columns: [\"veeamVBRMSName\"])\r\n  |> distinct(column: \"veeamVBRMSName\")\r\n  |> group()",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Managed Servers",
+        "multi": true,
+        "name": "vbrmanaged",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_managedservers\")\r\n  |> filter(fn: (r) => r[\"veeamVBRMSName\"] != \"\")\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] == \"${vbrserver}\")\r\n  |> keep(columns: [\"veeamVBRMSName\"])\r\n  |> distinct(column: \"veeamVBRMSName\")\r\n  |> group()",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_repositories\")\r\n  |> filter(fn: (r) => r[\"veeamVBRRepoName\"] != \"\")\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] == \"${vbrserver}\")\r\n  |> keep(columns: [\"veeamVBRRepoName\"])\r\n  |> distinct(column: \"veeamVBRRepoName\")\r\n  |> group()",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Backup Repositories",
+        "multi": true,
+        "name": "vbrrepositories",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_repositories\")\r\n  |> filter(fn: (r) => r[\"veeamVBRRepoName\"] != \"\")\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] == \"${vbrserver}\")\r\n  |> keep(columns: [\"veeamVBRRepoName\"])\r\n  |> distinct(column: \"veeamVBRRepoName\")\r\n  |> group()",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_proxies\")\r\n  |> filter(fn: (r) => r[\"veeamVBRProxyName\"] != \"\")\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] == \"${vbrserver}\")\r\n  |> keep(columns: [\"veeamVBRProxyName\"])\r\n  |> distinct(column: \"veeamVBRProxyName\")\r\n  |> group()",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Backup Proxies",
+        "multi": true,
+        "name": "vbrproxies",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_proxies\")\r\n  |> filter(fn: (r) => r[\"veeamVBRProxyName\"] != \"\")\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] == \"${vbrserver}\")\r\n  |> keep(columns: [\"veeamVBRProxyName\"])\r\n  |> distinct(column: \"veeamVBRProxyName\")\r\n  |> group()",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_backupobjects\")\r\n  |> filter(fn: (r) => r[\"veeamVBRBobjectName\"] != \"\")\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] == \"${vbrserver}\")\r\n  |> keep(columns: [\"veeamVBRBobjectName\"])\r\n  |> distinct(column: \"veeamVBRBobjectName\")\r\n  |> group()",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Protected Workload",
+        "multi": true,
+        "name": "vbrprotected",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_backupobjects\")\r\n  |> filter(fn: (r) => r[\"veeamVBRBobjectName\"] != \"\")\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] == \"${vbrserver}\")\r\n  |> keep(columns: [\"veeamVBRBobjectName\"])\r\n  |> distinct(column: \"veeamVBRBobjectName\")\r\n  |> group()",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_info\")\r\n  |> filter(fn: (r) => r[\"veeamVBRVersion\"] != \"\")\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] == \"${vbrserver}\")\r\n  |> keep(columns: [\"veeamVBRVersion\"])\r\n  |> distinct(column: \"veeamVBRVersion\")\r\n  |> group()",
+        "hide": 2,
+        "includeAll": false,
+        "label": "VBR Major Version",
+        "multi": false,
+        "name": "vbrmajorversion",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_info\")\r\n  |> filter(fn: (r) => r[\"veeamVBRVersion\"] != \"\")\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] == \"${vbrserver}\")\r\n  |> keep(columns: [\"veeamVBRVersion\"])\r\n  |> distinct(column: \"veeamVBRVersion\")\r\n  |> group()",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Grafana Dashboard for Veeam Backup & Replication",
+  "uid": "8W6ydiwVk",
+  "version": 16,
+  "weekStart": ""
+}
