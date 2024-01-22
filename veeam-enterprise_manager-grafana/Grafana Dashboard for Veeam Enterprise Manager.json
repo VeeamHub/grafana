@@ -27,7 +27,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.3.2"
+      "version": "9.5.2"
     },
     {
       "type": "datasource",
@@ -354,7 +354,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.5.2",
       "targets": [
         {
           "alias": "Backup Servers",
@@ -811,9 +811,10 @@
           "values": false
         },
         "showUnfilled": true,
-        "text": {}
+        "text": {},
+        "valueMode": "color"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.5.2",
       "targets": [
         {
           "alias": "$tag_veeamRepositoryName",
@@ -903,8 +904,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "dark-green",
-                    "value": null
+                    "color": "dark-green"
                   },
                   {
                     "color": "dark-orange",
@@ -1477,7 +1477,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.5.2",
       "targets": [
         {
           "datasource": {
@@ -1569,9 +1569,10 @@
           "values": false
         },
         "showUnfilled": true,
-        "text": {}
+        "text": {},
+        "valueMode": "color"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.5.2",
       "targets": [
         {
           "alias": "$tag_instance",
@@ -1890,7 +1891,7 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 6,
+        "w": 4,
         "x": 0,
         "y": 23
       },
@@ -1918,7 +1919,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.5.2",
       "repeat": "backupjob",
       "repeatDirection": "h",
       "targets": [
@@ -2003,7 +2004,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 32
       },
       "id": 608,
       "panels": [],
@@ -2074,9 +2075,9 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 12,
+        "w": 24,
         "x": 0,
-        "y": 27
+        "y": 33
       },
       "id": 354,
       "links": [],
@@ -2102,7 +2103,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.5.2",
       "repeat": "replicajob",
       "repeatDirection": "h",
       "targets": [
@@ -2181,7 +2182,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 30
+        "y": 36
       },
       "id": 622,
       "panels": [],
@@ -2212,12 +2213,15 @@
             {
               "options": {
                 "1": {
+                  "index": 2,
                   "text": "Success"
                 },
                 "2": {
+                  "index": 1,
                   "text": "Warning"
                 },
                 "3": {
+                  "index": 0,
                   "text": "Failed"
                 }
               },
@@ -2251,9 +2255,9 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 3.4285714285714284,
+        "w": 2,
         "x": 0,
-        "y": 31
+        "y": 37
       },
       "id": 369,
       "links": [],
@@ -2279,7 +2283,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.5.2",
       "repeat": "backupvm",
       "repeatDirection": "h",
       "targets": [
@@ -2312,7 +2316,7 @@
           "measurement": "veeam_em_job_sessionsvm",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_em_job_sessionsvm\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"veeamBackupSessionsJobVMResult\")\r\n  |> filter(fn: (r) => r[\"veeamBackupSessionsVmDisplayName\"] =~ /${backupvm:regex}/)\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] =~ /${veeamserver:regex}/)\r\n |> group(columns: [\"veeamBackupSessionsVmDisplayName\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_em_job_sessionsvm\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"veeamBackupSessionsJobVMResult\")\r\n  |> filter(fn: (r) => r[\"veeamBackupSessionsVmDisplayName\"] =~ /${backupvm:regex}/)\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] =~ /${veeamserver:regex}/)\r\n  |> group(columns: [\"veeamBackupSessionsVmDisplayName\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -2358,7 +2362,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 35
+        "y": 45
       },
       "id": 625,
       "panels": [],
@@ -2428,9 +2432,9 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 12,
+        "w": 24,
         "x": 0,
-        "y": 36
+        "y": 46
       },
       "id": 435,
       "links": [],
@@ -2456,7 +2460,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.5.2",
       "repeat": "replicavm",
       "repeatDirection": "h",
       "targets": [
@@ -2529,7 +2533,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 40
+        "y": 50
       },
       "id": 668,
       "panels": [],
@@ -2558,7 +2562,10 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "color-background",
+            "cellOptions": {
+              "mode": "gradient",
+              "type": "color-background"
+            },
             "filterable": false,
             "inspect": false
           },
@@ -2708,13 +2715,15 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 41
+        "y": 51
       },
       "hideTimeOverride": false,
       "id": 750,
       "links": [],
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "fields": "",
           "reducer": [
             "sum"
@@ -2724,7 +2733,7 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.5.2",
       "targets": [
         {
           "alias": "$tag_veeamAgentName",
@@ -2861,7 +2870,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 47
+        "y": 57
       },
       "id": 752,
       "panels": [],
@@ -2890,7 +2899,10 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "color-background",
+            "cellOptions": {
+              "mode": "gradient",
+              "type": "color-background"
+            },
             "filterable": false,
             "inspect": false
           },
@@ -2914,7 +2926,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 235
+                "value": 705
               }
             ]
           },
@@ -2929,6 +2941,30 @@
                 "value": 169
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "VBR Server"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 224
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Short Term Retention"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 183
+              }
+            ]
           }
         ]
       },
@@ -2936,13 +2972,15 @@
         "h": 9,
         "w": 13,
         "x": 0,
-        "y": 48
+        "y": 58
       },
       "hideTimeOverride": false,
       "id": 755,
       "links": [],
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "fields": "",
           "reducer": [
             "sum"
@@ -2952,7 +2990,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.5.2",
       "targets": [
         {
           "alias": "$tag_veeamAgentName",
@@ -2983,78 +3021,9 @@
           "measurement": "veeam_em_nas_jobs",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_em_nas_jobs\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"veeamNASJobShortTerm\" )\r\n  |> filter(fn: (r) => r[\"veeamNASJobPath\"] =~ /${veeamnas:regex}/)\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] =~ /${veeamserver:regex}/)\r\n  |> group(columns: [\"veeamNASJobName\",\"veeamAgeveeamNASJobPathntOsVersion\",\"veeamNASJobShortTermType\",\"veeamNASJobExclusions\"])\r\n  |> last()",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_em_nas_jobs\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"veeamNASJobShortTerm\" )\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] =~ /${veeamserver:regex}/)\r\n  |> group(columns: [\"veeamNASJobName\",\"veeamAgeveeamNASJobPathntOsVersion\",\"veeamNASJobShortTermType\"])\r\n  |> last()",
           "rawQuery": true,
           "refId": "A",
-          "resultFormat": "table",
-          "select": [
-            [
-              {
-                "params": [
-                  "veeamNASJobShortTerm"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              },
-              {
-                "params": [
-                  "Short-Term"
-                ],
-                "type": "alias"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "veeamNASJobPath",
-              "operator": "=~",
-              "value": "/^$veeamnas$/"
-            },
-            {
-              "condition": "AND",
-              "key": "veeamVBR",
-              "operator": "=~",
-              "value": "/^$veeamserver$/"
-            }
-          ],
-          "tz": ""
-        },
-        {
-          "alias": "$tag_veeamAgentName",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          },
-          "groupBy": [
-            {
-              "params": [
-                "veeamNASJobShortTermType"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "veeamNASJobExclusions"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "none"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": true,
-          "measurement": "veeam_em_nas_jobs",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT last(\"veeamNASJobShortTerm\") AS \"Short-Term\" FROM \"veeam_em_nas_jobs\" WHERE (\"veeamNASJobPath\" =~ /^$veeamnas$/ AND \"veeamVBR\" =~ /^$veeamserver$/) AND $timeFilter GROUP BY \"veeamNASJobShortTermType\", \"veeamNASJobExclusions\" fill(none)",
-          "rawQuery": true,
-          "refId": "B",
           "resultFormat": "table",
           "select": [
             [
@@ -3116,7 +3085,9 @@
               "Time": true,
               "_field": true,
               "_measurement": true,
-              "_time": true
+              "_time": true,
+              "veeamNASJobExclusions": true,
+              "veeamNASJobPath": true
             },
             "indexByName": {
               "_field": 1,
@@ -3208,7 +3179,7 @@
         "h": 9,
         "w": 11,
         "x": 13,
-        "y": 48
+        "y": 58
       },
       "hideTimeOverride": false,
       "id": 756,
@@ -3304,7 +3275,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 57
+        "y": 67
       },
       "id": 627,
       "panels": [],
@@ -3334,7 +3305,10 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "color-background",
+            "cellOptions": {
+              "mode": "gradient",
+              "type": "color-background"
+            },
             "filterable": false,
             "inspect": false
           },
@@ -3413,13 +3387,15 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 58
+        "y": 68
       },
       "hideTimeOverride": false,
       "id": 113,
       "links": [],
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "fields": "",
           "reducer": [
             "sum"
@@ -3428,7 +3404,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "9.5.2",
       "targets": [
         {
           "alias": "$tag_veeamBackupSessionsName",
@@ -3629,7 +3605,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 58
+        "y": 68
       },
       "hideTimeOverride": false,
       "id": 463,
@@ -3786,8 +3762,8 @@
       "type": "timeseries"
     }
   ],
-  "refresh": false,
-  "schemaVersion": 37,
+  "refresh": "",
+  "schemaVersion": 38,
   "style": "dark",
   "tags": [
     "Veeam",
@@ -4091,29 +4067,6 @@
           "type": "influxdb",
           "uid": "${DS_INFLUXDB}"
         },
-        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_em_nas_jobs\")\r\n  |> filter(fn: (r) => r[\"veeamNASJobPath\"] != \"\")\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] == \"${veeamserver}\")\r\n  |> keep(columns: [\"veeamNASJobPath\"])\r\n  |> distinct(column: \"veeamNASJobPath\")\r\n  |> group()",
-        "hide": 0,
-        "includeAll": true,
-        "label": "NAS",
-        "multi": true,
-        "name": "veeamnas",
-        "options": [],
-        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_em_nas_jobs\")\r\n  |> filter(fn: (r) => r[\"veeamNASJobPath\"] != \"\")\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] == \"${veeamserver}\")\r\n  |> keep(columns: [\"veeamNASJobPath\"])\r\n  |> distinct(column: \"veeamNASJobPath\")\r\n  |> group()",
-        "refresh": 2,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      },
-      {
-        "current": {},
-        "datasource": {
-          "type": "influxdb",
-          "uid": "${DS_INFLUXDB}"
-        },
         "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_em_nas_sessions\")\r\n  |> filter(fn: (r) => r[\"veeamNASJobName\"] != \"\")\r\n  |> filter(fn: (r) => r[\"veeamVBR\"] == \"${veeamserver}\")\r\n  |> keep(columns: [\"veeamNASJobName\"])\r\n  |> distinct(column: \"veeamNASJobName\")\r\n  |> group()",
         "hide": 0,
         "includeAll": true,
@@ -4187,6 +4140,6 @@
   "timezone": "browser",
   "title": "Grafana Dashboard for Veeam Enterprise Manager",
   "uid": "WmrXrCYZk",
-  "version": 22,
+  "version": 24,
   "weekStart": ""
 }

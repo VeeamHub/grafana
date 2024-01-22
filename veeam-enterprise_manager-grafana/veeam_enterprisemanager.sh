@@ -88,7 +88,7 @@ veeamEMOVMUrl=$(curl -X GET "$veeamEMUrl" -H "Accept:application/json" -H "X-Res
     
     ##Comment the influx write while debugging
     echo "Writing veeam_em_overview_vms to InfluxDB"    
-    influx write \
+        influx write \
     -t "$veeamInfluxDBToken" \
     -b "$veeamInfluxDBBucket" \
     -o "$veeamInfluxDBOrg" \
@@ -167,6 +167,21 @@ for Name in $(echo "$veeamEMOBackupServersUrl" | jq -r '.BackupServers[].Name');
     veeamBackupServersPort=$(echo "$veeamEMOBackupServersUrl" | jq --raw-output ".BackupServers[$arraybackupservers].Port")
     veeamBackupServersVersion=$(echo "$veeamEMOBackupServersUrl" | jq --raw-output ".BackupServers[$arraybackupservers].Version" | awk '{gsub(/ /,"\\ ");print}')
        case $veeamBackupServersVersion in
+        "12.1.1.56")
+            veeamBackupServersVersionM="12.1.1"
+        ;; 
+        "12.1.0.2131")
+            veeamBackupServersVersionM="12.1\ GA"
+        ;;
+        "12.0.0.1420 P20230718")
+            veeamBackupServersVersionM="12.0.0.1420\ P20230718"
+        ;; 
+        "12.0.0.1420 P20230412")
+            veeamBackupServersVersionM="12.0.0.1420\ P20230412"
+        ;; 
+        "12.0.0.1420 P20230223")
+            veeamBackupServersVersionM="12.0.0.1420\ P20230223"
+        ;;  
         "12.0.0.1420")
             veeamBackupServersVersionM="12.0\ GA"
         ;; 
@@ -540,7 +555,6 @@ for JobSessionUid in $(echo "$veeamEMAgentUrl" | jq -r '.DiscoveredComputers[].U
   arrayagent=$arrayagent+1
 done
 
-
 ##
 # Veeam Enterprise Manager NAS Jobs. Overview of the NAS Jobs. Really useful to display the NAS Jobs
 ##
@@ -550,13 +564,11 @@ veeamEMNASJobsUrl=$(curl -X GET "$veeamEMUrl" -H "Accept:application/json" -H "X
 declare -i arrayNASJobs=0
 for JobSessionUid in $(echo "$veeamEMNASJobsUrl" | jq -r '.NASJobs[].UID'); do
     veeamNASJobName=$(echo "$veeamEMNASJobsUrl" | jq --raw-output ".NASJobs[$arrayNASJobs].Name" | awk '{gsub(/ /,"\\ ");print}')
-    veeamNASJobPath=$(echo "$veeamEMNASJobsUrl" | jq --raw-output ".NASJobs[$arrayNASJobs].Includes.NASObjects[].FileOrFolder" | awk '{gsub(/ /,"\\ ");print}')
-    veeamNASJobExclusions=$(echo "$veeamEMNASJobsUrl" | jq --raw-output ".NASJobs[$arrayNASJobs].Includes.NASObjects[].InclusionMask.Extensions[]" | awk '{gsub(/ /,"\\ ");print}')
     veeamVBR=$(echo "$veeamEMNASJobsUrl" | jq --raw-output ".NASJobs[$arrayNASJobs].Links[0].Name" | awk '{gsub(/ /,"\\ ");print}')
     veeamNASJobShortTerm=$(echo "$veeamEMNASJobsUrl" | jq --raw-output ".NASJobs[$arrayNASJobs].StorageOptions.ShorttermRetentionPeriod")
     veeamNASJobShortTermType=$(echo "$veeamEMNASJobsUrl" | jq --raw-output ".NASJobs[$arrayNASJobs].StorageOptions.ShorttermRetentionType")
    
-    #echo "veeam_em_nas_jobs,veeamNASJobName=$veeamNASJobName,veeamVBR=$veeamVBR,veeamNASJobPath=$veeamNASJobPath,veeamNASJobExclusions=$veeamNASJobExclusions"
+    #echo "veeam_em_nas_jobs,veeamNASJobName=$veeamNASJobName,veeamVBR=$veeamVBR,veeamNASJobShortTermType=$veeamNASJobShortTermType veeamNASJobShortTerm=$veeamNASJobShortTerm"
     
     ##Comment the influx write while debugging
     echo "Writing veeam_em_nas_jobs to InfluxDB"       
@@ -565,7 +577,7 @@ for JobSessionUid in $(echo "$veeamEMNASJobsUrl" | jq -r '.NASJobs[].UID'); do
     -b "$veeamInfluxDBBucket" \
     -o "$veeamInfluxDBOrg" \
     -p s \
-    "veeam_em_nas_jobs,veeamNASJobName=$veeamNASJobName,veeamVBR=$veeamVBR,veeamNASJobPath=$veeamNASJobPath,veeamNASJobExclusions=$veeamNASJobExclusions,veeamNASJobShortTermType=$veeamNASJobShortTermType veeamNASJobShortTerm=$veeamNASJobShortTerm"
+     "veeam_em_nas_jobs,veeamNASJobName=$veeamNASJobName,veeamVBR=$veeamVBR,veeamNASJobShortTermType=$veeamNASJobShortTermType veeamNASJobShortTerm=$veeamNASJobShortTerm"
   arrayNASJobs=$arrayNASJobs+1
 done
 
