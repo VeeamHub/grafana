@@ -1,6 +1,6 @@
 #!/bin/bash
 ##      .SYNOPSIS
-##      Grafana Dashboard for Veeam Enterprise Manager v12 - Using RestAPI to InfluxDB Script
+##      Grafana Dashboard for Veeam Enterprise Manager v12.1.1 - Using RestAPI to InfluxDB Script
 ## 
 ##      .DESCRIPTION
 ##      This Script will query the Veeam Enterprise Manager RestAPI and send the data directly to InfluxDB, which can be used to present it to Grafana. 
@@ -12,8 +12,8 @@
 ##      .Notes
 ##      NAME:  veeam_enterprisemanager.sh
 ##      ORIGINAL NAME: veeam_enterprisemanager.sh
-##      LASTEDIT: 23/03/2023
-##      VERSION: 12
+##      LASTEDIT: 22/01/2024
+##      VERSION: 12.1.1
 ##      KEYWORDS: Veeam, InfluxDB, Grafana
    
 ##      .Link
