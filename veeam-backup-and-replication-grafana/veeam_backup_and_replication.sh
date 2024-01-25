@@ -9,7 +9,7 @@
 ##      .Notes
 ##      NAME:  veeam_backup_and_replication.sh
 ##      ORIGINAL NAME: veeam_backup_and_replication.sh
-##      LASTEDIT: 22/01/2024
+##      LASTEDIT: 25/01/2024
 ##      VERSION: 12.1.1
 ##      KEYWORDS: Veeam, , Backup, InfluxDB, Grafana
    
@@ -55,7 +55,7 @@ veeamVBRInfoUrl=$(curl -X GET $veeamVBRURL \
     veeamVBRId=$(echo "$veeamVBRInfoUrl" | jq --raw-output ".vbrId")
     veeamVBRName=$(echo "$veeamVBRInfoUrl" | jq --raw-output ".name" | awk '{gsub(/([ ,])/,"\\\\&");print}')
     veeamVBRVersion=$(echo "$veeamVBRInfoUrl" | jq --raw-output ".buildVersion") 
-    veeamDatabaseVendor=$(echo "$veeamVBRInfoUrl" | jq --raw-output ".databaseVendor") 
+    veeamDatabaseVendor=$(echo "$veeamVBRInfoUrl" | jq --raw-output ".databaseVendor" | awk '{gsub(/([ ,])/,"\\\\&");print}') 
 
     #echo "veeam_vbr_info,veeamVBRId=$veeamVBRId,veeamVBRName=$veeamVBRName,veeamVBRVersion=$veeamVBRVersion,veeamDatabaseVendor=$veeamDatabaseVendor vbr=1"
 
