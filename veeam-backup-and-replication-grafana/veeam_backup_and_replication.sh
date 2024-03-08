@@ -179,6 +179,16 @@ else
         veeamVBRRepoName=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].name" | awk '{gsub(/([ ,])/,"\\\\&");print}') 
         veeamVBRRepotype=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].type") 
         veeamVBRRepoDescription=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].description" | awk '{gsub(/([ ,])/,"\\\\&");print}')
+        # Fetch and calculate the capacity, free space, and used space
+        veeamVBRRepoStateUrl=$(curl -X GET "https://$veeamBackupServer:$veeamBackupPort/api/v1/backupInfrastructure/repositories/states?idFilter=$id" \
+            -H "Authorization: Bearer $veeamBearer" \
+            -H "accept: application/json" \
+            -H "x-api-version: 1.1-rev1" \
+            2>&1 -k --silent)
+            veeamVBRRepoCapacity=$(echo "$veeamVBRRepoStateUrl" | jq --raw-output ".data[0].capacityGB" | awk '{printf "%d\n", $1 * 1024 * 1024 * 1024}') 
+            veeamVBRRepoFree=$(echo "$veeamVBRRepoStateUrl" | jq --raw-output ".data[0].freeGB" | awk '{printf "%d\n", $1 * 1024 * 1024 * 1024}')
+            veeamVBRRepoUsed=$(echo "$veeamVBRRepoStateUrl" | jq --raw-output ".data[0].usedSpaceGB" | awk '{printf "%d\n", $1 * 1024 * 1024 * 1024}')
+                    
         [[ ! -z "$veeamVBRRepoDescription" ]] || veeamVBRRepoDescription="None"
 
         case "$veeamVBRRepotype" in
@@ -186,8 +196,9 @@ else
                     veeamVBRRepopath=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.path" | awk '{gsub(/([ ,])/,"\\\\&");print}')
                     veeamVBRRepoPerVM=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.advancedSettings.perVmBackup") 
                     veeamVBRRepoMaxtasks=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.maxTaskCount")
-                    influxData="veeam_vbr_repositories,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepopath=$veeamVBRRepopath,veeamVBRRepoPerVM=$veeamVBRRepoPerVM veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks"
+                    influxData="veeam_vbr_repositories,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepopath=$veeamVBRRepopath,veeamVBRRepoPerVM=$veeamVBRRepoPerVM veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoCapacity=$veeamVBRRepoCapacity,veeamVBRRepoFree=$veeamVBRRepoFree,veeamVBRRepoUsed=$veeamVBRRepoUsed"
                     #echo $influxData 
+                    
 
                     ##Comment the influx write while debugging
                     echo "Writing veeam_vbr_repositories to InfluxDB"
@@ -207,7 +218,7 @@ else
                     veeamVBRRepoBucketImmutable=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].bucket.immutability.isEnabled")
                     veeamVBRRepoBucketImmutableDays=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].bucket.immutability.daysCount")
                     veeamVBRRepoMaxtasks=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].maxTaskCount")
-                    influxData="veeam_vbr_repositories,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepoServicePoint=$veeamVBRRepoServicePoint,veeamVBRRepoRegion=$veeamVBRRepoRegion,veeamVBRRepoBucketName=$veeamVBRRepoBucketName,veeamVBRRepoBucketFolder=$veeamVBRRepoBucketFolder,veeamVBRRepoBucketImmutable=$veeamVBRRepoBucketImmutable veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoBucketImmutableDays=$veeamVBRRepoBucketImmutableDays"
+                    influxData="veeam_vbr_repositories,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepoServicePoint=$veeamVBRRepoServicePoint,veeamVBRRepoRegion=$veeamVBRRepoRegion,veeamVBRRepoBucketName=$veeamVBRRepoBucketName,veeamVBRRepoBucketFolder=$veeamVBRRepoBucketFolder,veeamVBRRepoBucketImmutable=$veeamVBRRepoBucketImmutable veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoBucketImmutableDays=$veeamVBRRepoBucketImmutableDays,veeamVBRRepoCapacity=$veeamVBRRepoCapacity,veeamVBRRepoFree=$veeamVBRRepoFree,veeamVBRRepoUsed=$veeamVBRRepoUsed"
                     #echo $influxData
 
                     ##Comment the influx write while debugging
@@ -226,7 +237,7 @@ else
                     veeamVBRRepoBucketImmutableDays=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.makeRecentBackupsImmutableDays")
                     veeamVBRRepoPerVM=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.advancedSettings.perVmBackup")
                     veeamVBRRepoMaxtasks=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.maxTaskCount")
-                    influxData="veeam_vbr_repositories,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepopath=$veeamVBRRepopath,veeamVBRRepoXFS=$veeamVBRRepoXFS,veeamVBRRepoPerVM=$veeamVBRRepoPerVM veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoBucketImmutableDays=$veeamVBRRepoBucketImmutableDays"
+                    influxData="veeam_vbr_repositories,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepopath=$veeamVBRRepopath,veeamVBRRepoXFS=$veeamVBRRepoXFS,veeamVBRRepoPerVM=$veeamVBRRepoPerVM veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoBucketImmutableDays=$veeamVBRRepoBucketImmutableDays,veeamVBRRepoCapacity=$veeamVBRRepoCapacity,veeamVBRRepoFree=$veeamVBRRepoFree,veeamVBRRepoUsed=$veeamVBRRepoUsed"
                     #echo $influxData
 
                     ##Comment the influx write while debugging
@@ -244,7 +255,7 @@ else
                     veeamVBRRepopath=$(echo "$veeamVBRRepopath" | awk '{gsub(/([ ,=])/,"\\\\&");print}')
                     veeamVBRRepoPerVM=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.advancedSettings.perVmBackup")
                     veeamVBRRepoMaxtasks=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.maxTaskCount")
-                    influxData="veeam_vbr_repositories,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepopath=$veeamVBRRepopath,veeamVBRRepoPerVM=$veeamVBRRepoPerVM veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks"
+                    influxData="veeam_vbr_repositories,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepopath=$veeamVBRRepopath,veeamVBRRepoPerVM=$veeamVBRRepoPerVM veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoCapacity=$veeamVBRRepoCapacity,veeamVBRRepoFree=$veeamVBRRepoFree,veeamVBRRepoUsed=$veeamVBRRepoUsed"
                     #echo $influxData
 
                     ##Comment the influx write while debugging
@@ -262,7 +273,7 @@ else
                     veeamVBRRepopath=$(echo "$veeamVBRRepopath" | sed 's/\\\\/\\/g' | awk '{gsub(/([ ,=])/,"\\\\&");print}')
                     veeamVBRRepoPerVM=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.advancedSettings.perVmBackup")
                     veeamVBRRepoMaxtasks=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.maxTaskCount")
-                    influxData="veeam_vbr_repositories,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepopath=$veeamVBRRepopath,veeamVBRRepoPerVM=$veeamVBRRepoPerVM veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks"
+                    influxData="veeam_vbr_repositories,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepopath=$veeamVBRRepopath,veeamVBRRepoPerVM=$veeamVBRRepoPerVM veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoCapacity=$veeamVBRRepoCapacity,veeamVBRRepoFree=$veeamVBRRepoFree,veeamVBRRepoUsed=$veeamVBRRepoUsed"
                     #echo $influxData
 
                     ##Comment the influx write while debugging
