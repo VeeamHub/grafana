@@ -1334,7 +1334,33 @@
           },
           "unit": "percent"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decbytes"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "max"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "palette-classic"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 9,
@@ -1381,9 +1407,10 @@
               "type": "fill"
             }
           ],
+          "hide": false,
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_repositories\")\r\n  |> filter(fn: (r) => r[\"veeamVBRRepoName\"] =~ /${vbrrepositories:regex}/)\r\n  |> filter(fn: (r) => r[\"_field\"] == \"veeamVBRRepoCapacity\" or r[\"_field\"] == \"veeamVBRRepoFree\" or r[\"_field\"] == \"veeamVBRRepoUsed\")\r\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> map(fn: (r) => ({\r\n      _time: r._time,\r\n      veeamVBRRepoName: r.veeamVBRRepoName,\r\n      _field: r._field,\r\n      _value: if r.veeamVBRRepoCapacity > 0 then \r\n                (if r.veeamVBRRepoFree / r.veeamVBRRepoCapacity * 100.0 != r.veeamVBRRepoFree / r.veeamVBRRepoCapacity * 100.0 then 0.0 \r\n                 else r.veeamVBRRepoFree / r.veeamVBRRepoCapacity * 100.0)\r\n              else 0.0 \r\n  }))\r\n  |> group(columns: [\"veeamVBRRepoName\", \"_field\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_repositories\")\r\n  |> filter(fn: (r) => r[\"veeamVBRRepoName\"] =~ /${vbrrepositories:regex}/)\r\n  |> filter(fn: (r) => r[\"_field\"] == \"veeamVBRRepoCapacity\" or r[\"_field\"] == \"veeamVBRRepoFree\")\r\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> map(fn: (r) => ({\r\n      _time: r._time,\r\n      veeamVBRRepoName: r.veeamVBRRepoName,\r\n      _value: if r.veeamVBRRepoCapacity > 0 then \r\n                ((r.veeamVBRRepoCapacity - r.veeamVBRRepoFree) / r.veeamVBRRepoCapacity * 100.0)\r\n              else 0.0 \r\n  }))\r\n  |> filter(fn: (r) => r._value > 0)  \r\n  |> group(columns: [\"veeamVBRRepoName\", \"_field\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -1402,6 +1429,15 @@
             ]
           ],
           "tags": []
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "hide": false,
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_vbr_repositories\")\r\n  |> filter(fn: (r) => r[\"veeamVBRRepoName\"] =~ /${vbrrepositories:regex}/)\r\n  |> filter(fn: (r) => r[\"_field\"] == \"veeamVBRRepoCapacity\" or r[\"_field\"] == \"veeamVBRRepoFree\" or r[\"_field\"] == \"veeamVBRRepoUsed\")\r\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> map(fn: (r) => ({\r\n      _time: r._time,\r\n      veeamVBRRepoName: r.veeamVBRRepoName,\r\n      conditionMet: (r.veeamVBRRepoFree == 0.0 or r.veeamVBRRepoCapacity == 0.0) and r.veeamVBRRepoUsed > 0.0,\r\n      _value: r.veeamVBRRepoUsed // Assuming you need to maintain some value for context.\r\n  }))\r\n  |> filter(fn: (r) => r.conditionMet)\r\n  |> group(columns: [\"veeamVBRRepoName\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n",
+          "refId": "B"
         }
       ],
       "title": "Backup Repository - Usage Capacity",
@@ -1831,7 +1867,7 @@
       "type": "stat"
     }
   ],
-  "refresh": "",
+  "refresh": false,
   "revision": 1,
   "schemaVersion": 38,
   "style": "dark",
@@ -1992,6 +2028,6 @@
   "timezone": "",
   "title": "Grafana Dashboard for Veeam Backup & Replication",
   "uid": "8W6ydiwVk",
-  "version": 18,
+  "version": 19,
   "weekStart": ""
 }
