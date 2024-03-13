@@ -9,7 +9,7 @@
 ##      .Notes
 ##      NAME:  veeam_backup_and_replication.sh
 ##      ORIGINAL NAME: veeam_backup_and_replication.sh
-##      LASTEDIT: 25/01/2024
+##      LASTEDIT: 13/03/2024
 ##      VERSION: 12.1.1
 ##      KEYWORDS: Veeam, , Backup, InfluxDB, Grafana
    
@@ -34,13 +34,54 @@ veeamPassword="YOURVBRPASSWORD"
 veeamBackupServer="YOURVBRAPIPORT"
 veeamBackupPort="9419" #Default Port
 
-# Get the bearer token
-veeamBearer=$(curl -X POST "https://$veeamBackupServer:$veeamBackupPort/api/oauth2/token" \
-  -H  "accept: application/json" \
-  -H  "x-api-version: 1.1-rev1" \
-  -H  "Content-Type: application/x-www-form-urlencoded" \
-  -d "grant_type=password&username=$veeamUsername&password=$veeamPassword&refresh_token=&code=&use_short_term_refresh=" \
-  -k --silent | jq -r '.access_token')
+# Get the bearer token and HTTP status code
+response=$(curl -s -o response.json -w "%{http_code}" -X POST "https://$veeamBackupServer:$veeamBackupPort/api/oauth2/token" \
+  -H "accept: application/json" \
+  -H "x-api-version: 1.1-rev1" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=password&username=$veeamUsername&password=$veeamPassword" \
+  -k)
+
+veeamBearertmp=$(<response.json)
+rm response.json
+http_status=$response
+
+case $http_status in
+    200)
+        veeamBearer=$(echo "$veeamBearertmp" | jq -r '.access_token')
+        if [ -n "$veeamBearer" ] && [ "$veeamBearer" != "null" ]; then
+            echo "Successfully obtained bearer token"
+        else
+            echo "Bearer token was not found in the response."
+            exit 1
+        fi
+        ;;
+    400)
+        # Parse error message
+        errorMessage=$(echo "$veeamBearertmp" | jq -r '.message')
+        echo "Bad request: $errorMessage"
+        exit 1
+        ;;
+    401)
+        errorMessage=$(echo "$veeamBearertmp" | jq -r '.message')
+        echo "Unauthorized: $errorMessage"
+        exit 1
+        ;;
+    403)
+        errorMessage=$(echo "$veeamBearertmp" | jq -r '.message')
+        echo "Forbidden: $errorMessage"
+        exit 1
+        ;;
+    500)
+        errorMessage=$(echo "$veeamBearertmp" | jq -r '.message')
+        echo "Internal server error: $errorMessage"
+        exit 1
+        ;;
+    *)
+        echo "An unexpected error occurred with HTTP status code: $http_status."
+        exit 1
+        ;;
+esac
 
 ##
 # Veeam Backup & Replication Information. This part will check VBR Information
