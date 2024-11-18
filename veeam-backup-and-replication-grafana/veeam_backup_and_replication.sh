@@ -31,7 +31,7 @@ veeamInfluxDBOrg="ORG NAME" # InfluxDB organisation name (not ID)
 veeamJobSessions="1000"
 veeamUsername="YOURVBRUSER"
 veeamPassword="YOURVBRPASSWORD"
-veeamBackupServer="YOURVBRAPIPORT"
+veeamBackupServer="YOURVBRAPI"
 veeamBackupPort="9419" #Default Port
 
 # Get the bearer token and HTTP status code

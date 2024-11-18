@@ -21,7 +21,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.1.3"
+      "version": "11.1.4"
     },
     {
       "type": "datasource",
@@ -82,7 +82,7 @@
       }
     ]
   },
-  "description": "Grafana Dashboard for Veeam Backup for Azure v3 -  (Grafana 8.x / InfluxDB v2.x)",
+  "description": "Grafana Dashboard for Veeam Backup for Azure v7 -  (Grafana 11.x / InfluxDB v2.x)",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "gnetId": 12204,
@@ -104,10 +104,15 @@
       },
       "id": 28,
       "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
         "content": "<a href=\"https://www.veeam.com/backup-azure.html\" target=\"_blank\"><img src=\"https://www.jorgedelacruz.es/VCB_product_icon.svg\" alt=\"drawing\" width=\"50\"/></a>\n\n",
         "mode": "html"
       },
-      "pluginVersion": "9.1.3",
+      "pluginVersion": "11.1.4",
       "targets": [
         {
           "datasource": {
@@ -157,24 +162,29 @@
         "type": "influxdb",
         "uid": "${DS_INFLUXDB}"
       },
+      "description": "Displays the total number of unique servers with Veeam backup policies in Azure, providing a quick overview of backup coverage.",
       "fieldConfig": {
         "defaults": {
           "color": {
             "fixedColor": "#135f4b",
             "mode": "fixed"
           },
-          "decimals": 2,
+          "decimals": 0,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "#135f4b",
+                "color": "green",
                 "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
               }
             ]
           },
-          "unit": "locale"
+          "unit": "none"
         },
         "overrides": [
           {
@@ -185,7 +195,7 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "Total Policies"
+                "value": "Policies"
               }
             ]
           },
@@ -197,7 +207,7 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "Total Repositories"
+                "value": "Repositories"
               }
             ]
           },
@@ -209,7 +219,7 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "Total Instances"
+                "value": "Total Azure VMs"
               }
             ]
           },
@@ -221,436 +231,229 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "Total Protected VMs"
+                "value": "Unprotected VMs"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "from": 1,
+                      "result": {
+                        "color": "dark-red",
+                        "index": 0
+                      },
+                      "to": 1000000
+                    },
+                    "type": "range"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "E"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Version"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "F"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Databases"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "G"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Unprotected DBs"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "from": 1,
+                      "result": {
+                        "color": "dark-red",
+                        "index": 0
+                      },
+                      "to": 1000000000
+                    },
+                    "type": "range"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "H"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "File Shares"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "I"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Unprotected FileShares"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "from": 1,
+                      "result": {
+                        "color": "dark-red",
+                        "index": 0
+                      },
+                      "to": 10000000000
+                    },
+                    "type": "range"
+                  }
+                ]
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 2,
-        "w": 15,
+        "h": 4,
+        "w": 23,
         "x": 1,
         "y": 0
       },
-      "id": 2,
+      "id": 34,
       "options": {
         "colorMode": "background",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
           ],
-          "fields": "",
+          "fields": "/.*/",
           "values": false
         },
-        "textMode": "value_and_name"
+        "showPercentChange": false,
+        "textMode": "value_and_name",
+        "wideLayout": true
       },
-      "pluginVersion": "9.1.3",
+      "pluginVersion": "11.1.4",
       "targets": [
         {
-          "alias": "Total Policies",
           "datasource": {
             "type": "influxdb",
             "uid": "${DS_INFLUXDB}"
           },
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "veeam_azure_overview",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "  from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_overview\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Policies\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
-          "rawQuery": true,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "Policies"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              }
-            ]
-          ],
-          "tags": []
+          "hide": false,
+          "query": "  from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_policies\")\r\n  |> keep(columns: [\"serverName\"])\r\n  |> distinct(column: \"serverName\")\r\n  |> group()\r\n  |> count()",
+          "refId": "A"
         },
         {
-          "alias": "Total Repositories",
           "datasource": {
             "type": "influxdb",
             "uid": "${DS_INFLUXDB}"
           },
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
           "hide": false,
-          "measurement": "veeam_azure_overview",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "  from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"Repositories\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
-          "rawQuery": true,
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "Repositories"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              }
-            ]
-          ],
-          "tags": []
+          "query": "  from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_repositories\")\r\n  |> keep(columns: [\"repoName\"])\r\n  |> distinct(column: \"repoName\")\r\n  |> group()\r\n  |> count()",
+          "refId": "B"
         },
         {
-          "alias": "Total Instances",
           "datasource": {
             "type": "influxdb",
             "uid": "${DS_INFLUXDB}"
           },
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
           "hide": false,
-          "measurement": "veeam_azure_overview",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "  from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"VMs\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
-          "rawQuery": true,
-          "refId": "C",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "VMs"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              }
-            ]
-          ],
-          "tags": []
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"VMs\")\r\n  |> last()\r\n  |> map(fn: (r) => ({ _value: r._value }))",
+          "refId": "C"
         },
         {
-          "alias": "Total Protected VMs",
           "datasource": {
             "type": "influxdb",
             "uid": "${DS_INFLUXDB}"
           },
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
           "hide": false,
-          "measurement": "veeam_azure_overview",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "  from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"VMsProtected\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
-          "rawQuery": true,
-          "refId": "D",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "VMsProtected"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              }
-            ]
-          ],
-          "tags": []
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"VMs\" or r[\"_field\"] == \"VMsProtected\")\r\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> map(fn: (r) => ({\r\n    _value: float(v: r.VMs) - float(v: r.VMsProtected)\r\n  }))\r\n  |> last()",
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "hide": false,
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"DBs\")\r\n  |> last()\r\n  |> map(fn: (r) => ({ _value: r._value }))",
+          "refId": "F"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "hide": false,
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"DBs\" or r[\"_field\"] == \"DBsProtected\")\r\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> map(fn: (r) => ({\r\n    _value: float(v: r.DBs) - float(v: r.DBsProtected)\r\n  }))\r\n  |> last()",
+          "refId": "G"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "hide": false,
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"fileSharesTotalCount\")\r\n  |> last()\r\n  |> map(fn: (r) => ({ _value: r._value }))",
+          "refId": "H"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "hide": false,
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"fileSharesTotalCount\" or r[\"_field\"] == \"fileSharesProtectedCount\")\r\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> map(fn: (r) => ({\r\n    _value: float(v: r.fileSharesTotalCount) - float(v: r.fileSharesProtectedCount)\r\n  }))\r\n  |> last()",
+          "refId": "I"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "hide": false,
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"vb\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> map(fn: (r) => ({_value: r.version}))\r\n  |> yield(name: \"version\")",
+          "refId": "E"
         }
       ],
-      "transparent": true,
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "displayName": "Version: ${__field.labels.version}",
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "text": "N/A"
-                }
-              },
-              "type": "special"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "#135f4b",
-                "value": null
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 4,
-        "x": 16,
-        "y": 0
-      },
-      "id": 22,
-      "links": [],
-      "maxDataPoints": 100,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "text": {
-          "valueSize": 30
-        },
-        "textMode": "name"
-      },
-      "pluginVersion": "9.1.3",
-      "targets": [
-        {
-          "alias": "Version $tag_version",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          },
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "version"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "none"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "veeam_azure_overview",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "  from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"Policies\")\r\n  |> group(columns: [\"version\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n",
-          "rawQuery": true,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "Policies"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              }
-            ]
-          ],
-          "tags": []
-        }
-      ],
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "displayName": "Worker Version: ${__field.labels.workerversion}",
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "text": "N/A"
-                }
-              },
-              "type": "special"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "#135f4b",
-                "value": null
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 4,
-        "x": 20,
-        "y": 0
-      },
-      "id": 21,
-      "links": [],
-      "maxDataPoints": 100,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "text": {
-          "valueSize": 20
-        },
-        "textMode": "name"
-      },
-      "pluginVersion": "9.1.3",
-      "targets": [
-        {
-          "alias": "Worker $tag_workerversion",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          },
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "workerversion"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "none"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "veeam_azure_overview",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "  from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_overview\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"Policies\")\r\n  |> group(columns: [\"workerversion\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
-          "rawQuery": true,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "Policies"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              }
-            ]
-          ],
-          "tags": []
-        }
-      ],
+      "title": "Veeam Backup for Azure Overview",
       "type": "stat"
     },
     {
@@ -692,7 +495,7 @@
         "h": 16,
         "w": 12,
         "x": 0,
-        "y": 2
+        "y": 4
       },
       "id": 8,
       "maxDataPoints": 1,
@@ -705,6 +508,7 @@
           "mouseWheelZoom": false,
           "showAttribution": false,
           "showDebug": false,
+          "showMeasure": false,
           "showScale": false,
           "showZoom": true
         },
@@ -733,6 +537,10 @@
                   "fixed": "img/icons/marker/circle.svg",
                   "mode": "fixed"
                 },
+                "symbolAlign": {
+                  "horizontal": "center",
+                  "vertical": "center"
+                },
                 "text": {
                   "field": "VMRegion",
                   "fixed": "",
@@ -747,7 +555,12 @@
                 }
               }
             },
+            "location": {
+              "geohash": "geohash",
+              "mode": "geohash"
+            },
             "name": "Unprotected VMs",
+            "tooltip": true,
             "type": "markers"
           }
         ],
@@ -755,13 +568,14 @@
           "mode": "details"
         },
         "view": {
+          "allLayers": true,
           "id": "coords",
           "lat": 39.943392,
           "lon": -39.543707,
           "zoom": 3
         }
       },
-      "pluginVersion": "9.1.3",
+      "pluginVersion": "11.1.4",
       "targets": [
         {
           "alias": "$tag_geohash",
@@ -834,12 +648,9 @@
             "keepLabels": [
               "VMRegion",
               "geohash"
-            ]
+            ],
+            "mode": "columns"
           }
-        },
-        {
-          "id": "merge",
-          "options": {}
         },
         {
           "id": "organize",
@@ -847,10 +658,14 @@
             "excludeByName": {
               "VMRegion": false,
               "_field": true,
+              "_field {VMRegion=\"\"uksouth\"\", _start=\"2024-11-16 20:53:29.655 +0000 UTC\", _stop=\"2024-11-18 20:53:29.655 +0000 UTC\", geohash=\"\"gcpv4s80b7q\"\"}": true,
               "_measurement": true,
+              "_measurement {VMRegion=\"\"uksouth\"\", _start=\"2024-11-16 20:53:29.655 +0000 UTC\", _stop=\"2024-11-18 20:53:29.655 +0000 UTC\", geohash=\"\"gcpv4s80b7q\"\"}": true,
               "_time": true,
+              "_value {VMRegion=\"\"uksouth\"\", _start=\"2024-11-16 20:53:29.655 +0000 UTC\", _stop=\"2024-11-18 20:53:29.655 +0000 UTC\", geohash=\"\"gcpv4s80b7q\"\"}": true,
               "geohash": false
             },
+            "includeByName": {},
             "indexByName": {},
             "renameByName": {
               "_time": "",
@@ -887,25 +702,6 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "veeam_azure_vm_protected TotalVMs"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#37872D",
-                  "mode": "fixed"
-                }
-              },
-              {
-                "id": "displayName",
-                "value": "Protected Workloads"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "veeam_azure_vm_unprotected TotalVMs"
             },
             "properties": [
@@ -921,6 +717,44 @@
                 "value": "Unprotected Workloads"
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Protected Workloads"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Unprotected Workloads"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
           }
         ]
       },
@@ -928,10 +762,9 @@
         "h": 9,
         "w": 4,
         "x": 12,
-        "y": 2
+        "y": 4
       },
       "id": 30,
-      "links": [],
       "maxDataPoints": 3,
       "options": {
         "displayLabels": [
@@ -981,10 +814,11 @@
               "type": "fill"
             }
           ],
+          "hide": false,
           "measurement": "veeam_azure_vm_protected",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_vm_protected\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"TotalVMs\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")\r\n",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r[\"_measurement\"] == \"veeam_azure_vm_protected\" and r[\"_field\"] == \"TotalVMs\" or\r\n    r[\"_measurement\"] == \"veeam_azure_overview\" and (r[\"_field\"] == \"DBsProtected\" or r[\"_field\"] == \"fileSharesProtectedCount\")\r\n  )\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> group()\r\n  |> sum(column: \"_value\")\r\n  |> yield(name: \"total_protected_workloads\")\r\n",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -1024,10 +858,11 @@
               "type": "fill"
             }
           ],
+          "hide": false,
           "measurement": "veeam_azure_vm_unprotected",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"veeam_azure_vm_unprotected\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"TotalVMs\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r[\"_measurement\"] == \"veeam_azure_vm_unprotected\" and r[\"_field\"] == \"TotalVMs\" or\r\n    r[\"_measurement\"] == \"veeam_azure_overview\" and (r[\"_field\"] == \"DBs\" or r[\"_field\"] == \"DBsProtected\" or r[\"_field\"] == \"fileSharesTotalCount\" or r[\"_field\"] == \"fileSharesProtectedCount\")\r\n  )\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> map(fn: (r) => ({\r\n    r with \r\n    unprotectedVMs: if exists r.TotalVMs then float(v: r.TotalVMs) else 0.0,\r\n    unprotectedDBs: if exists r.DBs and exists r.DBsProtected then float(v: r.DBs) - float(v: r.DBsProtected) else 0.0,\r\n    unprotectedFileShares: if exists r.fileSharesTotalCount and exists r.fileSharesProtectedCount then float(v: r.fileSharesTotalCount) - float(v: r.fileSharesProtectedCount) else 0.0\r\n  }))\r\n  |> map(fn: (r) => ({\r\n    r with \r\n    totalUnprotected: r.unprotectedVMs + r.unprotectedDBs + r.unprotectedFileShares\r\n  }))\r\n  |> group()\r\n  |> sum(column: \"totalUnprotected\")\r\n  |> yield(name: \"total_unprotected_workloads\")",
           "rawQuery": true,
           "refId": "B",
           "resultFormat": "time_series",
@@ -1063,6 +898,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "Job Duration",
@@ -1076,6 +912,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 8,
@@ -1114,12 +951,11 @@
         "h": 9,
         "w": 8,
         "x": 16,
-        "y": 2
+        "y": 4
       },
       "hideTimeOverride": false,
       "id": 19,
       "interval": "",
-      "links": [],
       "options": {
         "legend": {
           "calcs": [
@@ -1218,7 +1054,10 @@
         "defaults": {
           "custom": {
             "align": "center",
-            "displayMode": "color-background",
+            "cellOptions": {
+              "mode": "gradient",
+              "type": "color-background"
+            },
             "filterable": true,
             "inspect": false
           },
@@ -1268,8 +1107,10 @@
             },
             "properties": [
               {
-                "id": "custom.displayMode",
-                "value": "auto"
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "auto"
+                }
               }
             ]
           },
@@ -1280,8 +1121,10 @@
             },
             "properties": [
               {
-                "id": "custom.displayMode",
-                "value": "auto"
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "auto"
+                }
               }
             ]
           },
@@ -1292,8 +1135,10 @@
             },
             "properties": [
               {
-                "id": "custom.displayMode",
-                "value": "auto"
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "auto"
+                }
               }
             ]
           }
@@ -1303,13 +1148,14 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 11
+        "y": 13
       },
       "hideTimeOverride": false,
       "id": 17,
-      "links": [],
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "fields": "",
           "reducer": [
             "sum"
@@ -1318,7 +1164,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.1.3",
+      "pluginVersion": "11.1.4",
       "targets": [
         {
           "alias": "$tag_sessionPolicyName",
@@ -1422,7 +1268,10 @@
         "defaults": {
           "custom": {
             "align": "center",
-            "displayMode": "color-background",
+            "cellOptions": {
+              "mode": "gradient",
+              "type": "color-background"
+            },
             "filterable": true,
             "inspect": false
           },
@@ -1456,13 +1305,14 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 18
+        "y": 20
       },
       "id": 31,
       "interval": "",
-      "links": [],
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "fields": "",
           "reducer": [
             "sum"
@@ -1471,7 +1321,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.1.3",
+      "pluginVersion": "11.1.4",
       "targets": [
         {
           "alias": "",
@@ -1616,7 +1466,10 @@
         "defaults": {
           "custom": {
             "align": "center",
-            "displayMode": "color-background",
+            "cellOptions": {
+              "mode": "gradient",
+              "type": "color-background"
+            },
             "filterable": true,
             "inspect": false
           },
@@ -1650,13 +1503,14 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 18
+        "y": 20
       },
       "id": 26,
       "interval": "",
-      "links": [],
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "fields": "",
           "reducer": [
             "sum"
@@ -1665,7 +1519,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.1.3",
+      "pluginVersion": "11.1.4",
       "targets": [
         {
           "alias": "",
@@ -1814,15 +1668,20 @@
         "defaults": {
           "custom": {
             "align": "center",
-            "displayMode": "color-background",
-            "filterable": true
+            "cellOptions": {
+              "mode": "gradient",
+              "type": "color-background"
+            },
+            "filterable": true,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "#da5041"
+                "color": "#da5041",
+                "value": null
               }
             ]
           }
@@ -1858,13 +1717,14 @@
         "h": 6,
         "w": 12,
         "x": 0,
-        "y": 25
+        "y": 27
       },
       "id": 33,
       "interval": "",
-      "links": [],
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "fields": "",
           "reducer": [
             "sum"
@@ -1873,7 +1733,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.4.4",
+      "pluginVersion": "11.1.4",
       "targets": [
         {
           "alias": "",
@@ -2016,15 +1876,20 @@
         "defaults": {
           "custom": {
             "align": "center",
-            "displayMode": "color-background",
-            "filterable": true
+            "cellOptions": {
+              "mode": "gradient",
+              "type": "color-background"
+            },
+            "filterable": true,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-purple"
+                "color": "dark-purple",
+                "value": null
               }
             ]
           }
@@ -2060,13 +1925,14 @@
         "h": 6,
         "w": 12,
         "x": 12,
-        "y": 25
+        "y": 27
       },
       "id": 32,
       "interval": "",
-      "links": [],
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "fields": "",
           "reducer": [
             "sum"
@@ -2075,7 +1941,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.4.4",
+      "pluginVersion": "11.1.4",
       "targets": [
         {
           "alias": "",
@@ -2347,14 +2213,19 @@
         "h": 3,
         "w": 5,
         "x": 19,
-        "y": 31
+        "y": 33
       },
       "id": 10,
       "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
         "content": "<a href=\"https://www.jorgedelacruz.es\"><img src=\"https://www.jorgedelacruz.es/wp-content/uploads/2019/04/jorgedelacruz-banner_2efede4ef704c939e63a3763231f5961.png\"></a>\n\n\n\n",
         "mode": "html"
       },
-      "pluginVersion": "8.4.4",
+      "pluginVersion": "11.1.4",
       "targets": [
         {
           "datasource": {
@@ -2401,8 +2272,7 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 37,
-  "style": "dark",
+  "schemaVersion": 39,
   "tags": [
     "veeam",
     "azure",
@@ -2506,7 +2376,7 @@
     ]
   },
   "time": {
-    "from": "now-6M",
+    "from": "now-2d",
     "to": "now"
   },
   "timepicker": {
@@ -2526,6 +2396,6 @@
   "timezone": "",
   "title": "Grafana Dashboard for Veeam Backup for Azure",
   "uid": "NHs2j76Zz",
-  "version": 10,
+  "version": 11,
   "weekStart": ""
 }
