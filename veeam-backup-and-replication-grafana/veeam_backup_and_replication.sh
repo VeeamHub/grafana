@@ -1,6 +1,6 @@
 #!/bin/bash
 ##      .SYNOPSIS
-##      Grafana Dashboard for Veeam Backup & Replication v12.1.1 - Using API to InfluxDB Script
+##      Grafana Dashboard for Veeam Backup & Replication v12.3 - Using API to InfluxDB Script
 ## 
 ##      .DESCRIPTION
 ##      This Script will query the Veeam Backup & Replication API and send the data directly to InfluxDB, which can be used to present it to Grafana. 
@@ -9,8 +9,8 @@
 ##      .Notes
 ##      NAME:  veeam_backup_and_replication.sh
 ##      ORIGINAL NAME: veeam_backup_and_replication.sh
-##      LASTEDIT: 13/03/2024
-##      VERSION: 12.1.1
+##      LASTEDIT: 12/12/2024
+##      VERSION: 12.3
 ##      KEYWORDS: Veeam, , Backup, InfluxDB, Grafana
    
 ##      .Link
@@ -31,13 +31,15 @@ veeamInfluxDBOrg="ORG NAME" # InfluxDB organisation name (not ID)
 veeamJobSessions="1000"
 veeamUsername="YOURVBRUSER"
 veeamPassword="YOURVBRPASSWORD"
-veeamBackupServer="YOURVBRAPI"
+veeamBackupServer="YOURVBRAPIPORT"
 veeamBackupPort="9419" #Default Port
+# API Version
+veeamAPIVersion="1.2-rev0" # Set the API version here (e.g., 1.2-rev0)
 
 # Get the bearer token and HTTP status code
 response=$(curl -s -o response.json -w "%{http_code}" -X POST "https://$veeamBackupServer:$veeamBackupPort/api/oauth2/token" \
   -H "accept: application/json" \
-  -H "x-api-version: 1.1-rev1" \
+  -H "x-api-version: $veeamAPIVersion" \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "grant_type=password&username=$veeamUsername&password=$veeamPassword" \
   -k)
@@ -90,7 +92,7 @@ veeamVBRURL="https://$veeamBackupServer:$veeamBackupPort/api/v1/serverInfo"
 veeamVBRInfoUrl=$(curl -X GET $veeamVBRURL \
   -H "Authorization: Bearer $veeamBearer" \
   -H  "accept: application/json" \
-  -H  "x-api-version: 1.1-rev1" \
+  -H  "x-api-version: $veeamAPIVersion" \
   2>&1 -k --silent)
 
     veeamVBRId=$(echo "$veeamVBRInfoUrl" | jq --raw-output ".vbrId")
@@ -116,7 +118,7 @@ veeamVBRURL="https://$veeamBackupServer:$veeamBackupPort/api/v1/sessions"
 veeamVBRSessionsUrl=$(curl -X GET $veeamVBRURL \
   -H "Authorization: Bearer $veeamBearer" \
   -H  "accept: application/json" \
-  -H  "x-api-version: 1.1-rev1" \
+  -H  "x-api-version: $veeamAPIVersion" \
   2>&1 -k --silent)
 
 declare -i arrayjobsessions=0
@@ -173,7 +175,7 @@ veeamVBRURL="https://$veeamBackupServer:$veeamBackupPort/api/v1/backupInfrastruc
 veeamVBRManagedServersUrl=$(curl -X GET $veeamVBRURL \
   -H "Authorization: Bearer $veeamBearer" \
   -H  "accept: application/json" \
-  -H  "x-api-version: 1.1-rev1" \
+  -H  "x-api-version: $veeamAPIVersion" \
   2>&1 -k --silent)
 
 declare -i arraymanagedservers=0
@@ -209,12 +211,12 @@ veeamVBRURL="https://$veeamBackupServer:$veeamBackupPort/api/v1/backupInfrastruc
 veeamVBRRepositoriesUrl=$(curl -X GET $veeamVBRURL \
   -H "Authorization: Bearer $veeamBearer" \
   -H  "accept: application/json" \
-  -H  "x-api-version: 1.1-rev1" \
+  -H  "x-api-version: $veeamAPIVersion" \
   2>&1 -k --silent)
 
 declare -i arrayrepositories=0
 if [[ "$veeamVBRRepositoriesUrl" == "[]" ]]; then
-    echo "There are not repositories"
+    echo "There are no repositories"
 else
     for id in $(echo "$veeamVBRRepositoriesUrl" | jq -r '.data[].id'); do
         veeamVBRRepoName=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].name" | awk '{gsub(/([ ,])/,"\\\\&");print}') 
@@ -224,7 +226,7 @@ else
         veeamVBRRepoStateUrl=$(curl -X GET "https://$veeamBackupServer:$veeamBackupPort/api/v1/backupInfrastructure/repositories/states?idFilter=$id" \
             -H "Authorization: Bearer $veeamBearer" \
             -H "accept: application/json" \
-            -H "x-api-version: 1.1-rev1" \
+            -H "x-api-version: $veeamAPIVersion" \
             2>&1 -k --silent)
             veeamVBRRepoCapacity=$(echo "$veeamVBRRepoStateUrl" | jq --raw-output ".data[0].capacityGB" | awk '{printf "%d\n", $1 * 1024 * 1024 * 1024}') 
             veeamVBRRepoFree=$(echo "$veeamVBRRepoStateUrl" | jq --raw-output ".data[0].freeGB" | awk '{printf "%d\n", $1 * 1024 * 1024 * 1024}')
@@ -237,7 +239,7 @@ else
                     veeamVBRRepopath=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.path" | awk '{gsub(/([ ,])/,"\\\\&");print}')
                     veeamVBRRepoPerVM=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.advancedSettings.perVmBackup") 
                     veeamVBRRepoMaxtasks=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.maxTaskCount")
-                    influxData="veeam_vbr_repositories,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepopath=$veeamVBRRepopath,veeamVBRRepoPerVM=$veeamVBRRepoPerVM veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoCapacity=$veeamVBRRepoCapacity,veeamVBRRepoFree=$veeamVBRRepoFree,veeamVBRRepoUsed=$veeamVBRRepoUsed"
+                    influxData="veeam_vbr_repositories,veeamVBR=$veeamBackupServer,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepopath=$veeamVBRRepopath,veeamVBRRepoPerVM=$veeamVBRRepoPerVM veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoCapacity=$veeamVBRRepoCapacity,veeamVBRRepoFree=$veeamVBRRepoFree,veeamVBRRepoUsed=$veeamVBRRepoUsed"
                     #echo $influxData 
                     
 
@@ -259,7 +261,7 @@ else
                     veeamVBRRepoBucketImmutable=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].bucket.immutability.isEnabled")
                     veeamVBRRepoBucketImmutableDays=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].bucket.immutability.daysCount")
                     veeamVBRRepoMaxtasks=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].maxTaskCount")
-                    influxData="veeam_vbr_repositories,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepoServicePoint=$veeamVBRRepoServicePoint,veeamVBRRepoRegion=$veeamVBRRepoRegion,veeamVBRRepoBucketName=$veeamVBRRepoBucketName,veeamVBRRepoBucketFolder=$veeamVBRRepoBucketFolder,veeamVBRRepoBucketImmutable=$veeamVBRRepoBucketImmutable veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoBucketImmutableDays=$veeamVBRRepoBucketImmutableDays,veeamVBRRepoCapacity=$veeamVBRRepoCapacity,veeamVBRRepoFree=$veeamVBRRepoFree,veeamVBRRepoUsed=$veeamVBRRepoUsed"
+                    influxData="veeam_vbr_repositories,veeamVBR=$veeamBackupServer,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepoServicePoint=$veeamVBRRepoServicePoint,veeamVBRRepoRegion=$veeamVBRRepoRegion,veeamVBRRepoBucketName=$veeamVBRRepoBucketName,veeamVBRRepoBucketFolder=$veeamVBRRepoBucketFolder,veeamVBRRepoBucketImmutable=$veeamVBRRepoBucketImmutable veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoBucketImmutableDays=$veeamVBRRepoBucketImmutableDays,veeamVBRRepoCapacity=$veeamVBRRepoCapacity,veeamVBRRepoFree=$veeamVBRRepoFree,veeamVBRRepoUsed=$veeamVBRRepoUsed"
                     #echo $influxData
 
                     ##Comment the influx write while debugging
@@ -278,7 +280,7 @@ else
                     veeamVBRRepoBucketImmutableDays=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.makeRecentBackupsImmutableDays")
                     veeamVBRRepoPerVM=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.advancedSettings.perVmBackup")
                     veeamVBRRepoMaxtasks=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.maxTaskCount")
-                    influxData="veeam_vbr_repositories,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepopath=$veeamVBRRepopath,veeamVBRRepoXFS=$veeamVBRRepoXFS,veeamVBRRepoPerVM=$veeamVBRRepoPerVM veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoBucketImmutableDays=$veeamVBRRepoBucketImmutableDays,veeamVBRRepoCapacity=$veeamVBRRepoCapacity,veeamVBRRepoFree=$veeamVBRRepoFree,veeamVBRRepoUsed=$veeamVBRRepoUsed"
+                    influxData="veeam_vbr_repositories,veeamVBR=$veeamBackupServer,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepopath=$veeamVBRRepopath,veeamVBRRepoXFS=$veeamVBRRepoXFS,veeamVBRRepoPerVM=$veeamVBRRepoPerVM veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoBucketImmutableDays=$veeamVBRRepoBucketImmutableDays,veeamVBRRepoCapacity=$veeamVBRRepoCapacity,veeamVBRRepoFree=$veeamVBRRepoFree,veeamVBRRepoUsed=$veeamVBRRepoUsed"
                     #echo $influxData
 
                     ##Comment the influx write while debugging
@@ -296,7 +298,7 @@ else
                     veeamVBRRepopath=$(echo "$veeamVBRRepopath" | awk '{gsub(/([ ,=])/,"\\\\&");print}')
                     veeamVBRRepoPerVM=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.advancedSettings.perVmBackup")
                     veeamVBRRepoMaxtasks=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.maxTaskCount")
-                    influxData="veeam_vbr_repositories,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepopath=$veeamVBRRepopath,veeamVBRRepoPerVM=$veeamVBRRepoPerVM veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoCapacity=$veeamVBRRepoCapacity,veeamVBRRepoFree=$veeamVBRRepoFree,veeamVBRRepoUsed=$veeamVBRRepoUsed"
+                    influxData="veeam_vbr_repositories,veeamVBR=$veeamBackupServer,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepopath=$veeamVBRRepopath,veeamVBRRepoPerVM=$veeamVBRRepoPerVM veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoCapacity=$veeamVBRRepoCapacity,veeamVBRRepoFree=$veeamVBRRepoFree,veeamVBRRepoUsed=$veeamVBRRepoUsed"
                     #echo $influxData
 
                     ##Comment the influx write while debugging
@@ -314,7 +316,7 @@ else
                     veeamVBRRepopath=$(echo "$veeamVBRRepopath" | sed 's/\\\\/\\/g' | awk '{gsub(/([ ,=])/,"\\\\&");print}')
                     veeamVBRRepoPerVM=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.advancedSettings.perVmBackup")
                     veeamVBRRepoMaxtasks=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.maxTaskCount")
-                    influxData="veeam_vbr_repositories,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepopath=$veeamVBRRepopath,veeamVBRRepoPerVM=$veeamVBRRepoPerVM veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoCapacity=$veeamVBRRepoCapacity,veeamVBRRepoFree=$veeamVBRRepoFree,veeamVBRRepoUsed=$veeamVBRRepoUsed"
+                    influxData="veeam_vbr_repositories,veeamVBR=$veeamBackupServer,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepopath=$veeamVBRRepopath,veeamVBRRepoPerVM=$veeamVBRRepoPerVM veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoCapacity=$veeamVBRRepoCapacity,veeamVBRRepoFree=$veeamVBRRepoFree,veeamVBRRepoUsed=$veeamVBRRepoUsed"
                     #echo $influxData
 
                     ##Comment the influx write while debugging
@@ -346,7 +348,7 @@ veeamVBRURL="https://$veeamBackupServer:$veeamBackupPort/api/v1/backupInfrastruc
 veeamVBRProxiesUrl=$(curl -X GET $veeamVBRURL \
   -H "Authorization: Bearer $veeamBearer" \
   -H  "accept: application/json" \
-  -H  "x-api-version: 1.1-rev1" \
+  -H  "x-api-version: $veeamAPIVersion" \
   2>&1 -k --silent)
 
 declare -i arrayproxies=0
@@ -385,7 +387,7 @@ veeamVBRURL="https://$veeamBackupServer:$veeamBackupPort/api/v1/backupObjects"
 veeamVBRBObjectsUrl=$(curl -X GET $veeamVBRURL \
   -H "Authorization: Bearer $veeamBearer" \
   -H  "accept: application/json" \
-  -H  "x-api-version: 1.1-rev1" \
+  -H  "x-api-version: $veeamAPIVersion" \
   2>&1 -k --silent)
 
 declare -i arraybobjects=0
