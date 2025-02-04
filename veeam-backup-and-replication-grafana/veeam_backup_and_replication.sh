@@ -9,8 +9,8 @@
 ##      .Notes
 ##      NAME:  veeam_backup_and_replication.sh
 ##      ORIGINAL NAME: veeam_backup_and_replication.sh
-##      LASTEDIT: 12/12/2024
-##      VERSION: 12.3
+##      LASTEDIT: 04/02/2025
+##      VERSION: 12.3.2
 ##      KEYWORDS: Veeam, , Backup, InfluxDB, Grafana
    
 ##      .Link
@@ -214,31 +214,35 @@ veeamVBRRepositoriesUrl=$(curl -X GET $veeamVBRURL \
   -H  "x-api-version: $veeamAPIVersion" \
   2>&1 -k --silent)
 
-declare -i arrayrepositories=0
 if [[ "$veeamVBRRepositoriesUrl" == "[]" ]]; then
     echo "There are no repositories"
 else
     for id in $(echo "$veeamVBRRepositoriesUrl" | jq -r '.data[].id'); do
-        veeamVBRRepoName=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].name" | awk '{gsub(/([ ,])/,"\\\\&");print}') 
-        veeamVBRRepotype=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].type") 
-        veeamVBRRepoDescription=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].description" | awk '{gsub(/([ ,])/,"\\\\&");print}')
+        veeamVBRRepoName=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").name" | awk '{gsub(/([ ,])/,"\\\\&");print}') 
+        veeamVBRRepotype=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").type") 
+        veeamVBRRepoDescription=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").description" | awk '{gsub(/([ ,])/,"\\\\&");print}')
         # Fetch and calculate the capacity, free space, and used space
         veeamVBRRepoStateUrl=$(curl -X GET "https://$veeamBackupServer:$veeamBackupPort/api/v1/backupInfrastructure/repositories/states?idFilter=$id" \
             -H "Authorization: Bearer $veeamBearer" \
             -H "accept: application/json" \
             -H "x-api-version: $veeamAPIVersion" \
             2>&1 -k --silent)
-            veeamVBRRepoCapacity=$(echo "$veeamVBRRepoStateUrl" | jq --raw-output ".data[0].capacityGB" | awk '{printf "%d\n", $1 * 1024 * 1024 * 1024}') 
-            veeamVBRRepoFree=$(echo "$veeamVBRRepoStateUrl" | jq --raw-output ".data[0].freeGB" | awk '{printf "%d\n", $1 * 1024 * 1024 * 1024}')
-            veeamVBRRepoUsed=$(echo "$veeamVBRRepoStateUrl" | jq --raw-output ".data[0].usedSpaceGB" | awk '{printf "%d\n", $1 * 1024 * 1024 * 1024}')
-                    
-        [[ ! -z "$veeamVBRRepoDescription" ]] || veeamVBRRepoDescription="None"
 
+            veeamVBRRepoCapacity=$(echo "$veeamVBRRepoStateUrl" | jq --raw-output ".data[] | select(.id==\"$id\").capacityGB" | awk '{printf "%.0f\n", $1 * 1024 * 1024 * 1024}') 
+            veeamVBRRepoFree=$(echo "$veeamVBRRepoStateUrl" | jq --raw-output ".data[] | select(.id==\"$id\").freeGB" | awk '{printf "%.0f\n", $1 * 1024 * 1024 * 1024}')
+            veeamVBRRepoUsed=$(echo "$veeamVBRRepoStateUrl" | jq --raw-output ".data[] | select(.id==\"$id\").usedSpaceGB" | awk '{printf "%.0f\n", $1 * 1024 * 1024 * 1024}')
+
+            # Let's add some checks and put things to 0 or None if empty or issues        
+            [[ ! -z "$veeamVBRRepoDescription" ]] || veeamVBRRepoDescription="None"
+            [[ -z "$veeamVBRRepoCapacity" ]] && veeamVBRRepoCapacity=0
+            [[ -z "$veeamVBRRepoFree" ]] && veeamVBRRepoFree=0
+            [[ -z "$veeamVBRRepoUsed" ]] && veeamVBRRepoUsed=0
+        
         case "$veeamVBRRepotype" in
                 "WinLocal")
-                    veeamVBRRepopath=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.path" | awk '{gsub(/([ ,])/,"\\\\&");print}')
-                    veeamVBRRepoPerVM=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.advancedSettings.perVmBackup") 
-                    veeamVBRRepoMaxtasks=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.maxTaskCount")
+                    veeamVBRRepopath=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").repository.path" | awk '{gsub(/([ ,])/,"\\\\&");print}')
+                    veeamVBRRepoPerVM=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").repository.advancedSettings.perVmBackup") 
+                    veeamVBRRepoMaxtasks=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").repository.maxTaskCount")
                     influxData="veeam_vbr_repositories,veeamVBR=$veeamBackupServer,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepopath=$veeamVBRRepopath,veeamVBRRepoPerVM=$veeamVBRRepoPerVM veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoCapacity=$veeamVBRRepoCapacity,veeamVBRRepoFree=$veeamVBRRepoFree,veeamVBRRepoUsed=$veeamVBRRepoUsed"
                     #echo $influxData 
                     
@@ -254,13 +258,13 @@ else
                     
                     ;;
                 "S3Compatible"|"WasabiCloud")
-                    veeamVBRRepoServicePoint=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].account.servicePoint" | awk '{gsub(/([ ,])/,"\\\\&");print}') 
-                    veeamVBRRepoRegion=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].account.regionId" | awk '{gsub(/([ ,])/,"\\\\&");print}') 
-                    veeamVBRRepoBucketName=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].bucket.bucketName" | awk '{gsub(/([ ,])/,"\\\\&");print}') 
-                    veeamVBRRepoBucketFolder=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].bucket.folderName" | awk '{gsub(/([ ,])/,"\\\\&");print}') 
-                    veeamVBRRepoBucketImmutable=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].bucket.immutability.isEnabled")
-                    veeamVBRRepoBucketImmutableDays=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].bucket.immutability.daysCount")
-                    veeamVBRRepoMaxtasks=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].maxTaskCount")
+                    veeamVBRRepoServicePoint=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").account.servicePoint" | awk '{gsub(/([ ,])/,"\\\\&");print}') 
+                    veeamVBRRepoRegion=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").account.regionId" | awk '{gsub(/([ ,])/,"\\\\&");print}') 
+                    veeamVBRRepoBucketName=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").bucket.bucketName" | awk '{gsub(/([ ,])/,"\\\\&");print}') 
+                    veeamVBRRepoBucketFolder=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").bucket.folderName" | awk '{gsub(/([ ,])/,"\\\\&");print}') 
+                    veeamVBRRepoBucketImmutable=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").bucket.immutability.isEnabled")
+                    veeamVBRRepoBucketImmutableDays=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").bucket.immutability.daysCount")
+                    veeamVBRRepoMaxtasks=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").maxTaskCount")
                     influxData="veeam_vbr_repositories,veeamVBR=$veeamBackupServer,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepoServicePoint=$veeamVBRRepoServicePoint,veeamVBRRepoRegion=$veeamVBRRepoRegion,veeamVBRRepoBucketName=$veeamVBRRepoBucketName,veeamVBRRepoBucketFolder=$veeamVBRRepoBucketFolder,veeamVBRRepoBucketImmutable=$veeamVBRRepoBucketImmutable veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoBucketImmutableDays=$veeamVBRRepoBucketImmutableDays,veeamVBRRepoCapacity=$veeamVBRRepoCapacity,veeamVBRRepoFree=$veeamVBRRepoFree,veeamVBRRepoUsed=$veeamVBRRepoUsed"
                     #echo $influxData
 
@@ -275,11 +279,11 @@ else
 
                     ;;
                 "LinuxHardened")
-                    veeamVBRRepopath=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.path" | awk '{gsub(/([ ,])/,"\\\\&");print}') 
-                    veeamVBRRepoXFS=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.useFastCloningOnXFSVolumes")
-                    veeamVBRRepoBucketImmutableDays=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.makeRecentBackupsImmutableDays")
-                    veeamVBRRepoPerVM=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.advancedSettings.perVmBackup")
-                    veeamVBRRepoMaxtasks=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.maxTaskCount")
+                    veeamVBRRepopath=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").repository.path" | awk '{gsub(/([ ,])/,"\\\\&");print}') 
+                    veeamVBRRepoXFS=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").repository.useFastCloningOnXFSVolumes")
+                    veeamVBRRepoBucketImmutableDays=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").repository.makeRecentBackupsImmutableDays")
+                    veeamVBRRepoPerVM=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").repository.advancedSettings.perVmBackup")
+                    veeamVBRRepoMaxtasks=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").repository.maxTaskCount")
                     influxData="veeam_vbr_repositories,veeamVBR=$veeamBackupServer,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepopath=$veeamVBRRepopath,veeamVBRRepoXFS=$veeamVBRRepoXFS,veeamVBRRepoPerVM=$veeamVBRRepoPerVM veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoBucketImmutableDays=$veeamVBRRepoBucketImmutableDays,veeamVBRRepoCapacity=$veeamVBRRepoCapacity,veeamVBRRepoFree=$veeamVBRRepoFree,veeamVBRRepoUsed=$veeamVBRRepoUsed"
                     #echo $influxData
 
@@ -294,10 +298,10 @@ else
 
                     ;;
                 "Nfs")
-                    veeamVBRRepopath=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].share.sharePath")
+                    veeamVBRRepopath=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").share.sharePath")
                     veeamVBRRepopath=$(echo "$veeamVBRRepopath" | awk '{gsub(/([ ,=])/,"\\\\&");print}')
-                    veeamVBRRepoPerVM=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.advancedSettings.perVmBackup")
-                    veeamVBRRepoMaxtasks=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.maxTaskCount")
+                    veeamVBRRepoPerVM=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").repository.advancedSettings.perVmBackup")
+                    veeamVBRRepoMaxtasks=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").repository.maxTaskCount")
                     influxData="veeam_vbr_repositories,veeamVBR=$veeamBackupServer,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepopath=$veeamVBRRepopath,veeamVBRRepoPerVM=$veeamVBRRepoPerVM veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoCapacity=$veeamVBRRepoCapacity,veeamVBRRepoFree=$veeamVBRRepoFree,veeamVBRRepoUsed=$veeamVBRRepoUsed"
                     #echo $influxData
 
@@ -312,10 +316,10 @@ else
 
                     ;;
                 "Smb")
-                    veeamVBRRepopath=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].share.sharePath")
+                    veeamVBRRepopath=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").share.sharePath")
                     veeamVBRRepopath=$(echo "$veeamVBRRepopath" | sed 's/\\\\/\\/g' | awk '{gsub(/([ ,=])/,"\\\\&");print}')
-                    veeamVBRRepoPerVM=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.advancedSettings.perVmBackup")
-                    veeamVBRRepoMaxtasks=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[$arrayrepositories].repository.maxTaskCount")
+                    veeamVBRRepoPerVM=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").repository.advancedSettings.perVmBackup")
+                    veeamVBRRepoMaxtasks=$(echo "$veeamVBRRepositoriesUrl" | jq --raw-output ".data[] | select(.id==\"$id\").repository.maxTaskCount")
                     influxData="veeam_vbr_repositories,veeamVBR=$veeamBackupServer,veeamVBRRepoName=$veeamVBRRepoName,veeamVBRRepotype=$veeamVBRRepotype,veeamVBRMSDescription=$veeamVBRRepoDescription,veeamVBRRepopath=$veeamVBRRepopath,veeamVBRRepoPerVM=$veeamVBRRepoPerVM veeamVBRRepoMaxtasks=$veeamVBRRepoMaxtasks,veeamVBRRepoCapacity=$veeamVBRRepoCapacity,veeamVBRRepoFree=$veeamVBRRepoFree,veeamVBRRepoUsed=$veeamVBRRepoUsed"
                     #echo $influxData
 
@@ -334,9 +338,6 @@ else
                     ;;
         esac
 
-
-        arrayrepositories+=1
-        
     done
 fi
 
