@@ -1,17 +1,20 @@
 How to monitor a Veeam Environment using Veeam Enterprise Manager, Telegraf, InfluxDB and Grafana
 ===================
-![Veeam Grafana Dashboard for Enterprise Manager](https://jorgedelacruz.uk/wp-content/uploads/2020/01/2020-05-26_16-40-49.jpg)
+![Veeam Grafana Dashboard for Enterprise Manager](https://jorgedelacruz.uk/wp-content/uploads/2026/01/2026-01-29_21-58-41-scaled.png)
 
 Thanks for the interest on this project. 
 
 ----------
 ### Getting started
-Please follow the next instructions in order to start monitoring your Veeam Enterprise Manager with InmfluxDB v2.0 - https://jorgedelacruz.uk/2020/01/07/looking-for-the-perfect-dashboard-influxdb-telegraf-and-grafana-part-xix-monitoring-veeam-with-enterprise-manager-shell-script/
+Please follow the next instructions in order to start monitoring your Veeam Enterprise Manager with InfluxDB v2.0.
+
+> [!NOTE]
+> This project has been updated (January 2026) to fully support **Veeam Enterprise Manager v13** (and backwards compatible down to v7), including robust authentication handling and improved JSON parsing for modern API responses.
 
 Or try with this simple steps:
 * Download the veeam-enterprisemanager.sh file and change the parameters under Configuration, like username/password, etc. with your real data
-* Make the script executable with the command chmod +x veeam-enterprisemanager.sh
-* Run the veeam-enterprisemanager.sh and check on Chronograf that you can retrieve the information properly
+* Make the script executable with the command `chmod +x veeam-enterprisemanager.sh`
+* Run the `veeam-enterprisemanager.sh` and check on InfluxDB/Grafana that you can retrieve the information properly. You can set `veeamDebug="true"` in the script to see raw API responses.
 * Schedule the script execution, for example every 30 minutes using crontab -e
 * Download the Veeam Enterprise Manager JSON Dashboard file and import it into your Grafana
 * Enjoy :)
